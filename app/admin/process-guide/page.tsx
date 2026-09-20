@@ -1,8 +1,8 @@
 import { GuideList } from "@/components/staff/GuideList";
 import { NewGuideButton } from "@/components/staff/NewGuideButton";
 import { staffOrRedirect } from "@/lib/auth/session";
-import { copy, formatDate } from "@/lib/i18n";
-import { currentLocale } from "@/lib/locale";
+import { copy, formatDateFor } from "@/lib/i18n";
+import { currentDatePrefs, currentLocale } from "@/lib/locale";
 import { listGuides } from "@/lib/queries";
 import { guidePreview } from "@/lib/sanitize";
 import shell from "../staff.module.css";
@@ -22,7 +22,11 @@ export async function generateMetadata() {
 }
 
 export default async function ProcessGuidePage() {
-  const [actor, locale] = await Promise.all([staffOrRedirect(), currentLocale()]);
+  const [actor, locale, dates] = await Promise.all([
+    staffOrRedirect(),
+    currentLocale(),
+    currentDatePrefs(),
+  ]);
   const guides = await listGuides(actor);
   const t = copy(locale);
 
@@ -33,7 +37,7 @@ export default async function ProcessGuidePage() {
     title: guide.title,
     category: guide.category,
     preview: guidePreview(guide.content),
-    updated: formatDate(guide.updatedAt, locale),
+    updated: formatDateFor(guide.updatedAt, locale, dates),
     // What search reads. Built server-side so the browser never holds the full text
     // of every guide just to search it.
     haystack: `${guide.title} ${guidePreview(guide.content, 2000)}`.toLowerCase(),

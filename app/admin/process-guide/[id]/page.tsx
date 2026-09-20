@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 import { GuideDocument } from "@/components/staff/GuideDocument";
 import { staffOrRedirect } from "@/lib/auth/session";
-import { copy, formatDate } from "@/lib/i18n";
-import { currentLocale } from "@/lib/locale";
+import { copy, formatDateFor } from "@/lib/i18n";
+import { currentDatePrefs, currentLocale } from "@/lib/locale";
 import { getGuide } from "@/lib/queries";
 
 /*
@@ -27,7 +27,11 @@ export default async function GuidePage({
   params: Promise<{ id: string }>;
   searchParams: Promise<{ edit?: string; print?: string }>;
 }) {
-  const [actor, locale] = await Promise.all([staffOrRedirect(), currentLocale()]);
+  const [actor, locale, dates] = await Promise.all([
+    staffOrRedirect(),
+    currentLocale(),
+    currentDatePrefs(),
+  ]);
   const { id } = await params;
   const query = await searchParams;
 
@@ -42,7 +46,7 @@ export default async function GuidePage({
       title={record.title}
       category={record.category}
       content={record.content}
-      updated={formatDate(record.updatedAt, locale)}
+      updated={formatDateFor(record.updatedAt, locale, dates)}
       attachments={files
         .filter((file) => file.kind === "ATTACHMENT")
         .map((file) => ({

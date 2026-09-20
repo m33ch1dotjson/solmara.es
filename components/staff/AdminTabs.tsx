@@ -11,6 +11,8 @@ import {
   IconProperties,
   IconSettings,
   IconTasks,
+  IconTeam,
+  IconWorkspace,
 } from "@/components/ui/Icons";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { useCopy } from "@/components/ui/LocaleProvider";
@@ -25,7 +27,15 @@ import s from "./AdminTabs.module.css";
  * things you touch once a year do not sit in one undifferentiated list. Each row
  * carries an icon, which is what makes a long list scannable rather than read.
  */
-export function AdminTabs({ brandName, user }: { brandName: string; user: string }) {
+export function AdminTabs({
+  brandName,
+  user,
+  isAdmin,
+}: {
+  brandName: string;
+  user: string;
+  isAdmin: boolean;
+}) {
   const { t, locale } = useCopy();
   const pathname = usePathname();
 
@@ -107,8 +117,33 @@ export function AdminTabs({ brandName, user }: { brandName: string; user: string
           aria-current={current("/admin/account")}
         >
           <IconSettings />
-          {t.nav.settings}
+          {t.nav.myAccount}
         </Link>
+
+        {/* Hiding these is a courtesy, not the permission: both pages check the role
+            again, and so does the database. */}
+        {isAdmin && (
+          <>
+            <span className={`${s.group} ${s.groupLater}`}>{t.nav.administration}</span>
+
+            <Link
+              href="/admin/workspace"
+              className={tabClass("/admin/workspace")}
+              aria-current={current("/admin/workspace")}
+            >
+              <IconWorkspace />
+              {t.nav.workspace}
+            </Link>
+            <Link
+              href="/admin/team"
+              className={tabClass("/admin/team")}
+              aria-current={current("/admin/team")}
+            >
+              <IconTeam />
+              {t.nav.team}
+            </Link>
+          </>
+        )}
       </nav>
 
       <div className={s.right}>

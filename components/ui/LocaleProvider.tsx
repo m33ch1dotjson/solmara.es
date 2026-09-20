@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useMemo } from "react";
 import type { Locale } from "@/lib/brand";
-import { copy, type Copy } from "@/lib/i18n";
+import { copy, DATE_DEFAULTS, type Copy, type DatePrefs } from "@/lib/i18n";
 
 /*
  * How a client component learns which language it is in.
@@ -19,21 +19,29 @@ import { copy, type Copy } from "@/lib/i18n";
 interface LocaleContext {
   locale: Locale;
   t: Copy;
+  /** How this colleague writes dates. Resolved once, in the root layout. */
+  dates: DatePrefs;
 }
 
 /** Only reached if a client component renders outside the root layout, which none do. */
 const FALLBACK: Locale = "en";
 
-const Ctx = createContext<LocaleContext>({ locale: FALLBACK, t: copy(FALLBACK) });
+const Ctx = createContext<LocaleContext>({
+  locale: FALLBACK,
+  t: copy(FALLBACK),
+  dates: DATE_DEFAULTS,
+});
 
 export function LocaleProvider({
   locale,
+  dates = DATE_DEFAULTS,
   children,
 }: {
   locale: Locale;
+  dates?: DatePrefs;
   children: React.ReactNode;
 }) {
-  const value = useMemo(() => ({ locale, t: copy(locale) }), [locale]);
+  const value = useMemo(() => ({ locale, t: copy(locale), dates }), [locale, dates]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
 

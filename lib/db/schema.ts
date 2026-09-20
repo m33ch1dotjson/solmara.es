@@ -34,7 +34,12 @@ export const app = pgSchema("app");
 
 /* ------------------------------------------------------------------- enums */
 
-export const staffRole = app.enum("staff_role", ["ADMIN", "STAFF"]);
+/**
+ * EXTERNAL is deliberately not staff: app.is_staff() excludes it, so until
+ * per-client assignment exists an external user signs in and sees nothing. See
+ * drizzle/0006_account_and_team.sql.
+ */
+export const staffRole = app.enum("staff_role", ["ADMIN", "STAFF", "EXTERNAL"]);
 
 export const documentKind = app.enum("document_kind", ["PASSPORT", "PHOTO"]);
 
@@ -66,10 +71,42 @@ export const staffUser = app.table(
     initials: text("initials").notNull(),
     role: staffRole("role").notNull().default("STAFF"),
     active: boolean("active").notNull().default(true),
+
+    /* Their own settings. The cookies the browser works from are set from these at
+       sign-in, so a colleague on a borrowed laptop gets their own portal. */
+    avatarKey: text("avatar_key"),
+    preferredLocale: locale("preferred_locale"),
+    /** "light" | "dark" | "system" */
+    theme: text("theme").notNull().default("light"),
+    timeZone: text("time_zone").notNull().default("Europe/Madrid"),
+    /** "LONG" | "DD/MM/YYYY" | "MM/DD/YYYY" | "YYYY-MM-DD" */
+    dateStyle: text("date_style").notNull().default("LONG"),
+    /** A growing set of switches, so a new one is not a migration. */
+    notify: jsonb("notify").notNull().default({}),
+
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [index("staff_user_active_idx").on(t.active)],
 );
+
+/**
+ * The workspace itself. Exactly one row, enforced by a check constraint on a
+ * boolean primary key — a second workspace nobody is looking at is a worse bug than
+ * a failed insert.
+ */
+export const workspaceSetting = app.table("workspace_setting", {
+  id: boolean("id").primaryKey().default(true),
+  companyName: text("company_name"),
+  companyEmail: text("company_email"),
+  phone: text("phone"),
+  website: text("website"),
+  logoKey: text("logo_key"),
+  displayName: text("display_name"),
+  defaultClientLocale: locale("default_client_locale").notNull().default("en"),
+  defaultCountry: text("default_country").notNull().default("ES"),
+  defaultCurrency: text("default_currency").notNull().default("EUR"),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
 
 /* ------------------------------------------------------------------ client */
 

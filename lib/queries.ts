@@ -22,6 +22,8 @@ import {
   processGuideFile,
   property,
   propertyPhoto,
+  staffUser,
+  workspaceSetting,
 } from "@/lib/db/schema";
 
 /** Invites last two weeks. Long enough to be useful, short enough to expire. */
@@ -224,6 +226,174 @@ export async function listSentDocuments(actor: Actor) {
       .innerJoin(client, eq(client.id, clientDocument.clientId))
       .where(sql`${clientDocument.status} <> 'REQUIRED'`)
       .orderBy(desc(clientDocument.uploadedAt)),
+  );
+}
+
+/* ------------------------------------------------------- account, team, workspace */
+
+export type NotifySwitches = Record<string, boolean>;
+
+/** The defaults a colleague starts with; the database column carries the same set. */
+export const NOTIFY_DEFAULTS: NotifySwitches = {
+  email: true,
+  clientAdded: true,
+  documentUploaded: true,
+  taskAssigned: true,
+  taskDueSoon: true,
+  clientStatusChanged: false,
+  noteAdded: false,
+};
+
+/** The signed-in colleague's own row, with everything the settings screens edit. */
+export async function myStaffProfile(actor: Actor) {
+  if (actor.kind !== "staff") throw new Error("UNAUTHORISED");
+  return asActor(actor, async (tx) => {
+    const rows = await tx.select().from(staffUser).where(eq(staffUser.id, actor.id)).limit(1);
+    return rows[0] ?? null;
+  });
+}
+
+export async function updateMyProfile(
+  actor: Actor,
+  input: { name: string; avatarKey?: string | null },
+) {
+  if (actor.kind !== "staff") throw new Error("UNAUTHORISED");
+  return asActor(actor, async (tx) => {
+    const [updated] = await tx
+      .update(staffUser)
+      .set({
+        name: input.name.trim(),
+        // Initials follow the name: they are a display detail, not a second thing
+        // to keep in step by hand.
+        initials: initialsFor(input.name),
+        ...(input.avatarKey === undefined ? {} : { avatarKey: input.avatarKey }),
+      })
+      .where(eq(staffUser.id, actor.id))
+      .returning();
+    return updated ?? null;
+  });
+}
+
+export async function updateMyPreferences(
+  actor: Actor,
+  input: {
+    preferredLocale: "en" | "nl" | "es";
+    theme: string;
+    timeZone: string;
+    dateStyle: string;
+  },
+) {
+  if (actor.kind !== "staff") throw new Error("UNAUTHORISED");
+  return asActor(actor, (tx) =>
+    tx.update(staffUser).set(input).where(eq(staffUser.id, actor.id)),
+  );
+}
+
+export async function updateMyNotifications(actor: Actor, notify: NotifySwitches) {
+  if (actor.kind !== "staff") throw new Error("UNAUTHORISED");
+  return asActor(actor, (tx) =>
+    tx.update(staffUser).set({ notify }).where(eq(staffUser.id, actor.id)),
+  );
+}
+
+/** Two letters for an avatar with no picture behind it. */
+export function initialsFor(name: string): string {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "?";
+  const first = parts[0]?.[0] ?? "";
+  const last = parts.length > 1 ? (parts[parts.length - 1]?.[0] ?? "") : "";
+  return (first + last).toUpperCase();
+}
+
+/* ------------------------------------------------------------------- the team */
+
+export async function listTeam(actor: Actor) {
+  if (actor.kind !== "staff") throw new Error("UNAUTHORISED");
+  return asActor(actor, (tx) =>
+    tx
+      .select({
+        id: staffUser.id,
+        name: staffUser.name,
+        email: staffUser.email,
+        role: staffUser.role,
+        active: staffUser.active,
+        initials: staffUser.initials,
+        avatarKey: staffUser.avatarKey,
+        // Null until their first sign-in, which is what "Invited" means on screen.
+        authUserId: staffUser.authUserId,
+        createdAt: staffUser.createdAt,
+      })
+      .from(staffUser)
+      .orderBy(asc(staffUser.name)),
+  );
+}
+
+export type StaffRole = (typeof staffUser.role.enumValues)[number];
+
+export async function addTeamMember(
+  actor: Actor,
+  input: { name: string; email: string; role: StaffRole },
+) {
+  if (actor.kind !== "staff" || actor.role !== "ADMIN") throw new Error("UNAUTHORISED");
+  return asActor(actor, async (tx) => {
+    const [created] = await tx
+      .insert(staffUser)
+      .values({
+        name: input.name.trim(),
+        email: input.email.trim().toLowerCase(),
+        initials: initialsFor(input.name),
+        role: input.role,
+      })
+      .returning();
+    if (!created) throw new Error("MEMBER_NOT_CREATED");
+    return created;
+  });
+}
+
+export async function setTeamMemberRole(actor: Actor, id: string, role: StaffRole) {
+  if (actor.kind !== "staff" || actor.role !== "ADMIN") throw new Error("UNAUTHORISED");
+  return asActor(actor, (tx) =>
+    tx.update(staffUser).set({ role }).where(eq(staffUser.id, id)),
+  );
+}
+
+export async function setTeamMemberActive(actor: Actor, id: string, active: boolean) {
+  if (actor.kind !== "staff" || actor.role !== "ADMIN") throw new Error("UNAUTHORISED");
+  return asActor(actor, (tx) =>
+    tx.update(staffUser).set({ active }).where(eq(staffUser.id, id)),
+  );
+}
+
+/* ------------------------------------------------------------------ workspace */
+
+export async function getWorkspace(actor: Actor) {
+  if (actor.kind !== "staff") throw new Error("UNAUTHORISED");
+  return asActor(actor, async (tx) => {
+    const rows = await tx.select().from(workspaceSetting).limit(1);
+    return rows[0] ?? null;
+  });
+}
+
+export async function updateWorkspace(
+  actor: Actor,
+  input: {
+    companyName: string | null;
+    companyEmail: string | null;
+    phone: string | null;
+    website: string | null;
+    displayName: string | null;
+    defaultClientLocale: "en" | "nl" | "es";
+    defaultCountry: string;
+    defaultCurrency: string;
+    logoKey?: string | null;
+  },
+) {
+  if (actor.kind !== "staff" || actor.role !== "ADMIN") throw new Error("UNAUTHORISED");
+  return asActor(actor, (tx) =>
+    tx
+      .update(workspaceSetting)
+      .set({ ...input, updatedAt: new Date() })
+      .where(eq(workspaceSetting.id, true)),
   );
 }
 

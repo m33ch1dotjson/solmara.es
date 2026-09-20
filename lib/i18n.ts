@@ -48,6 +48,66 @@ export function formatDate(
 }
 
 /**
+ * How a colleague wants dates written. LONG is the language's own long form, which
+ * is what the client portal always uses; the other three are fixed orders.
+ */
+export type DateStyle = "LONG" | "DD/MM/YYYY" | "MM/DD/YYYY" | "YYYY-MM-DD";
+
+export const DATE_STYLES: readonly DateStyle[] = [
+  "LONG",
+  "DD/MM/YYYY",
+  "MM/DD/YYYY",
+  "YYYY-MM-DD",
+];
+
+export function isDateStyle(value: unknown): value is DateStyle {
+  return typeof value === "string" && (DATE_STYLES as readonly string[]).includes(value);
+}
+
+/*
+ * A fixed field order is easier to borrow than to build: en-GB is day first, en-US
+ * month first, sv-SE is the ISO order. Asking Intl for a known locale's order beats
+ * assembling the string by hand and getting the padding wrong in one of them.
+ */
+const STYLE_TAG: Record<Exclude<DateStyle, "LONG">, string> = {
+  "DD/MM/YYYY": "en-GB",
+  "MM/DD/YYYY": "en-US",
+  "YYYY-MM-DD": "sv-SE",
+};
+
+export type DatePrefs = { style: DateStyle; timeZone?: string };
+
+export const DATE_DEFAULTS: DatePrefs = { style: "LONG" };
+
+/** A date the way this colleague asked for it, in the time zone they work in. */
+export function formatDateFor(
+  value: Date | string,
+  locale: Locale,
+  prefs: DatePrefs = DATE_DEFAULTS,
+): string {
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return typeof value === "string" ? value : "";
+
+  const timeZone = prefs.timeZone || undefined;
+
+  if (prefs.style === "LONG") {
+    return date.toLocaleDateString(LOCALE_TAG[locale], {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      timeZone,
+    });
+  }
+
+  return date.toLocaleDateString(STYLE_TAG[prefs.style], {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    timeZone,
+  });
+}
+
+/**
  * Fills {placeholders}. Used only where a sentence carries a number or a name; the
  * alternative — gluing fragments together at the call site — produces word order
  * that is right in Dutch and wrong in Spanish.
@@ -113,6 +173,8 @@ export const DICT = {
     portal: T("Portal", "Portal", "Portal"),
     account: T("Account", "Account", "Cuenta"),
 
+    administration: T("Administration", "Beheer", "Administración"),
+
     overview: T("Overview", "Overzicht", "Resumen"),
     clients: T("Clients", "Klanten", "Clientes"),
     /* Broader than "Service Procedures" on purpose: it holds internal processes
@@ -121,7 +183,9 @@ export const DICT = {
     properties: T("Properties", "Properties", "Propiedades"),
     documents: T("Documents", "Documenten", "Documentos"),
     tasks: T("Tasks", "Taken", "Tareas"),
-    settings: T("Settings", "Instellingen", "Ajustes"),
+    myAccount: T("My Account", "Mijn account", "Mi cuenta"),
+    workspace: T("Workspace Settings", "Werkruimte", "Espacio de trabajo"),
+    team: T("Team & Permissions", "Team & rechten", "Equipo y permisos"),
   },
 
   /* ---------------------------------------------------------------- overview */
@@ -314,6 +378,131 @@ export const DICT = {
     rejectAndSend: T("Reject and send", "Afkeuren en versturen", "Rechazar y enviar"),
   },
 
+  /* ------------------------------------------------------- workspace and team */
+
+  workspace: {
+    title: T("Workspace Settings", "Werkruimte", "Espacio de trabajo"),
+    lead: T(
+      "Manage your Solmavera workspace and client portal.",
+      "Beheer de werkruimte van Solmavera en het klantportaal.",
+      "Gestiona el espacio de trabajo de Solmavera y el portal de clientes.",
+    ),
+    company: T("Company information", "Bedrijfsgegevens", "Datos de la empresa"),
+    companyLead: T(
+      "What the office is called, and how to reach it.",
+      "Hoe het kantoor heet, en hoe het te bereiken is.",
+      "Cómo se llama la oficina y cómo contactarla.",
+    ),
+    companyName: T("Company name", "Bedrijfsnaam", "Nombre de la empresa"),
+    companyEmail: T("Company email", "Bedrijfsmail", "Correo de la empresa"),
+    phone: T("Phone number", "Telefoonnummer", "Teléfono"),
+    website: T("Website", "Website", "Sitio web"),
+    defaults: T("Client portal defaults", "Standaarden klantportaal", "Valores por defecto"),
+    defaultsLead: T(
+      "What a new client gets when nobody says otherwise.",
+      "Wat een nieuwe klant krijgt als niemand iets anders zegt.",
+      "Lo que recibe un cliente nuevo cuando nadie indica otra cosa.",
+    ),
+    defaultLanguage: T("Default client language", "Standaardtaal klant", "Idioma por defecto"),
+    defaultCountry: T("Default country", "Standaardland", "País por defecto"),
+    defaultCurrency: T("Default currency", "Standaardvaluta", "Moneda por defecto"),
+    branding: T("Branding", "Huisstijl", "Marca"),
+    brandingLead: T(
+      "A logo and a name. Colours stay in configuration, where one hue generates the whole palette.",
+      "Een logo en een naam. Kleuren blijven in de configuratie, waar één tint het hele palet maakt.",
+      "Un logotipo y un nombre. Los colores siguen en la configuración, donde un solo tono genera toda la paleta.",
+    ),
+    chooseLogo: T("Choose a logo", "Kies een logo", "Elegir un logotipo"),
+    removeLogo: T("Remove logo", "Logo weghalen", "Quitar el logotipo"),
+    displayName: T("Portal display name", "Naam in het portaal", "Nombre en el portal"),
+    displayNameHint: T(
+      "Shown in the portal. Empty means the configured brand name.",
+      "Staat in het portaal. Leeg betekent de ingestelde merknaam.",
+      "Se muestra en el portal. Vacío significa el nombre de marca configurado.",
+    ),
+    saved: T("Workspace saved.", "Werkruimte opgeslagen.", "Espacio de trabajo guardado."),
+  },
+
+  team: {
+    title: T("Team & Permissions", "Team & rechten", "Equipo y permisos"),
+    lead: T(
+      "Manage who has access to the Solmavera Portal.",
+      "Beheer wie toegang heeft tot het Solmavera-portaal.",
+      "Gestiona quién tiene acceso al portal de Solmavera.",
+    ),
+    invite: T("Invite team member", "Teamlid uitnodigen", "Invitar a alguien"),
+    inviteLead: T(
+      "They get a mail to choose a password. Access comes from this list, not from the mail.",
+      "Diegene krijgt een mail om een wachtwoord te kiezen. Toegang komt uit deze lijst, niet uit die mail.",
+      "Recibirá un correo para elegir una contraseña. El acceso viene de esta lista, no del correo.",
+    ),
+    sendInvite: T("Send invite", "Uitnodiging sturen", "Enviar invitación"),
+    invited: T("Invited.", "Uitgenodigd.", "Invitación enviada."),
+    addedButNoMail: T(
+      "Added, but the invite mail did not go out. They can still be given a password.",
+      "Toegevoegd, maar de uitnodigingsmail ging niet weg. Diegene kan alsnog een wachtwoord krijgen.",
+      "Añadido, pero el correo de invitación no salió. Aun así se le puede dar una contraseña.",
+    ),
+    columnUser: T("User", "Gebruiker", "Usuario"),
+    columnStatus: T("Status", "Status", "Estado"),
+    columnActions: T("Actions", "Acties", "Acciones"),
+    statusActive: T("Active", "Actief", "Activo"),
+    statusInvited: T("Invited", "Uitgenodigd", "Invitado"),
+    statusDisabled: T("Disabled", "Uitgezet", "Desactivado"),
+    disable: T("Disable", "Uitzetten", "Desactivar"),
+    enable: T("Enable", "Aanzetten", "Activar"),
+    enabled: T("Enabled again.", "Weer aangezet.", "Activado de nuevo."),
+    disabled: T("Disabled.", "Uitgezet.", "Desactivado."),
+    you: T("that is you", "dat ben jij", "ese eres tú"),
+    roleChanged: T("Role changed.", "Rol gewijzigd.", "Rol cambiado."),
+    cannotDemoteSelf: T(
+      "You cannot take your own admin rights away — nobody would be left to give them back.",
+      "Je kunt je eigen adminrechten niet weghalen — dan is er niemand meer om ze terug te geven.",
+      "No puedes quitarte tus propios permisos de administrador: no quedaría nadie para devolvértelos.",
+    ),
+    cannotDisableSelf: T(
+      "You cannot switch yourself off.",
+      "Jezelf uitzetten gaat niet.",
+      "No puedes desactivarte a ti mismo.",
+    ),
+    role: {
+      ADMIN: T("Admin", "Admin", "Administrador"),
+      STAFF: T("Staff", "Medewerker", "Empleado"),
+      EXTERNAL: T("External", "Extern", "Externo"),
+    },
+    whatRolesMean: T("What the roles mean", "Wat de rollen betekenen", "Qué significan los roles"),
+    ruleAdmin: T(
+      "everything a colleague can do, plus these two administration screens.",
+      "alles wat een collega kan, plus deze twee beheerschermen.",
+      "todo lo que puede un compañero, más estas dos pantallas de administración.",
+    ),
+    ruleStaff: T(
+      "clients, documents, tasks, properties and the Process Guide. No administration.",
+      "klanten, documenten, taken, properties en de Process Guide. Geen beheer.",
+      "clientes, documentos, tareas, propiedades y la guía de procesos. Sin administración.",
+    ),
+    ruleExternal: T(
+      "only the clients and documents assigned to them, and nothing of the rest.",
+      "alleen de klanten en documenten die aan diegene zijn toegewezen, en niets van de rest.",
+      "solo los clientes y documentos que se le asignen, y nada del resto.",
+    ),
+    externalNotYet: T(
+      "Assigning individual clients is not built yet, so an External user currently signs in and sees nothing at all. That is deliberate: the database excludes the role from every policy rather than guessing, so nobody gets more than intended in the meantime.",
+      "Losse klanten toewijzen is nog niet gebouwd, dus een externe logt nu in en ziet helemaal niets. Dat is met opzet: de database sluit de rol van elke policy uit in plaats van te gokken, zodat niemand ondertussen meer krijgt dan de bedoeling is.",
+      "Asignar clientes concretos todavía no existe, así que un usuario externo inicia sesión y no ve nada. Es deliberado: la base de datos excluye el rol de todas las políticas en lugar de adivinar, para que nadie reciba más de lo previsto mientras tanto.",
+    ),
+    externalTitle: T(
+      "Nothing assigned yet",
+      "Nog niets toegewezen",
+      "Todavía no hay nada asignado",
+    ),
+    externalBody: T(
+      "Your account works, but no clients or documents have been assigned to it. Ask whoever invited you to assign them.",
+      "Je account werkt, maar er zijn nog geen klanten of documenten aan toegewezen. Vraag degene die je uitnodigde om dat te doen.",
+      "Tu cuenta funciona, pero no se le han asignado clientes ni documentos. Pídeselo a quien te invitó.",
+    ),
+  },
+
   /* --------------------------------------------------------------- process guide */
 
   guides: {
@@ -432,14 +621,150 @@ export const DICT = {
   /* ---------------------------------------------------------------- staff account */
 
   account: {
-    title: T("Account", "Account", "Cuenta"),
+    title: T("My Account", "Mijn account", "Mi cuenta"),
+    lead: T(
+      "Manage your profile, security and personal preferences.",
+      "Beheer je profiel, beveiliging en persoonlijke voorkeuren.",
+      "Gestiona tu perfil, tu seguridad y tus preferencias personales.",
+    ),
     signedInAs: T(
       "You are signed in as {name} — {email}, role {role}.",
       "Je bent ingelogd als {name} — {email}, rol {role}.",
       "Has iniciado sesión como {name} — {email}, rol {role}.",
     ),
-    roleAdmin: T("admin", "admin", "administrador"),
-    roleStaff: T("staff", "medewerker", "empleado"),
+    roleAdmin: T("Admin", "Admin", "Administrador"),
+    roleStaff: T("Staff", "Medewerker", "Empleado"),
+    roleExternal: T("External", "Extern", "Externo"),
+
+    tabProfile: T("Profile", "Profiel", "Perfil"),
+    tabSecurity: T("Security", "Beveiliging", "Seguridad"),
+    tabNotifications: T("Notifications", "Meldingen", "Notificaciones"),
+    tabPreferences: T("Preferences", "Voorkeuren", "Preferencias"),
+
+    /* Profile */
+    profileLead: T(
+      "Your name and picture, as colleagues see them.",
+      "Je naam en foto, zoals collega's die zien.",
+      "Tu nombre y tu foto, tal como los ven tus compañeros.",
+    ),
+    fullName: T("Full name", "Volledige naam", "Nombre completo"),
+    role: T("Role", "Rol", "Rol"),
+    emailFixed: T(
+      "Your address is your sign-in. An admin changes it.",
+      "Je adres is je login. Een admin wijzigt dat.",
+      "Tu correo es tu acceso. Lo cambia un administrador.",
+    ),
+    roleFixed: T("Set by an admin.", "Wordt door een admin gezet.", "Lo asigna un administrador."),
+    chooseAvatar: T("Choose a picture", "Kies een foto", "Elegir una foto"),
+    removeAvatar: T("Remove picture", "Foto weghalen", "Quitar la foto"),
+    saveChanges: T("Save changes", "Wijzigingen opslaan", "Guardar cambios"),
+    savedProfile: T("Profile saved.", "Profiel opgeslagen.", "Perfil guardado."),
+
+    /* Security */
+    twoFactor: T(
+      "Two-factor authentication",
+      "Tweestapsverificatie",
+      "Verificación en dos pasos",
+    ),
+    twoFactorLead: T(
+      "An extra code from an app on your phone, on top of your password.",
+      "Een extra code uit een app op je telefoon, bovenop je wachtwoord.",
+      "Un código adicional desde una app en tu móvil, además de la contraseña.",
+    ),
+    statusEnabled: T("Enabled", "Aan", "Activada"),
+    statusDisabled: T("Disabled", "Uit", "Desactivada"),
+    twoFactorEnable: T("Enable 2FA", "Zet 2FA aan", "Activar 2FA"),
+    twoFactorDisable: T("Turn off", "Zet uit", "Desactivar"),
+    twoFactorConfirm: T("Confirm", "Bevestigen", "Confirmar"),
+    twoFactorScan: T(
+      "Scan this with your authenticator app, then type the six digits it shows.",
+      "Scan dit met je authenticator-app en typ daarna de zes cijfers die hij toont.",
+      "Escanea esto con tu app de autenticación y escribe los seis dígitos que muestre.",
+    ),
+    twoFactorCode: T("Six-digit code", "Code van zes cijfers", "Código de seis dígitos"),
+    twoFactorWrongCode: T(
+      "That code is not right. Try the next one.",
+      "Die code klopt niet. Probeer de volgende.",
+      "Ese código no es correcto. Prueba el siguiente.",
+    ),
+    twoFactorFailed: T(
+      "That did not work. Try again in a moment.",
+      "Dat lukte niet. Probeer het zo nog eens.",
+      "No ha funcionado. Inténtalo dentro de un momento.",
+    ),
+    twoFactorOn: T("Two-factor is on.", "Tweestapsverificatie staat aan.", "La verificación en dos pasos está activada."),
+    twoFactorOff: T("Two-factor is off.", "Tweestapsverificatie staat uit.", "La verificación en dos pasos está desactivada."),
+    sessions: T("Other devices", "Andere apparaten", "Otros dispositivos"),
+    sessionsLead: T(
+      "Signed in somewhere you would rather not be? End those sessions.",
+      "Ergens ingelogd waar je dat liever niet bent? Beëindig die sessies.",
+      "¿Sesión abierta donde preferirías que no lo estuviera? Ciérralas.",
+    ),
+    sessionsNote: T(
+      "A list of devices is not shown: Supabase keeps sessions in its own schema and offers no way to read them. Signing out everywhere else does work, and is the part that protects you.",
+      "Een lijst met apparaten staat er niet: Supabase bewaart sessies in zijn eigen schema en biedt geen manier om die uit te lezen. Overal elders uitloggen werkt wel, en dat is het deel dat je beschermt.",
+      "No se muestra una lista de dispositivos: Supabase guarda las sesiones en su propio esquema y no ofrece forma de leerlas. Cerrar sesión en todo lo demás sí funciona, y es lo que realmente protege.",
+    ),
+    signOutOthers: T(
+      "Sign out of all other devices",
+      "Overal elders uitloggen",
+      "Cerrar sesión en los demás dispositivos",
+    ),
+    sessionsDone: T(
+      "Other sessions ended.",
+      "Andere sessies beëindigd.",
+      "Se han cerrado las demás sesiones.",
+    ),
+    sessionsFailed: T("That did not work.", "Dat lukte niet.", "No ha funcionado."),
+
+    /* Notifications */
+    notificationsLead: T(
+      "Which events are worth an email.",
+      "Welke gebeurtenissen een mail waard zijn.",
+      "Qué eventos merecen un correo.",
+    ),
+    notificationsNotYet: T(
+      "Your choices are saved, but nothing sends them yet — no notification mail is built. This is what it will follow when it is.",
+      "Je keuzes worden bewaard, maar er verstuurt nog niets — meldingsmail is nog niet gebouwd. Dit is waar het zich straks aan houdt.",
+      "Tus elecciones se guardan, pero todavía no se envía nada: el correo de notificaciones aún no existe. Esto es lo que seguirá cuando exista.",
+    ),
+    emailNotifications: T("Email notifications", "E-mailmeldingen", "Notificaciones por correo"),
+    emailNotificationsHint: T(
+      "Off here means off for everything below.",
+      "Hier uit betekent alles hieronder uit.",
+      "Aquí desactivado significa todo lo de abajo desactivado.",
+    ),
+    savePreferences: T("Save preferences", "Voorkeuren opslaan", "Guardar preferencias"),
+    savedNotifications: T("Saved.", "Opgeslagen.", "Guardado."),
+    notify: {
+      clientAdded: T("New client added", "Nieuwe klant aangemaakt", "Nuevo cliente añadido"),
+      documentUploaded: T(
+        "Client uploads a document",
+        "Klant uploadt een document",
+        "Un cliente sube un documento",
+      ),
+      taskAssigned: T("Task assigned to me", "Taak aan mij toegewezen", "Tarea asignada a mí"),
+      taskDueSoon: T("Task due soon", "Taak loopt bijna af", "Tarea a punto de vencer"),
+      clientStatusChanged: T(
+        "Client status changes",
+        "Status van een klant verandert",
+        "Cambia el estado de un cliente",
+      ),
+      noteAdded: T("New note or comment", "Nieuwe notitie of opmerking", "Nueva nota o comentario"),
+    },
+
+    /* Preferences */
+    preferencesLead: T(
+      "These follow you to any machine you sign in on. The two controls at the bottom of the rail change the same settings.",
+      "Deze gaan met je mee naar elke computer waarop je inlogt. De twee knoppen onderin de balk wijzigen dezelfde instellingen.",
+      "Estas te acompañan en cualquier equipo donde inicies sesión. Los dos controles del final de la barra cambian lo mismo.",
+    ),
+    appearance: T("Appearance", "Weergave", "Apariencia"),
+    themeSystem: T("System", "Systeem", "Sistema"),
+    timeZone: T("Time zone", "Tijdzone", "Zona horaria"),
+    dateFormat: T("Date format", "Datumnotatie", "Formato de fecha"),
+    dateLong: T("Written out", "Voluit", "Escrita"),
+    savedPreferences: T("Preferences saved.", "Voorkeuren opgeslagen.", "Preferencias guardadas."),
     setPassword: T("Set a password", "Wachtwoord instellen", "Establecer contraseña"),
     setPasswordLead: T(
       "After this you can sign in with your email address and this password, without waiting for a link.",
@@ -673,6 +998,11 @@ export const DICT = {
   errors: {
     nameRequired: T("Fill in your name.", "Vul uw naam in.", "Indique su nombre."),
     nameRequiredStaff: T("Fill in a name.", "Vul een naam in.", "Indica un nombre."),
+    adminOnly: T(
+      "Only an admin can change this.",
+      "Alleen een admin kan dit wijzigen.",
+      "Solo un administrador puede cambiar esto.",
+    ),
     emailInvalid: T(
       "Fill in a valid email address.",
       "Vul een geldig e-mailadres in.",

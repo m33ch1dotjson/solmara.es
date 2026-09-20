@@ -4,8 +4,8 @@ import { DocumentReview } from "@/components/staff/DocumentReview";
 import { InviteButton } from "@/components/staff/InviteButton";
 import { Mono, StatusPill } from "@/components/ui";
 import { staffOrRedirect } from "@/lib/auth/session";
-import { copy, fill, formatDate } from "@/lib/i18n";
-import { currentLocale } from "@/lib/locale";
+import { copy, fill, formatDateFor } from "@/lib/i18n";
+import { currentDatePrefs, currentLocale } from "@/lib/locale";
 import { getClient } from "@/lib/queries";
 import { BUCKET_CLIENT_DOCUMENTS, signedUrl } from "@/lib/storage";
 import shell from "../../staff.module.css";
@@ -27,7 +27,11 @@ export default async function AdminClientPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const [actor, locale] = await Promise.all([staffOrRedirect(), currentLocale()]);
+  const [actor, locale, dates] = await Promise.all([
+    staffOrRedirect(),
+    currentLocale(),
+    currentDatePrefs(),
+  ]);
   const { id } = await params;
   const found = await getClient(actor, id);
   if (!found) notFound();
@@ -37,7 +41,7 @@ export default async function AdminClientPage({
 
   function show(value: string | Date | null): string {
     if (!value) return t.common.blank;
-    return value instanceof Date ? formatDate(value, locale) : value;
+    return value instanceof Date ? formatDateFor(value, locale, dates) : value;
   }
 
   // Signed per render, ten minutes. Downloads are logged by the storage layer.

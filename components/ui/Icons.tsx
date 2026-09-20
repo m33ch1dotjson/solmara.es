@@ -93,6 +93,29 @@ export function IconTasks() {
   );
 }
 
+/** Workspace: the office the portal belongs to. */
+export function IconWorkspace() {
+  return (
+    <Glyph>
+      <path d="M4 20.5V6.2l8-2.7v17" />
+      <path d="M12 9.5h7.5v11" />
+      <path d="M2.5 20.5h19" />
+      <path d="M7.2 9.5h1.6M7.2 13h1.6M7.2 16.5h1.6M15.2 13h1.6M15.2 16.5h1.6" />
+    </Glyph>
+  );
+}
+
+/** Team: people again, but with the one in front marked out. */
+export function IconTeam() {
+  return (
+    <Glyph>
+      <circle cx="12" cy="7.5" r="3.2" />
+      <path d="M5.5 20.5c0-3.4 2.9-6 6.5-6s6.5 2.6 6.5 6" />
+      <path d="M3.5 11.5h1.8M4.4 10.6v1.8" />
+    </Glyph>
+  );
+}
+
 /** Settings: sliders, which read as settings faster than a cog at 18px. */
 export function IconSettings() {
   return (

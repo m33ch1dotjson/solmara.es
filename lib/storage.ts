@@ -15,6 +15,8 @@ export const BUCKET_CLIENT_DOCUMENTS = "client-documents";
 export const BUCKET_PROPERTY_PHOTOS = "property-photos";
 /** Screenshots inside a Process Guide, and the templates hanging under it. */
 export const BUCKET_GUIDE_FILES = "process-guide-files";
+/** Staff avatars and the workspace logo. Private like the rest; read through signed URLs. */
+export const BUCKET_WORKSPACE = "workspace-files";
 
 /** Ten minutes: long enough to open a file, short enough that a shared link dies. */
 const SIGNED_URL_SECONDS = 600;

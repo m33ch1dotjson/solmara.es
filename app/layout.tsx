@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { LocaleProvider } from "@/components/ui/LocaleProvider";
 import { brand } from "@/lib/brand";
-import { currentLocale } from "@/lib/locale";
+import { currentDatePrefs, currentLocale } from "@/lib/locale";
 import "./globals.css";
 
 /*
@@ -24,13 +24,18 @@ export const viewport: Viewport = {
  * Light unless somebody asked for dark. It used to follow the operating system,
  * which meant a colleague with a dark laptop was handed a dark portal they had never
  * chosen — the owner saw it on a strange machine and did not recognise his own
- * product. The toggle still remembers a deliberate choice, per browser.
+ * product. Following the system is still available, but only if somebody picks it in
+ * Preferences; it is no longer what happens when nobody has said anything.
  */
 const themeScript = `
 (function(){
   try {
     var stored = localStorage.getItem('solmara-theme');
-    document.documentElement.setAttribute('data-theme', stored === 'dark' ? 'dark' : 'light');
+    var theme = stored === 'dark' ? 'dark'
+      : stored === 'system'
+        ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        : 'light';
+    document.documentElement.setAttribute('data-theme', theme);
   } catch (e) {
     document.documentElement.setAttribute('data-theme', 'light');
   }
@@ -43,7 +48,7 @@ const themeScript = `
  * so every client component below can read its own copy.
  */
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const locale = await currentLocale();
+  const [locale, dates] = await Promise.all([currentLocale(), currentDatePrefs()]);
 
   return (
     <html lang={locale} suppressHydrationWarning>
@@ -63,7 +68,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body style={{ ["--accent-h" as string]: String(brand.accentHue) }}>
-        <LocaleProvider locale={locale}>{children}</LocaleProvider>
+        <LocaleProvider locale={locale} dates={dates}>
+          {children}
+        </LocaleProvider>
       </body>
     </html>
   );

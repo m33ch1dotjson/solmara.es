@@ -4,6 +4,8 @@ import { AdminTabs } from "@/components/staff/AdminTabs";
 import { StaffLogin } from "@/components/staff/StaffLogin";
 import { currentActor } from "@/lib/auth/session";
 import { brand } from "@/lib/brand";
+import { copy } from "@/lib/i18n";
+import { currentLocale } from "@/lib/locale";
 import s from "./staff.module.css";
 
 export const metadata: Metadata = {
@@ -39,9 +41,33 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   if (actor.kind !== "staff") redirect("/");
 
+  /*
+   * EXTERNAL exists as a role but has no data yet: app.is_staff() excludes it, so
+   * every query would come back empty. An empty portal looks broken; this says what
+   * is actually going on.
+   */
+  if (actor.role === "EXTERNAL") {
+    const t = copy(await currentLocale());
+    return (
+      <div className={`themeStaff ${s.shell}`}>
+        <main className={s.main}>
+          <div className={s.screen}>
+            <h1 className={s.pageTitle}>{t.team.externalTitle}</h1>
+            <p className={s.pageLead}>{t.team.externalBody}</p>
+            <form action="/auth/signout" method="post">
+              <button type="submit" className={s.pageLead}>
+                {t.common.signOut}
+              </button>
+            </form>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className={`themeStaff ${s.shell}`}>
-      <AdminTabs brandName={brand.staffName} user={actor.name} />
+      <AdminTabs brandName={brand.staffName} user={actor.name} isAdmin={actor.role === "ADMIN"} />
       <main className={s.main}>{children}</main>
     </div>
   );

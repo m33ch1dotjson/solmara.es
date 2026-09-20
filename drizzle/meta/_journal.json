@@ -43,6 +43,13 @@
       "when": 1789933200000,
       "tag": "0005_process_guide",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1789940400000,
+      "tag": "0006_account_and_team",
+      "breakpoints": true
     }
   ]
 }

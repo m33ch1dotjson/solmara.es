@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { reviewDocumentAction } from "@/app/admin/client-actions";
 import { useCopy } from "@/components/ui/LocaleProvider";
-import { fill, formatDate, type Copy } from "@/lib/i18n";
+import { fill, formatDateFor, type Copy } from "@/lib/i18n";
 import { Lightbox } from "./Lightbox";
 import s from "./forms.module.css";
 import d from "./DocumentReview.module.css";
@@ -68,7 +68,7 @@ export function DocumentReview({
   uploadedAt: string | null;
   rejectionNote: string | null;
 }) {
-  const { t, locale } = useCopy();
+  const { t, locale, dates } = useCopy();
   const [zoomed, setZoomed] = useState(false);
   const [rejecting, setRejecting] = useState(false);
   const [note, setNote] = useState("");
@@ -132,7 +132,7 @@ export function DocumentReview({
 
       {uploadedAt && (
         <p className={d.meta}>
-          {fill(t.review.receivedOn, { date: formatDate(uploadedAt, locale) })}
+          {fill(t.review.receivedOn, { date: formatDateFor(uploadedAt, locale, dates) })}
         </p>
       )}
 

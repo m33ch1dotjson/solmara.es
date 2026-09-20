@@ -1,6 +1,6 @@
 import { cookies, headers } from "next/headers";
 import { brand, type Locale } from "./brand";
-import { isLocale } from "./i18n";
+import { DATE_DEFAULTS, isDateStyle, isLocale, type DatePrefs } from "./i18n";
 
 /*
  * Which language a visitor gets.
@@ -56,4 +56,27 @@ export async function currentLocale(): Promise<Locale> {
   if (isLocale(chosen)) return chosen;
 
   return preferredFromHeader((await headers()).get("accept-language")) ?? brand.defaultLocale;
+}
+
+/*
+ * Date preferences travel the same way the language does: stored on the colleague's
+ * row, mirrored into a cookie when they save them, read from the cookie on every
+ * render. The cookie is what makes them apply before anything queries the database,
+ * and the row is what carries them to the next machine.
+ */
+
+export const DATE_STYLE_COOKIE = "solmavera-dates";
+export const TIME_ZONE_COOKIE = "solmavera-tz";
+
+export async function currentDatePrefs(): Promise<DatePrefs> {
+  const jar = await cookies();
+  const style = jar.get(DATE_STYLE_COOKIE)?.value;
+  const timeZone = jar.get(TIME_ZONE_COOKIE)?.value;
+
+  return {
+    style: isDateStyle(style) ? style : DATE_DEFAULTS.style,
+    // Not validated against a list: the zone names change more often than we would
+    // update the list, and Intl falls back to UTC on a name it does not know.
+    timeZone: timeZone || undefined,
+  };
 }

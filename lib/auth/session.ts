@@ -17,8 +17,10 @@ import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { serverClient } from "./supabase";
 
+export type StaffRole = "ADMIN" | "STAFF" | "EXTERNAL";
+
 export type Actor =
-  | { kind: "staff"; id: string; role: "ADMIN" | "STAFF"; name: string; email: string }
+  | { kind: "staff"; id: string; role: StaffRole; name: string; email: string }
   | { kind: "client"; id: string; clientId: string; name: string; email: string };
 
 // db.execute wants a row shape it can index; the named fields stay for clarity.
@@ -50,7 +52,7 @@ export async function currentActor(): Promise<Actor | null> {
     return {
       kind: "staff",
       id: row.actor_id,
-      role: row.role === "ADMIN" ? "ADMIN" : "STAFF",
+      role: row.role === "ADMIN" ? "ADMIN" : row.role === "EXTERNAL" ? "EXTERNAL" : "STAFF",
       name: row.name,
       email,
     };
@@ -82,6 +84,17 @@ export async function staffOrRedirect(): Promise<Extract<Actor, { kind: "staff" 
   const actor = await currentActor();
   if (!actor) redirect("/admin");
   if (actor.kind !== "staff") redirect("/");
+  return actor;
+}
+
+/**
+ * For the two administration screens. A hidden link is a courtesy; this is the
+ * permission. The database says the same thing again in app.is_admin(), because a
+ * server action is its own endpoint and this check is not on its path.
+ */
+export async function adminOrRedirect(): Promise<Extract<Actor, { kind: "staff" }>> {
+  const actor = await staffOrRedirect();
+  if (actor.role !== "ADMIN") redirect("/admin");
   return actor;
 }
 
