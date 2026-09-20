@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { NewClientForm } from "@/components/staff/NewClientForm";
 import { InviteButton } from "@/components/staff/InviteButton";
 import { Mono, StatusPill } from "@/components/ui";
@@ -46,10 +47,10 @@ export default async function ClientsPage() {
                 <Mono size={12.5} color="var(--ink-3)">
                   {row.code}
                 </Mono>
-                <div className={s.rowText}>
+                <Link href={`/admin/clients/${row.id}`} className={s.rowText}>
                   <div className={s.rowName}>{row.name}</div>
                   <div className={s.rowMeta}>{row.email}</div>
-                </div>
+                </Link>
                 <StatusPill
                   status={pill.status}
                   audience="staff"

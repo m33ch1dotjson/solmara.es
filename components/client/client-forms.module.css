@@ -169,3 +169,118 @@
     grid-column: auto;
   }
 }
+
+/* ------------------------------------------------------- saved details summary */
+
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.summaryGrid {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+@media (min-width: 720px) {
+  .summaryGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.summaryRow {
+  padding: 14px 18px;
+  border-top: 1px solid var(--line-soft);
+  min-width: 0;
+}
+
+.summaryRow:first-child,
+.summaryRow:nth-child(2) {
+  border-top: none;
+}
+
+@media (max-width: 719px) {
+  .summaryRow:nth-child(2) {
+    border-top: 1px solid var(--line-soft);
+  }
+}
+
+.summaryLabel {
+  font-size: 13px;
+  color: var(--ink-3);
+}
+
+.summaryValue {
+  margin: 4px 0 0;
+  font-size: 16px;
+  font-weight: 550;
+  overflow-wrap: anywhere;
+}
+
+.summaryFoot {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.secondaryWide {
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+  border-radius: var(--radius-control);
+  min-height: 50px;
+  padding: 0 22px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.secondaryWide:hover {
+  background: color-mix(in oklch, var(--accent) 8%, transparent);
+}
+
+.textLink {
+  border: none;
+  background: none;
+  color: var(--accent);
+  font-size: 15px;
+  font-weight: 600;
+  text-align: left;
+  padding: 0;
+  min-height: 44px;
+}
+
+.textLink:hover {
+  text-decoration: underline;
+}
+
+/* --------------------------------------------------------- what you sent back */
+
+.preview {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  overflow: hidden;
+  background: var(--panel-2);
+}
+
+.previewImage {
+  display: block;
+  width: 100%;
+  max-height: 260px;
+  object-fit: contain;
+  background: var(--panel-2);
+}
+
+.previewFile {
+  display: block;
+  padding: 18px;
+  font-size: 15px;
+  font-weight: 600;
+}

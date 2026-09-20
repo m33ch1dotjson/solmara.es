@@ -4,6 +4,7 @@ import { DocumentUpload } from "@/components/client/DocumentUpload";
 import { Mono } from "@/components/ui";
 import { currentActor } from "@/lib/auth/session";
 import { clientDocuments, clientSelf } from "@/lib/queries";
+import { BUCKET_CLIENT_DOCUMENTS, signedUrl } from "@/lib/storage";
 import shell from "./portal.module.css";
 import s from "./home.module.css";
 
@@ -23,6 +24,13 @@ export default async function ClientHomePage() {
 
   const passport = documents.find((d) => d.kind === "PASSPORT");
   const photo = documents.find((d) => d.kind === "PHOTO");
+
+  // Minted per render and valid for ten minutes. Nothing here is a public object,
+  // so a screenshot of the page is not a permanent link to somebody's passport.
+  const [passportUrl, photoUrl] = await Promise.all([
+    passport?.storageKey ? signedUrl(BUCKET_CLIENT_DOCUMENTS, passport.storageKey) : null,
+    photo?.storageKey ? signedUrl(BUCKET_CLIENT_DOCUMENTS, photo.storageKey) : null,
+  ]);
   const outstanding = documents.filter(
     (d) => d.status === "REQUIRED" || d.status === "REJECTED",
   ).length;
@@ -58,6 +66,8 @@ export default async function ClientHomePage() {
             status={passport?.status ?? "REQUIRED"}
             rejectionNote={passport?.rejectionNote ?? null}
             uploadedAt={passport?.uploadedAt?.toISOString() ?? null}
+            previewUrl={passportUrl}
+            mimeType={passport?.mimeType ?? null}
           />
           <DocumentUpload
             kind="PHOTO"
@@ -66,6 +76,8 @@ export default async function ClientHomePage() {
             status={photo?.status ?? "REQUIRED"}
             rejectionNote={photo?.rejectionNote ?? null}
             uploadedAt={photo?.uploadedAt?.toISOString() ?? null}
+            previewUrl={photoUrl}
+            mimeType={photo?.mimeType ?? null}
           />
         </div>
       </section>
@@ -76,6 +88,7 @@ export default async function ClientHomePage() {
           Vul aan wat u weet. U kunt dit later altijd aanpassen.
         </p>
         <DetailsForm
+          completed={self.details_completed_at != null}
           initial={{
             name: self.name,
             phone: self.phone,

@@ -148,6 +148,38 @@ export async function createInvite(actor: Actor, clientId: string) {
   return { url: portalUrl(`/invite/${token}`), expiresAt };
 }
 
+/** Approve or reject one document. Only staff may move a status. */
+export async function reviewDocument(
+  actor: Actor,
+  input: { documentId: string; approve: boolean; note?: string },
+) {
+  if (actor.kind !== "staff") throw new Error("UNAUTHORISED");
+
+  return asActor(actor, async (tx) => {
+    const [updated] = await tx
+      .update(clientDocument)
+      .set({
+        status: input.approve ? "APPROVED" : "REJECTED",
+        reviewedAt: new Date(),
+        reviewedBy: actor.id,
+        rejectionNote: input.approve ? null : (input.note?.trim() ?? null),
+      })
+      .where(eq(clientDocument.id, input.documentId))
+      .returning();
+
+    if (updated) {
+      await tx.insert(event).values({
+        actorStaffId: actor.id,
+        clientId: updated.clientId,
+        action: "document.reviewed",
+        payload: { kind: updated.kind, status: updated.status },
+      });
+    }
+
+    return updated;
+  });
+}
+
 /* --------------------------------------------------------------------- SOPs */
 
 export async function listSops(actor: Actor) {

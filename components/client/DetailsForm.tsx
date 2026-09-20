@@ -1,8 +1,19 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { saveDetailsAction, type ActionResult } from "@/app/(client)/actions";
 import s from "./client-forms.module.css";
+
+/*
+ * Your details, in two modes.
+ *
+ * Once they are filled in the page shows them back as a summary rather than leaving
+ * an open form. Saving something and being left staring at the same inputs gives no
+ * sign that anything happened — you cannot tell the saved state from the unsaved one.
+ *
+ * Editing is one button away, and after a save it returns to the summary so the
+ * confirmation is the content itself.
+ */
 
 interface Details {
   name: string;
@@ -36,11 +47,68 @@ const FIELDS: Array<{
   },
 ];
 
-export function DetailsForm({ initial }: { initial: Details }) {
+function show(value: string | null, type?: string): string {
+  if (!value) return "—";
+  if (type !== "date") return value;
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime())
+    ? value
+    : parsed.toLocaleDateString("nl-NL", { day: "numeric", month: "long", year: "numeric" });
+}
+
+export function DetailsForm({ initial, completed }: { initial: Details; completed: boolean }) {
+  const [editing, setEditing] = useState(!completed);
+  const [values, setValues] = useState(initial);
+
   const [state, action, pending] = useActionState(
-    async (_prev: ActionResult | null, form: FormData) => saveDetailsAction(form),
+    async (_prev: ActionResult | null, form: FormData) => {
+      const result = await saveDetailsAction(form);
+      if (result.ok) {
+        // Read back what was sent, so the summary shows the new values without
+        // waiting for a round trip. Name is required and therefore never null.
+        const read = (key: keyof Details): string | null => {
+          const raw = form.get(key);
+          return typeof raw === "string" && raw !== "" ? raw : null;
+        };
+
+        setValues({
+          name: read("name") ?? values.name,
+          phone: read("phone"),
+          dateOfBirth: read("dateOfBirth"),
+          nationality: read("nationality"),
+          passportNumber: read("passportNumber"),
+          passportExpiry: read("passportExpiry"),
+          addressHomeCountry: read("addressHomeCountry"),
+          addressSpain: read("addressSpain"),
+        });
+        setEditing(false);
+      }
+      return result;
+    },
     null,
   );
+
+  if (!editing) {
+    return (
+      <div className={s.summary}>
+        <dl className={s.summaryGrid}>
+          {FIELDS.map((field) => (
+            <div key={field.name} className={s.summaryRow}>
+              <dt className={s.summaryLabel}>{field.label}</dt>
+              <dd className={s.summaryValue}>{show(values[field.name], field.type)}</dd>
+            </div>
+          ))}
+        </dl>
+
+        <div className={s.summaryFoot}>
+          <button type="button" className={s.secondaryWide} onClick={() => setEditing(true)}>
+            Gegevens aanpassen
+          </button>
+          {state?.ok === true && state.message && <p className={s.success}>{state.message}</p>}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <form action={action} className={s.form}>
@@ -51,7 +119,7 @@ export function DetailsForm({ initial }: { initial: Details }) {
             name={field.name}
             type={field.type ?? "text"}
             className={s.input}
-            defaultValue={initial[field.name] ?? ""}
+            defaultValue={values[field.name] ?? ""}
             required={field.required}
             autoComplete="off"
           />
@@ -63,8 +131,13 @@ export function DetailsForm({ initial }: { initial: Details }) {
         {pending ? "Bezig…" : "Gegevens opslaan"}
       </button>
 
+      {completed && (
+        <button type="button" className={s.textLink} onClick={() => setEditing(false)}>
+          Annuleren
+        </button>
+      )}
+
       {state?.ok === false && <p className={s.error}>{state.error}</p>}
-      {state?.ok === true && state.message && <p className={s.success}>{state.message}</p>}
     </form>
   );
 }
