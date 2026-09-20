@@ -1,0 +1,87 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.grow {
+  flex: 1;
+  height: 40px;
+  font-size: 13.5px;
+  border-radius: 9px;
+  min-width: 0;
+}
+
+.panel {
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.panelTitle {
+  font-size: 12.5px;
+  font-weight: 650;
+}
+
+.reasons {
+  display: grid;
+  gap: 8px;
+}
+
+.reason {
+  text-align: left;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--ink-2);
+  border-radius: 8px;
+  padding: 8px 11px;
+  font-size: 12.5px;
+  font-weight: 550;
+}
+
+.reason:hover {
+  border-color: var(--ink-3);
+}
+
+.reasonOn {
+  border-color: var(--accent);
+  background: color-mix(in oklch, var(--accent) 10%, transparent);
+  color: var(--accent);
+}
+
+.note {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  padding: 10px 11px;
+  font-size: 13px;
+  resize: vertical;
+}
+
+.hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+.confirmRow {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* A confirmed rejection is destructive, so it reads as danger rather than accent. */
+.confirmOn {
+  background: var(--danger);
+  color: var(--panel);
+}

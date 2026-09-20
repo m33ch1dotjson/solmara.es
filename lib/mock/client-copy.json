@@ -1,0 +1,845 @@
+{
+  "en": {
+    "nav": [
+      "Sign in",
+      "My cases",
+      "Case",
+      "Upload",
+      "Rejected",
+      "Questions",
+      "Finished"
+    ],
+    "signin": {
+      "title": "Follow your case",
+      "body": "Enter the email address you gave us. We will send you a link that signs you in. No password to remember.",
+      "label": "Email address",
+      "cta": "Email me a sign-in link",
+      "privacy": "If we have a case for this address, the link arrives within a minute. It works once and expires after 30 minutes."
+    },
+    "sent": {
+      "title": "Check your email",
+      "body": "If we have a case for that address, a sign-in link is on its way. Open it on this phone and you are in.",
+      "noEmailTitle": "Nothing arrived?",
+      "noEmailBody": "Look in your spam folder first. You can also sign in with a six-digit code instead.",
+      "codeCta": "Use a six-digit code",
+      "change": "Use a different email address"
+    },
+    "code": {
+      "title": "Enter your code",
+      "body": "We sent a six-digit code to your email. It stays valid for 30 minutes.",
+      "cta": "Continue",
+      "resend": "You can ask for a new code in 45 seconds.",
+      "back": "Back to sign in"
+    },
+    "cases": {
+      "hi": "Good morning, Maartje",
+      "summary": "Two of your three cases need something from you. Everything else is with us.",
+      "help": "Questions? Reply to any email from us, or call the office on +34 952 00 11 22, Monday to Friday, 9:00 to 18:00."
+    },
+    "detail": {
+      "back": "All my cases",
+      "kicker": "Case",
+      "service": "Spanish NIE number",
+      "needTag": "Something is needed from you",
+      "needTitle": "Two documents are still missing",
+      "needBody": "We cannot book the final step until we have them. It takes about five minutes with your phone camera.",
+      "needCta": "Add the missing documents",
+      "progressTitle": "Where things stand",
+      "docsTitle": "Your documents",
+      "docsSub": "We check every document by hand, usually within one working day.",
+      "apptTitle": "Your appointment",
+      "bring": "What to bring",
+      "addCal": "Add to calendar",
+      "map": "Open in maps",
+      "payTitle": "Payments",
+      "finalTitle": "Final documents",
+      "finalBody": "Your NIE certificate appears here to download as soon as the authorities issue it."
+    },
+    "upload": {
+      "title": "Photograph your passport",
+      "body": "Use the photo page, the one with your picture on it. A phone photo is fine, we do not need a scanner.",
+      "diagram": "[ frame the document\nedge to edge in the box ]",
+      "tipsTitle": "What works best",
+      "tips": [
+        "Lay it flat on a dark table",
+        "Turn on the light, avoid shadows",
+        "Get all four corners in the picture",
+        "Hold steady until the photo is sharp"
+      ],
+      "camera": "Take a photo",
+      "file": "Choose a file instead",
+      "note": "You can retake the photo as often as you like before sending. We will tell you within a working day if anything is unclear."
+    },
+    "rejected": {
+      "title": "We need a clearer photo of your passport",
+      "body": "The one you sent will not be accepted by the Spanish authorities. Nothing is lost and your case is still moving.",
+      "whatSent": "What you sent",
+      "thumb": "[ your photo, 12 September ]",
+      "reasonTag": "What is wrong",
+      "reason": "The bottom edge of the passport is cut off, so the machine-readable line at the bottom cannot be read.",
+      "stepsTitle": "What to do now",
+      "cta": "Take a new photo",
+      "reassure": "This happens with about one in four passport photos. Most people get it right on the second try."
+    },
+    "rejectSteps": [
+      "Lay the passport flat and open at the photo page.",
+      "Hold the phone directly above it, not at an angle.",
+      "Check that all four corners are inside the frame before you send."
+    ],
+    "intake": {
+      "back": "Back",
+      "next": "Continue",
+      "savedTitle": "Your answers are saved",
+      "savedBody": "You can close this and finish later, on this phone or your laptop. The link in your email brings you back to this question."
+    },
+    "done": {
+      "title": "Your NIE number has been issued",
+      "body": "Everything is finished. Your certificate is below, together with the documents we used along the way.",
+      "keepTitle": "Documents to keep",
+      "keepSub": "Download these and store them somewhere safe. You will need the certificate to open a bank account, sign contracts and pay tax.",
+      "nextTitle": "What happens next",
+      "next": [
+        "You do not need to renew the NIE. It is yours for life.",
+        "If you lose the certificate, a copy can be requested at any police station."
+      ],
+      "againTitle": "Buying or borrowing next?",
+      "againBody": "Your details are already with us, so a new case starts with far fewer questions.",
+      "againCta": "Start another case"
+    },
+    "months": [
+      "JAN",
+      "FEB",
+      "MAR",
+      "APR",
+      "MAY",
+      "JUN",
+      "JUL",
+      "AUG",
+      "SEP",
+      "OCT",
+      "NOV",
+      "DEC"
+    ],
+    "caseCards": [
+      {
+        "service": "Spanish NIE number",
+        "status": "We are waiting for two documents from you.",
+        "todo": "2 documents needed",
+        "tone": "warn",
+        "glyph": "▲",
+        "step": "Step 3 of 5",
+        "si": 2
+      },
+      {
+        "service": "Buying your home",
+        "status": "We are checking the legal papers of the property.",
+        "todo": "Nothing needed from you",
+        "tone": "mute",
+        "glyph": "○",
+        "step": "Step 2 of 5",
+        "si": 1
+      },
+      {
+        "service": "Mortgage",
+        "status": "We are waiting for proof of your income.",
+        "todo": "1 document needed",
+        "tone": "warn",
+        "glyph": "▲",
+        "step": "Step 1 of 5",
+        "si": 0
+      }
+    ],
+    "steps": [
+      {
+        "label": "We received your request",
+        "meta": "Finished on 28 August"
+      },
+      {
+        "label": "We collected your documents",
+        "meta": "Finished on 5 September"
+      },
+      {
+        "label": "Your appointment",
+        "meta": "Booked for 24 September, in Málaga"
+      },
+      {
+        "label": "The authorities review your application",
+        "meta": "Usually two to four weeks after the appointment"
+      },
+      {
+        "label": "Your NIE number is issued",
+        "meta": "We send the certificate here and by email"
+      }
+    ],
+    "docs": [
+      {
+        "label": "Proof of income or work contract",
+        "meta": "Still missing. A payslip or contract is enough.",
+        "status": "missing"
+      },
+      {
+        "label": "Passport photo, white background",
+        "meta": "The photo you sent was not accepted. Please send a new one.",
+        "status": "rejected"
+      },
+      {
+        "label": "Town hall appointment slip",
+        "meta": "Received on 16 September. We are checking it.",
+        "status": "received"
+      },
+      {
+        "label": "Passport, photo page",
+        "meta": "Checked and accepted on 3 September.",
+        "status": "ok"
+      },
+      {
+        "label": "Signed application form",
+        "meta": "Checked and accepted on 3 September.",
+        "status": "ok"
+      },
+      {
+        "label": "Proof of address in the Netherlands",
+        "meta": "Checked and accepted on 5 September.",
+        "status": "ok"
+      }
+    ],
+    "docCta": {
+      "missing": "Add",
+      "rejected": "Fix this",
+      "received": "",
+      "ok": ""
+    },
+    "appt": {
+      "time": "09:40, Thursday 24 September",
+      "place": "National Police station, foreigners office",
+      "address": "Avenida de la Rosaleda 19, Málaga",
+      "bring": [
+        "Your passport, the original",
+        "The printed application form we emailed you",
+        "The payment receipt for the government fee"
+      ]
+    },
+    "payments": [
+      {
+        "label": "Our fee for the NIE service",
+        "meta": "Paid on 30 August",
+        "amount": "€450.00",
+        "status": "Paid",
+        "tone": "ok",
+        "glyph": "✓"
+      },
+      {
+        "label": "Government fee",
+        "meta": "We paid this for you",
+        "amount": "€9.84",
+        "status": "Added to invoice",
+        "tone": "info",
+        "glyph": "◆"
+      }
+    ],
+    "finalDocs": [
+      {
+        "name": "NIE certificate",
+        "meta": "Issued 2 October 2026 · 1 page"
+      },
+      {
+        "name": "Your application form, stamped",
+        "meta": "24 September 2026 · 2 pages"
+      },
+      {
+        "name": "Payment receipt, government fee",
+        "meta": "17 September 2026 · 1 page"
+      }
+    ],
+    "intakeSteps": [
+      {
+        "title": "Who are you?",
+        "body": "",
+        "fields": []
+      },
+      {
+        "title": "Where will you live in Spain?",
+        "body": "If you do not have an address yet, give the town you are looking in. You can change this later.",
+        "fields": [
+          {
+            "label": "Town or city",
+            "placeholder": "Marbella",
+            "hint": ""
+          },
+          {
+            "label": "Street and number, if you know it",
+            "placeholder": "Calle Ancha 12, 3ºB",
+            "hint": "Leave this empty if you are still looking."
+          },
+          {
+            "label": "How long do you plan to stay?",
+            "placeholder": "More than a year",
+            "hint": "A rough answer is fine. It decides which form we use."
+          }
+        ]
+      }
+    ]
+  },
+  "nl": {
+    "nav": [
+      "Inloggen",
+      "Mijn dossiers",
+      "Dossier",
+      "Uploaden",
+      "Afgekeurd",
+      "Vragen",
+      "Afgerond"
+    ],
+    "signin": {
+      "title": "Volg uw dossier",
+      "body": "Vul het e-mailadres in dat u aan ons hebt doorgegeven. U ontvangt een link waarmee u meteen bent ingelogd. Geen wachtwoord om te onthouden.",
+      "label": "E-mailadres",
+      "cta": "Stuur mij een inloglink",
+      "privacy": "Als wij een dossier hebben voor dit adres, komt de link binnen een minuut binnen. De link werkt één keer en vervalt na 30 minuten."
+    },
+    "sent": {
+      "title": "Kijk in uw e-mail",
+      "body": "Als wij een dossier hebben voor dat adres, is de inloglink onderweg. Open de link op deze telefoon en u bent binnen.",
+      "noEmailTitle": "Niets ontvangen?",
+      "noEmailBody": "Kijk eerst in uw map met ongewenste e-mail. U kunt ook inloggen met een code van zes cijfers.",
+      "codeCta": "Code van zes cijfers gebruiken",
+      "change": "Ander e-mailadres gebruiken"
+    },
+    "code": {
+      "title": "Vul uw code in",
+      "body": "Wij hebben een code van zes cijfers naar uw e-mail gestuurd. De code blijft 30 minuten geldig.",
+      "cta": "Doorgaan",
+      "resend": "Over 45 seconden kunt u een nieuwe code aanvragen.",
+      "back": "Terug naar inloggen"
+    },
+    "cases": {
+      "hi": "Goedemorgen Maartje",
+      "summary": "Bij twee van uw drie dossiers hebben wij iets van u nodig. De rest ligt bij ons.",
+      "help": "Vragen? Beantwoord een e-mail van ons of bel het kantoor op +34 952 00 11 22, maandag tot en met vrijdag van 9:00 tot 18:00 uur."
+    },
+    "detail": {
+      "back": "Al mijn dossiers",
+      "kicker": "Dossier",
+      "service": "Spaans NIE-nummer",
+      "needTag": "Wij hebben iets van u nodig",
+      "needTitle": "Er ontbreken nog twee documenten",
+      "needBody": "Zonder deze documenten kunnen wij de laatste stap niet plannen. Met de camera van uw telefoon kost het ongeveer vijf minuten.",
+      "needCta": "Ontbrekende documenten toevoegen",
+      "progressTitle": "Hoe het ervoor staat",
+      "docsTitle": "Uw documenten",
+      "docsSub": "Wij controleren elk document met de hand, meestal binnen één werkdag.",
+      "apptTitle": "Uw afspraak",
+      "bring": "Wat u meeneemt",
+      "addCal": "In agenda zetten",
+      "map": "Openen in kaarten",
+      "payTitle": "Betalingen",
+      "finalTitle": "Definitieve documenten",
+      "finalBody": "Zodra de autoriteiten uw NIE-certificaat afgeven, kunt u het hier downloaden."
+    },
+    "upload": {
+      "title": "Maak een foto van uw paspoort",
+      "body": "Gebruik de pagina met uw foto erop. Een foto met de telefoon is prima, een scanner is niet nodig.",
+      "diagram": "[ leg het document\nvolledig binnen het kader ]",
+      "tipsTitle": "Wat het beste werkt",
+      "tips": [
+        "Leg het plat op een donkere tafel",
+        "Doe het licht aan en vermijd schaduwen",
+        "Zorg dat alle vier de hoeken op de foto staan",
+        "Houd stil tot de foto scherp is"
+      ],
+      "camera": "Foto maken",
+      "file": "Toch een bestand kiezen",
+      "note": "U kunt de foto zo vaak opnieuw maken als u wilt voordat u hem verstuurt. Binnen één werkdag laten wij weten of er iets onduidelijk is."
+    },
+    "rejected": {
+      "title": "Wij hebben een duidelijkere foto van uw paspoort nodig",
+      "body": "De foto die u stuurde wordt door de Spaanse autoriteiten niet geaccepteerd. Er is niets verloren en uw dossier loopt gewoon door.",
+      "whatSent": "Wat u hebt gestuurd",
+      "thumb": "[ uw foto, 12 september ]",
+      "reasonTag": "Wat er mis is",
+      "reason": "De onderrand van het paspoort staat er niet helemaal op, waardoor de machineleesbare regel onderaan niet te lezen is.",
+      "stepsTitle": "Wat u nu kunt doen",
+      "cta": "Nieuwe foto maken",
+      "reassure": "Dit gebeurt bij ongeveer één op de vier paspoortfotos. De meeste mensen hebben het de tweede keer goed."
+    },
+    "rejectSteps": [
+      "Leg het paspoort plat en open op de pagina met uw foto.",
+      "Houd de telefoon recht boven het paspoort, niet schuin.",
+      "Controleer of alle vier de hoeken binnen het kader vallen voordat u verstuurt."
+    ],
+    "intake": {
+      "back": "Terug",
+      "next": "Doorgaan",
+      "savedTitle": "Uw antwoorden zijn opgeslagen",
+      "savedBody": "U kunt dit sluiten en later verdergaan, op deze telefoon of op uw laptop. De link in uw e-mail brengt u terug naar deze vraag."
+    },
+    "done": {
+      "title": "Uw NIE-nummer is afgegeven",
+      "body": "Alles is afgerond. Hieronder vindt u uw certificaat en de documenten die wij onderweg hebben gebruikt.",
+      "keepTitle": "Documenten om te bewaren",
+      "keepSub": "Download deze en bewaar ze op een veilige plek. U hebt het certificaat nodig om een bankrekening te openen, contracten te tekenen en belasting te betalen.",
+      "nextTitle": "Wat er hierna gebeurt",
+      "next": [
+        "U hoeft het NIE-nummer niet te verlengen. Het blijft voor altijd van u.",
+        "Bent u het certificaat kwijt, dan kunt u bij elk politiebureau een kopie aanvragen."
+      ],
+      "againTitle": "Gaat u kopen of lenen?",
+      "againBody": "Uw gegevens staan al bij ons, dus een nieuw dossier begint met veel minder vragen.",
+      "againCta": "Nieuw dossier starten"
+    },
+    "months": [
+      "JAN",
+      "FEB",
+      "MRT",
+      "APR",
+      "MEI",
+      "JUN",
+      "JUL",
+      "AUG",
+      "SEP",
+      "OKT",
+      "NOV",
+      "DEC"
+    ],
+    "caseCards": [
+      {
+        "service": "Spaans NIE-nummer",
+        "status": "Wij wachten nog op twee documenten van u.",
+        "todo": "2 documenten nodig",
+        "tone": "warn",
+        "glyph": "▲",
+        "step": "Stap 3 van 5",
+        "si": 2
+      },
+      {
+        "service": "Uw woning kopen",
+        "status": "Wij controleren de juridische papieren van de woning.",
+        "todo": "Niets nodig van u",
+        "tone": "mute",
+        "glyph": "○",
+        "step": "Stap 2 van 5",
+        "si": 1
+      },
+      {
+        "service": "Hypotheek",
+        "status": "Wij wachten op een bewijs van uw inkomen.",
+        "todo": "1 document nodig",
+        "tone": "warn",
+        "glyph": "▲",
+        "step": "Stap 1 van 5",
+        "si": 0
+      }
+    ],
+    "steps": [
+      {
+        "label": "Wij hebben uw aanvraag ontvangen",
+        "meta": "Afgerond op 28 augustus"
+      },
+      {
+        "label": "Wij hebben uw documenten verzameld",
+        "meta": "Afgerond op 5 september"
+      },
+      {
+        "label": "Uw afspraak",
+        "meta": "Gepland op 24 september, in Málaga"
+      },
+      {
+        "label": "De autoriteiten beoordelen uw aanvraag",
+        "meta": "Meestal twee tot vier weken na de afspraak"
+      },
+      {
+        "label": "Uw NIE-nummer wordt afgegeven",
+        "meta": "Wij sturen het certificaat hierheen en per e-mail"
+      }
+    ],
+    "docs": [
+      {
+        "label": "Inkomensbewijs of arbeidscontract",
+        "meta": "Ontbreekt nog. Een loonstrook of contract is genoeg.",
+        "status": "missing"
+      },
+      {
+        "label": "Pasfoto met witte achtergrond",
+        "meta": "De foto die u stuurde is niet geaccepteerd. Stuur een nieuwe.",
+        "status": "rejected"
+      },
+      {
+        "label": "Afspraakbevestiging gemeentehuis",
+        "meta": "Ontvangen op 16 september. Wij controleren hem.",
+        "status": "received"
+      },
+      {
+        "label": "Paspoort, pagina met foto",
+        "meta": "Gecontroleerd en akkoord op 3 september.",
+        "status": "ok"
+      },
+      {
+        "label": "Ondertekend aanvraagformulier",
+        "meta": "Gecontroleerd en akkoord op 3 september.",
+        "status": "ok"
+      },
+      {
+        "label": "Bewijs van adres in Nederland",
+        "meta": "Gecontroleerd en akkoord op 5 september.",
+        "status": "ok"
+      }
+    ],
+    "docCta": {
+      "missing": "Toevoegen",
+      "rejected": "Herstellen",
+      "received": "",
+      "ok": ""
+    },
+    "appt": {
+      "time": "09:40 uur, donderdag 24 september",
+      "place": "Politiebureau, afdeling vreemdelingen",
+      "address": "Avenida de la Rosaleda 19, Málaga",
+      "bring": [
+        "Uw paspoort, het origineel",
+        "Het geprinte aanvraagformulier dat wij u hebben gemaild",
+        "Het betaalbewijs van de overheidsheffing"
+      ]
+    },
+    "payments": [
+      {
+        "label": "Ons tarief voor de NIE-aanvraag",
+        "meta": "Betaald op 30 augustus",
+        "amount": "€450,00",
+        "status": "Betaald",
+        "tone": "ok",
+        "glyph": "✓"
+      },
+      {
+        "label": "Overheidsheffing",
+        "meta": "Door ons voorgeschoten",
+        "amount": "€9,84",
+        "status": "Op factuur",
+        "tone": "info",
+        "glyph": "◆"
+      }
+    ],
+    "finalDocs": [
+      {
+        "name": "NIE-certificaat",
+        "meta": "Afgegeven 2 oktober 2026 · 1 pagina"
+      },
+      {
+        "name": "Uw aanvraagformulier, afgestempeld",
+        "meta": "24 september 2026 · 2 pagina's"
+      },
+      {
+        "name": "Betaalbewijs overheidsheffing",
+        "meta": "17 september 2026 · 1 pagina"
+      }
+    ],
+    "intakeSteps": [
+      {
+        "title": "Wie bent u?",
+        "body": "",
+        "fields": []
+      },
+      {
+        "title": "Waar gaat u in Spanje wonen?",
+        "body": "Hebt u nog geen adres, vul dan de plaats in waar u zoekt. U kunt dit later aanpassen.",
+        "fields": [
+          {
+            "label": "Plaats of stad",
+            "placeholder": "Marbella",
+            "hint": ""
+          },
+          {
+            "label": "Straat en nummer, als u die al weet",
+            "placeholder": "Calle Ancha 12, 3ºB",
+            "hint": "Laat dit leeg als u nog aan het zoeken bent."
+          },
+          {
+            "label": "Hoe lang bent u van plan te blijven?",
+            "placeholder": "Langer dan een jaar",
+            "hint": "Een ruwe schatting is genoeg. Het bepaalt welk formulier wij gebruiken."
+          }
+        ]
+      }
+    ]
+  },
+  "es": {
+    "nav": [
+      "Acceder",
+      "Mis expedientes",
+      "Expediente",
+      "Subir",
+      "Rechazado",
+      "Preguntas",
+      "Finalizado"
+    ],
+    "signin": {
+      "title": "Siga su expediente",
+      "body": "Introduzca el correo electrónico que nos facilitó. Le enviaremos un enlace que le da acceso directo. No hay contraseña que recordar.",
+      "label": "Correo electrónico",
+      "cta": "Enviarme un enlace de acceso",
+      "privacy": "Si tenemos un expediente con esta dirección, el enlace llega en menos de un minuto. Funciona una sola vez y caduca a los 30 minutos."
+    },
+    "sent": {
+      "title": "Revise su correo",
+      "body": "Si tenemos un expediente con esa dirección, el enlace de acceso ya está en camino. Ábralo en este teléfono y entrará directamente.",
+      "noEmailTitle": "¿No ha llegado nada?",
+      "noEmailBody": "Mire primero en la carpeta de correo no deseado. También puede entrar con un código de seis dígitos.",
+      "codeCta": "Usar un código de seis dígitos",
+      "change": "Usar otro correo electrónico"
+    },
+    "code": {
+      "title": "Introduzca su código",
+      "body": "Hemos enviado un código de seis dígitos a su correo. Es válido durante 30 minutos.",
+      "cta": "Continuar",
+      "resend": "Podrá pedir un código nuevo dentro de 45 segundos.",
+      "back": "Volver al acceso"
+    },
+    "cases": {
+      "hi": "Buenos días, Maartje",
+      "summary": "En dos de sus tres expedientes necesitamos algo de usted. Del resto nos ocupamos nosotros.",
+      "help": "¿Tiene dudas? Responda a cualquier correo nuestro o llame a la oficina al +34 952 00 11 22, de lunes a viernes, de 9:00 a 18:00."
+    },
+    "detail": {
+      "back": "Todos mis expedientes",
+      "kicker": "Expediente",
+      "service": "Número NIE",
+      "needTag": "Necesitamos algo de usted",
+      "needTitle": "Todavía faltan dos documentos",
+      "needBody": "Sin ellos no podemos preparar el último paso. Con la cámara del móvil son unos cinco minutos.",
+      "needCta": "Añadir los documentos que faltan",
+      "progressTitle": "Cómo va su expediente",
+      "docsTitle": "Sus documentos",
+      "docsSub": "Revisamos cada documento a mano, normalmente en un día laborable.",
+      "apptTitle": "Su cita",
+      "bring": "Qué debe llevar",
+      "addCal": "Añadir al calendario",
+      "map": "Abrir en el mapa",
+      "payTitle": "Pagos",
+      "finalTitle": "Documentos definitivos",
+      "finalBody": "Su certificado de NIE aparecerá aquí para descargar en cuanto lo emitan las autoridades."
+    },
+    "upload": {
+      "title": "Haga una foto de su pasaporte",
+      "body": "Use la página de la fotografía. Una foto con el móvil es suficiente, no hace falta un escáner.",
+      "diagram": "[ encuadre el documento\ncompleto dentro del marco ]",
+      "tipsTitle": "Lo que mejor funciona",
+      "tips": [
+        "Póngalo plano sobre una mesa oscura",
+        "Encienda la luz y evite las sombras",
+        "Que salgan las cuatro esquinas",
+        "No mueva el móvil hasta que se vea nítido"
+      ],
+      "camera": "Hacer una foto",
+      "file": "Elegir un archivo",
+      "note": "Puede repetir la foto tantas veces como quiera antes de enviarla. Le avisaremos en un día laborable si algo no se ve bien."
+    },
+    "rejected": {
+      "title": "Necesitamos una foto más clara de su pasaporte",
+      "body": "La que envió no la aceptarán las autoridades españolas. No se ha perdido nada y su expediente sigue avanzando.",
+      "whatSent": "Lo que usted envió",
+      "thumb": "[ su foto, 12 de septiembre ]",
+      "reasonTag": "Qué falla",
+      "reason": "El borde inferior del pasaporte queda cortado, así que no se puede leer la línea inferior que lee la máquina.",
+      "stepsTitle": "Qué hacer ahora",
+      "cta": "Hacer una foto nueva",
+      "reassure": "Pasa con una de cada cuatro fotos de pasaporte. Casi todo el mundo lo consigue al segundo intento."
+    },
+    "rejectSteps": [
+      "Ponga el pasaporte plano y abierto por la página de la foto.",
+      "Sujete el móvil justo encima, no inclinado.",
+      "Compruebe que las cuatro esquinas quedan dentro del marco antes de enviarlo."
+    ],
+    "intake": {
+      "back": "Atrás",
+      "next": "Continuar",
+      "savedTitle": "Sus respuestas están guardadas",
+      "savedBody": "Puede cerrar y seguir más tarde, en este móvil o en su ordenador. El enlace de su correo le devuelve a esta misma pregunta."
+    },
+    "done": {
+      "title": "Su número NIE ya está emitido",
+      "body": "Todo está terminado. Aquí abajo tiene su certificado y los documentos que hemos usado por el camino.",
+      "keepTitle": "Documentos que debe guardar",
+      "keepSub": "Descárguelos y guárdelos en un sitio seguro. Necesitará el certificado para abrir una cuenta, firmar contratos y pagar impuestos.",
+      "nextTitle": "Qué ocurre ahora",
+      "next": [
+        "El NIE no se renueva. Es suyo de por vida.",
+        "Si pierde el certificado, puede pedir una copia en cualquier comisaría."
+      ],
+      "againTitle": "¿Va a comprar o a pedir una hipoteca?",
+      "againBody": "Ya tenemos sus datos, así que un expediente nuevo empieza con muchas menos preguntas.",
+      "againCta": "Abrir otro expediente"
+    },
+    "months": [
+      "ENE",
+      "FEB",
+      "MAR",
+      "ABR",
+      "MAY",
+      "JUN",
+      "JUL",
+      "AGO",
+      "SEP",
+      "OCT",
+      "NOV",
+      "DIC"
+    ],
+    "caseCards": [
+      {
+        "service": "Número NIE",
+        "status": "Estamos esperando dos documentos suyos.",
+        "todo": "Faltan 2 documentos",
+        "tone": "warn",
+        "glyph": "▲",
+        "step": "Paso 3 de 5",
+        "si": 2
+      },
+      {
+        "service": "Compra de su vivienda",
+        "status": "Estamos revisando la documentación legal del inmueble.",
+        "todo": "No necesitamos nada de usted",
+        "tone": "mute",
+        "glyph": "○",
+        "step": "Paso 2 de 5",
+        "si": 1
+      },
+      {
+        "service": "Hipoteca",
+        "status": "Estamos esperando un justificante de sus ingresos.",
+        "todo": "Falta 1 documento",
+        "tone": "warn",
+        "glyph": "▲",
+        "step": "Paso 1 de 5",
+        "si": 0
+      }
+    ],
+    "steps": [
+      {
+        "label": "Hemos recibido su solicitud",
+        "meta": "Terminado el 28 de agosto"
+      },
+      {
+        "label": "Hemos reunido sus documentos",
+        "meta": "Terminado el 5 de septiembre"
+      },
+      {
+        "label": "Su cita",
+        "meta": "Reservada para el 24 de septiembre, en Málaga"
+      },
+      {
+        "label": "Las autoridades revisan su solicitud",
+        "meta": "Normalmente de dos a cuatro semanas tras la cita"
+      },
+      {
+        "label": "Se emite su número NIE",
+        "meta": "Le enviaremos el certificado aquí y por correo"
+      }
+    ],
+    "docs": [
+      {
+        "label": "Justificante de ingresos o contrato de trabajo",
+        "meta": "Todavía falta. Basta con una nómina o el contrato.",
+        "status": "missing"
+      },
+      {
+        "label": "Fotografía de carné con fondo blanco",
+        "meta": "La foto que envió no se aceptó. Envíe otra, por favor.",
+        "status": "rejected"
+      },
+      {
+        "label": "Justificante de cita del ayuntamiento",
+        "meta": "Recibido el 16 de septiembre. Lo estamos revisando.",
+        "status": "received"
+      },
+      {
+        "label": "Pasaporte, página de la foto",
+        "meta": "Revisado y aceptado el 3 de septiembre.",
+        "status": "ok"
+      },
+      {
+        "label": "Formulario de solicitud firmado",
+        "meta": "Revisado y aceptado el 3 de septiembre.",
+        "status": "ok"
+      },
+      {
+        "label": "Justificante de domicilio en Países Bajos",
+        "meta": "Revisado y aceptado el 5 de septiembre.",
+        "status": "ok"
+      }
+    ],
+    "docCta": {
+      "missing": "Añadir",
+      "rejected": "Corregir",
+      "received": "",
+      "ok": ""
+    },
+    "appt": {
+      "time": "09:40, jueves 24 de septiembre",
+      "place": "Comisaría de Policía Nacional, oficina de extranjeros",
+      "address": "Avenida de la Rosaleda 19, Málaga",
+      "bring": [
+        "Su pasaporte, el original",
+        "El formulario de solicitud impreso que le enviamos",
+        "El justificante de pago de la tasa"
+      ]
+    },
+    "payments": [
+      {
+        "label": "Nuestros honorarios por el NIE",
+        "meta": "Pagado el 30 de agosto",
+        "amount": "450,00 €",
+        "status": "Pagado",
+        "tone": "ok",
+        "glyph": "✓"
+      },
+      {
+        "label": "Tasa administrativa",
+        "meta": "La hemos adelantado nosotros",
+        "amount": "9,84 €",
+        "status": "En la factura",
+        "tone": "info",
+        "glyph": "◆"
+      }
+    ],
+    "finalDocs": [
+      {
+        "name": "Certificado de NIE",
+        "meta": "Emitido el 2 de octubre de 2026 · 1 página"
+      },
+      {
+        "name": "Su formulario sellado",
+        "meta": "24 de septiembre de 2026 · 2 páginas"
+      },
+      {
+        "name": "Justificante de pago de la tasa",
+        "meta": "17 de septiembre de 2026 · 1 página"
+      }
+    ],
+    "intakeSteps": [
+      {
+        "title": "¿Quién es usted?",
+        "body": "",
+        "fields": []
+      },
+      {
+        "title": "¿Dónde va a vivir en España?",
+        "body": "Si todavía no tiene dirección, indique la localidad donde está buscando. Puede cambiarlo más adelante.",
+        "fields": [
+          {
+            "label": "Localidad o ciudad",
+            "placeholder": "Marbella",
+            "hint": ""
+          },
+          {
+            "label": "Calle y número, si ya lo sabe",
+            "placeholder": "Calle Ancha 12, 3ºB",
+            "hint": "Déjelo vacío si aún está buscando."
+          },
+          {
+            "label": "¿Cuánto tiempo piensa quedarse?",
+            "placeholder": "Más de un año",
+            "hint": "Una respuesta aproximada vale. Decide qué formulario usamos."
+          }
+        ]
+      }
+    ]
+  }
+}

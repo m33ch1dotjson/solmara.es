@@ -1,0 +1,271 @@
+.band {
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+}
+
+.bandInner {
+  padding: 26px 40px 0;
+  max-width: 1320px;
+}
+
+.bandTop {
+  margin-bottom: 10px;
+}
+
+.bandMain {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 26px;
+}
+
+.heading {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.h1 {
+  font-size: 25px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.clientLink {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+
+.actions {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.plainLink,
+.plainLink:hover {
+  text-decoration: none;
+}
+
+/* ------------------------------------------------------------------ stage rail */
+
+.rail {
+  display: flex;
+  gap: 0;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.step {
+  flex: 1 1 0;
+  min-width: 170px;
+  padding: 0 0 16px;
+  border-bottom: 2px solid var(--line);
+}
+
+.stepOn {
+  border-bottom-color: var(--accent);
+}
+
+.stepHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mark {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  flex: none;
+  background: var(--panel);
+  color: var(--accent);
+  border: 1px solid var(--line);
+}
+
+.markDone {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+}
+
+.markNow {
+  border-color: var(--accent);
+}
+
+.stepLabel {
+  font-size: 13.5px;
+  font-weight: 500;
+}
+
+.stepNow {
+  font-weight: 650;
+}
+
+.stepFuture {
+  color: var(--ink-3);
+}
+
+.stepMeta {
+  font-size: 11.5px;
+  color: var(--ink-3);
+  margin-top: 4px;
+  margin-left: 26px;
+}
+
+/* ----------------------------------------------------------------- two columns */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 28px;
+  align-items: start;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  min-width: 0;
+}
+
+.panel {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+  overflow: hidden;
+}
+
+.panelTitle {
+  font-size: 15px;
+  font-weight: 650;
+  padding: 16px 18px 12px;
+}
+
+/* --------------------------------------------------------------------- payments */
+
+.moneyRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 18px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.moneyLabel {
+  font-size: 14px;
+  font-weight: 550;
+}
+
+.moneyMeta {
+  font-size: 12.5px;
+  color: var(--ink-3);
+  margin-top: 2px;
+}
+
+.moneyRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: none;
+}
+
+/* ------------------------------------------------------------------ appointment */
+
+.appt {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 12px 18px 16px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.apptDate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 11px;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  flex: none;
+  line-height: 1.1;
+}
+
+.apptTime {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.apptPlace {
+  font-size: 12.5px;
+  color: var(--ink-2);
+  margin-top: 2px;
+}
+
+.bring {
+  background: var(--panel-2);
+  padding: 12px 18px 14px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.bringList {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  font-size: 13px;
+  color: var(--ink-2);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* --------------------------------------------------------------------- activity */
+
+.activity {
+  list-style: none;
+  margin: 0;
+  padding: 0 18px 18px;
+}
+
+.activityItem {
+  display: flex;
+  gap: 12px;
+  padding-bottom: 14px;
+  position: relative;
+}
+
+.activityItem:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: 3.5px;
+  top: 14px;
+  bottom: 0;
+  width: 1px;
+  background: var(--line);
+}
+
+.activityDot {
+  padding-top: 5px;
+  flex: none;
+  z-index: 1;
+}
+
+.activityText {
+  font-size: 13px;
+}

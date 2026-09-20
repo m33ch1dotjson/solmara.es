@@ -1,0 +1,54 @@
+/* Fixed to the bottom, where a thumb reaches. Safe-area inset so it clears the
+   home indicator on an iPhone. */
+.nav {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: color-mix(in oklch, var(--panel) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid var(--line);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  margin: 8px -20px -48px;
+}
+
+.inner {
+  display: flex;
+  max-width: 452px;
+  margin: 0 auto;
+}
+
+.item {
+  flex: 1;
+  min-height: 62px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 6px;
+  color: var(--ink-3);
+  text-decoration: none;
+  text-align: center;
+}
+
+.item:hover {
+  text-decoration: none;
+  color: var(--ink-2);
+}
+
+.itemOn {
+  color: var(--accent);
+}
+
+.glyph {
+  font-family: var(--font-mono);
+  font-size: 15px;
+}
+
+.label {
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-wrap: balance;
+}

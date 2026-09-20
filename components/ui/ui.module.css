@@ -1,0 +1,243 @@
+/* Shared primitives. Sizes differ per audience, so most take a `size` variant
+   rather than being duplicated: staff is 13–14px and tabular, client is 16–17px
+   with large touch targets. */
+
+/* ------------------------------------------------------------------ status pill */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  font-weight: 600;
+  white-space: nowrap;
+  background: color-mix(in oklch, var(--tone) 15%, transparent);
+  color: var(--tone);
+}
+
+.pillStaff {
+  height: 22px;
+  padding: 0 9px;
+  border-radius: 11px;
+  font-size: 12px;
+}
+
+.pillClient {
+  min-height: 24px;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.35;
+  white-space: normal;
+}
+
+/* A pill used as a 34px control on the case header. */
+.pillLarge {
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.glyph {
+  font-family: var(--font-mono);
+}
+
+/* --------------------------------------------------------------------- mono text */
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+/* --------------------------------------------------------------------- status dot */
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--tone);
+  flex: none;
+}
+
+/* ------------------------------------------------------------------- segment bar */
+
+/* Segments map one-to-one onto named steps or documents. Never a percentage. */
+.segments {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.segment {
+  flex: 1;
+  border-radius: 2px;
+  background: var(--line);
+}
+
+.segmentFilled {
+  background: var(--tone);
+}
+
+.segmentDim {
+  opacity: 0.3;
+}
+
+.segmentsStep .segment {
+  height: 4px;
+}
+
+.segmentsDoc .segment {
+  height: 5px;
+  border-radius: 3px;
+}
+
+/* ------------------------------------------------------------------------ button */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  background: none;
+  font-weight: 600;
+  text-wrap: balance;
+  transition: background 150ms ease, border-color 150ms ease;
+}
+
+.buttonStaff {
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  min-width: 82px;
+  white-space: nowrap;
+}
+
+.buttonStaffTall {
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+
+/* Nothing interactive in the client portal goes below 44px. */
+.buttonClient {
+  width: 100%;
+  min-height: 54px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  font-size: 16.5px;
+}
+
+.buttonClientPrimaryTall {
+  min-height: 60px;
+}
+
+.buttonClientCompact {
+  min-height: 50px;
+  font-size: 16px;
+}
+
+.primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: transparent;
+}
+
+.primary:hover {
+  background: color-mix(in oklch, var(--accent) 88%, var(--ink));
+}
+
+.secondary {
+  background: var(--panel);
+  color: var(--ink-2);
+  border-color: var(--line);
+}
+
+.secondary:hover {
+  border-color: var(--ink-3);
+  background: var(--panel-2);
+}
+
+.affirm {
+  background: var(--ok);
+  color: var(--panel);
+  border-color: transparent;
+}
+
+.destructive {
+  background: color-mix(in oklch, var(--danger) 12%, transparent);
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+.button:disabled {
+  background: var(--line);
+  color: var(--ink-3);
+  border-color: transparent;
+  cursor: not-allowed;
+}
+
+/* -------------------------------------------------------------------------- card */
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+
+.cardStaff {
+  border-radius: 12px;
+}
+
+.cardClient {
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  border-color: var(--line-soft);
+}
+
+/* A card that carries a tone, e.g. a missing or rejected document. */
+.cardToned {
+  border-color: color-mix(in oklch, var(--tone) 40%, var(--line));
+}
+
+/* --------------------------------------------------------------------- eyebrow */
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
+.eyebrowStaff {
+  font-size: 11px;
+}
+
+.eyebrowClient {
+  font-size: 13px;
+}
+
+/* --------------------------------------------------- striped asset placeholder */
+
+/* Document previews and photo thumbnails are placeholders until real assets exist.
+   The caption names what belongs there. */
+.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  white-space: pre-line;
+  border-radius: 12px;
+  background: repeating-linear-gradient(
+    135deg,
+    var(--panel-2) 0 10px,
+    color-mix(in oklch, var(--panel-2) 70%, var(--line)) 10px 20px
+  );
+  border: 1px solid var(--line);
+}

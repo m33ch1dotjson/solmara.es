@@ -1,0 +1,490 @@
+{
+  "cases": [
+    {
+      "id": "ES-2481",
+      "client": "Maartje de Vries",
+      "service": "NIE Application",
+      "stage": "Appointment booked",
+      "si": 2,
+      "n": 5,
+      "assignee": "Núria",
+      "initials": "NC",
+      "next": "Review padrón + tasa receipt",
+      "due": "Today",
+      "tone": "warn",
+      "glyph": "▲",
+      "docs": "4/9"
+    },
+    {
+      "id": "ES-2477",
+      "client": "Thomas Okonkwo",
+      "service": "Mortgage Assistance",
+      "stage": "Bank submitted",
+      "si": 2,
+      "n": 5,
+      "assignee": "Pau",
+      "initials": "PR",
+      "next": "Chase Sabadell for offer",
+      "due": "2 days late",
+      "tone": "danger",
+      "glyph": "■",
+      "docs": "11/12"
+    },
+    {
+      "id": "ES-2470",
+      "client": "Familie Jansen",
+      "service": "Property Purchase",
+      "stage": "Due diligence",
+      "si": 1,
+      "n": 5,
+      "assignee": "Núria",
+      "initials": "NC",
+      "next": "Nota simple came back with a charge",
+      "due": "4 days late",
+      "tone": "danger",
+      "glyph": "■",
+      "docs": "6/10"
+    },
+    {
+      "id": "ES-2492",
+      "client": "Sofia Marchetti",
+      "service": "NIE Application",
+      "stage": "Intake",
+      "si": 0,
+      "n": 5,
+      "assignee": "Núria",
+      "initials": "NC",
+      "next": "Waiting on passport scan",
+      "due": "22 Sep",
+      "tone": "mute",
+      "glyph": "○",
+      "docs": "1/9"
+    },
+    {
+      "id": "ES-2488",
+      "client": "Daniel Brouwer",
+      "service": "Property Purchase",
+      "stage": "Deposit paid",
+      "si": 2,
+      "n": 5,
+      "assignee": "Pau",
+      "initials": "PR",
+      "next": "Book notary slot in Estepona",
+      "due": "Today",
+      "tone": "warn",
+      "glyph": "▲",
+      "docs": "8/10"
+    },
+    {
+      "id": "ES-2465",
+      "client": "Ana Ruiz Delgado",
+      "service": "Mortgage Assistance",
+      "stage": "Offer received",
+      "si": 3,
+      "n": 5,
+      "assignee": "Lucía",
+      "initials": "LM",
+      "next": "Walk client through offer terms",
+      "due": "19 Sep",
+      "tone": "info",
+      "glyph": "◆",
+      "docs": "12/12"
+    },
+    {
+      "id": "ES-2494",
+      "client": "Pieter & Els Vos",
+      "service": "NIE Application",
+      "stage": "Docs collected",
+      "si": 1,
+      "n": 5,
+      "assignee": "Lucía",
+      "initials": "LM",
+      "next": "Book cita previa (slots open Mon)",
+      "due": "25 Sep",
+      "tone": "mute",
+      "glyph": "○",
+      "docs": "8/9"
+    },
+    {
+      "id": "ES-2452",
+      "client": "Karim Haddad",
+      "service": "Property Purchase",
+      "stage": "Notary booked",
+      "si": 3,
+      "n": 5,
+      "assignee": "Núria",
+      "initials": "NC",
+      "next": "Confirm funds transfer 48h before",
+      "due": "30 Sep",
+      "tone": "mute",
+      "glyph": "○",
+      "docs": "10/10"
+    },
+    {
+      "id": "ES-2486",
+      "client": "Greta Lindqvist",
+      "service": "NIE Application",
+      "stage": "Submitted",
+      "si": 3,
+      "n": 5,
+      "assignee": "Pau",
+      "initials": "PR",
+      "next": "Awaiting resolution from Extranjería",
+      "due": "—",
+      "tone": "mute",
+      "glyph": "○",
+      "docs": "9/9"
+    },
+    {
+      "id": "ES-2479",
+      "client": "Hugo Martins",
+      "service": "Mortgage Assistance",
+      "stage": "Docs collected",
+      "si": 1,
+      "n": 5,
+      "assignee": "Lucía",
+      "initials": "LM",
+      "next": "Two payslips rejected, re-requested",
+      "due": "Today",
+      "tone": "warn",
+      "glyph": "▲",
+      "docs": "7/12"
+    },
+    {
+      "id": "ES-2495",
+      "client": "Yvonne de Groot",
+      "service": "Property Purchase",
+      "stage": "Reservation",
+      "si": 0,
+      "n": 5,
+      "assignee": "Núria",
+      "initials": "NC",
+      "next": "Send reservation contract for signature",
+      "due": "19 Sep",
+      "tone": "info",
+      "glyph": "◆",
+      "docs": "2/10"
+    },
+    {
+      "id": "ES-2461",
+      "client": "Marcus Weber",
+      "service": "NIE Application",
+      "stage": "Issued",
+      "si": 4,
+      "n": 5,
+      "assignee": "Pau",
+      "initials": "PR",
+      "next": "Send certificate, close case",
+      "due": "—",
+      "tone": "ok",
+      "glyph": "✓",
+      "docs": "9/9"
+    }
+  ],
+  "documents": [
+    [
+      "Padrón certificate",
+      "Uploaded 16 Sep 14:02 · 1 page · not yet checked",
+      "Received",
+      "Review",
+      1
+    ],
+    [
+      "Tasa 790-012 payment receipt",
+      "Uploaded 17 Sep 08:40 · replaces rejected v1",
+      "Received",
+      "Review",
+      1
+    ],
+    [
+      "Passport-size photo",
+      "Rejected 12 Sep — background not plain white",
+      "Rejected",
+      "Chase",
+      0
+    ],
+    [
+      "Proof of funds or employment contract",
+      "Requested 10 Sep · two reminders sent",
+      "Required",
+      "Chase",
+      0
+    ],
+    [
+      "Empadronamiento appointment slip",
+      "Requested 10 Sep · client booked for 22 Sep",
+      "Required",
+      "Chase",
+      0
+    ],
+    [
+      "Power of attorney",
+      "Only needed if the client cannot attend in person",
+      "Required",
+      "Waive",
+      0
+    ],
+    [
+      "Passport — photo page",
+      "Approved 3 Sep by Núria · expires 04/2031",
+      "Approved",
+      "View",
+      0
+    ],
+    [
+      "EX-15 form, signed",
+      "Approved 3 Sep by Núria",
+      "Approved",
+      "View",
+      0
+    ],
+    [
+      "Proof of address (Netherlands)",
+      "Approved 5 Sep by Pau · issued 21 Aug",
+      "Approved",
+      "View",
+      0
+    ]
+  ],
+  "documentProgress": [
+    "ok",
+    "ok",
+    "ok",
+    "info",
+    "info",
+    "danger",
+    "mute",
+    "mute",
+    "mute"
+  ],
+  "stageLabels": [
+    "Intake",
+    "Docs collected",
+    "Appointment booked",
+    "Submitted",
+    "Issued"
+  ],
+  "tasks": [
+    [
+      "Check padrón address matches the rental contract",
+      "Today",
+      "Núria",
+      false
+    ],
+    [
+      "Confirm cita previa time with client by phone",
+      "Tomorrow",
+      "Núria",
+      false
+    ],
+    [
+      "Pay tasa 790-012 on client behalf",
+      "Done 17 Sep",
+      "Pau",
+      true
+    ],
+    [
+      "Send welcome pack in Dutch",
+      "Done 29 Aug",
+      "Lucía",
+      true
+    ]
+  ],
+  "payments": [
+    {
+      "label": "Service fee — NIE",
+      "meta": "Invoice 2026-0841",
+      "amount": "€450.00",
+      "status": "Paid",
+      "glyph": "✓",
+      "chip": "ok"
+    },
+    {
+      "label": "Tasa 790-012",
+      "meta": "Government fee, advanced by us",
+      "amount": "€9.84",
+      "status": "Reimburse",
+      "glyph": "◆",
+      "chip": "info"
+    }
+  ],
+  "activity": [
+    [
+      "Maartje uploaded Tasa 790-012 payment receipt",
+      "17 Sep 08:40",
+      "info"
+    ],
+    [
+      "Reminder email sent in Dutch (2nd)",
+      "16 Sep 09:00",
+      "mute"
+    ],
+    [
+      "Núria rejected Passport-size photo — background not plain white",
+      "12 Sep 11:22",
+      "danger"
+    ],
+    [
+      "Cita previa booked for 24 Sep 09:40, Comisaría Málaga",
+      "8 Sep 16:05",
+      "ok"
+    ],
+    [
+      "Case created from website enquiry",
+      "28 Aug 10:14",
+      "mute"
+    ]
+  ],
+  "rejectionReasons": [
+    "Wrong document type",
+    "Unreadable or cropped",
+    "Expired",
+    "Name or details do not match"
+  ],
+  "clientCases": [
+    {
+      "id": "ES-2481",
+      "service": "NIE Application",
+      "stage": "Appointment booked · cita 24 Sep",
+      "due": "Due today",
+      "tone": "warn",
+      "glyph": "▲",
+      "docs": "4 of 9 docs approved",
+      "assignee": "Núria",
+      "si": 2
+    },
+    {
+      "id": "ES-2483",
+      "service": "Property Purchase",
+      "stage": "Due diligence · nota simple ordered",
+      "due": "6 Oct",
+      "tone": "mute",
+      "glyph": "○",
+      "docs": "3 of 10 docs approved",
+      "assignee": "Núria",
+      "si": 1
+    },
+    {
+      "id": "ES-2490",
+      "service": "Mortgage Assistance",
+      "stage": "Intake · awaiting income proof",
+      "due": "12 Oct",
+      "tone": "mute",
+      "glyph": "○",
+      "docs": "1 of 12 docs approved",
+      "assignee": "Pau",
+      "si": 0
+    }
+  ],
+  "uploadCopy": {
+    "en": {
+      "hi": "Hello Maartje,",
+      "intro": "Three documents are still missing for your NIE application. Upload them here — no account, no password. It takes about five minutes.",
+      "stillNeeded": "Still needed",
+      "progress": "4 of 7",
+      "upload": "Upload or take a photo",
+      "photoHint": "PDF or photo · we straighten it for you",
+      "doneTitle": "Already received",
+      "helper": "Your case manager · replies within a day",
+      "ask": "Ask a question",
+      "privacy": "This link is private to you and expires on 2 October. Your documents are stored in the EU and only your case manager can see them.",
+      "missing": [
+        {
+          "name": "Proof of funds or employment contract",
+          "help": "A recent payslip, employment contract, or a bank statement showing your balance. Any of the three is fine."
+        },
+        {
+          "name": "Passport-size photo",
+          "help": "A plain white background, face fully visible, no glasses.",
+          "flag": true,
+          "flagText": "The photo you sent had a grey background"
+        },
+        {
+          "name": "Empadronamiento appointment slip",
+          "help": "The confirmation you get from the town hall when you book. A screenshot works."
+        }
+      ],
+      "done": [
+        "Passport — photo page",
+        "EX-15 form, signed",
+        "Proof of address (Netherlands)",
+        "Tasa 790-012 payment receipt"
+      ]
+    },
+    "nl": {
+      "hi": "Hallo Maartje,",
+      "intro": "Er ontbreken nog drie documenten voor je NIE-aanvraag. Je kunt ze hier uploaden — geen account, geen wachtwoord. Het duurt ongeveer vijf minuten.",
+      "stillNeeded": "Nog nodig",
+      "progress": "4 van 7",
+      "upload": "Uploaden of foto maken",
+      "photoHint": "PDF of foto · wij zetten hem recht",
+      "doneTitle": "Al ontvangen",
+      "helper": "Je casemanager · reageert binnen een dag",
+      "ask": "Stel een vraag",
+      "privacy": "Deze link is alleen voor jou en verloopt op 2 oktober. Je documenten staan in de EU en alleen je casemanager kan ze zien.",
+      "missing": [
+        {
+          "name": "Inkomensbewijs of arbeidscontract",
+          "help": "Een recente loonstrook, arbeidscontract of bankafschrift met je saldo. Eén van de drie is genoeg."
+        },
+        {
+          "name": "Pasfoto",
+          "help": "Effen witte achtergrond, gezicht volledig zichtbaar, geen bril.",
+          "flag": true,
+          "flagText": "De foto die je stuurde had een grijze achtergrond"
+        },
+        {
+          "name": "Afspraakbevestiging empadronamiento",
+          "help": "De bevestiging van het gemeentehuis bij het boeken. Een screenshot is prima."
+        }
+      ],
+      "done": [
+        "Paspoort — pagina met foto",
+        "EX-15 formulier, ondertekend",
+        "Bewijs van adres (Nederland)",
+        "Betaalbewijs tasa 790-012"
+      ]
+    },
+    "es": {
+      "hi": "Hola Maartje:",
+      "intro": "Faltan tres documentos para tu solicitud de NIE. Puedes subirlos aquí, sin cuenta ni contraseña. Son unos cinco minutos.",
+      "stillNeeded": "Aún falta",
+      "progress": "4 de 7",
+      "upload": "Subir o hacer una foto",
+      "photoHint": "PDF o foto · nosotros la enderezamos",
+      "doneTitle": "Ya recibido",
+      "helper": "Tu gestora · responde en un día",
+      "ask": "Hacer una pregunta",
+      "privacy": "Este enlace es solo tuyo y caduca el 2 de octubre. Tus documentos se guardan en la UE y solo tu gestora puede verlos.",
+      "missing": [
+        {
+          "name": "Justificante de ingresos o contrato de trabajo",
+          "help": "Una nómina reciente, el contrato de trabajo o un extracto bancario con el saldo. Vale cualquiera de los tres."
+        },
+        {
+          "name": "Fotografía tamaño carné",
+          "help": "Fondo blanco liso, cara completamente visible, sin gafas.",
+          "flag": true,
+          "flagText": "La foto que enviaste tenía el fondo gris"
+        },
+        {
+          "name": "Justificante de cita del empadronamiento",
+          "help": "La confirmación del ayuntamiento al pedir cita. Una captura de pantalla sirve."
+        }
+      ],
+      "done": [
+        "Pasaporte — página de la foto",
+        "Formulario EX-15 firmado",
+        "Justificante de domicilio (Países Bajos)",
+        "Justificante de pago tasa 790-012"
+      ]
+    }
+  },
+  "stageMeta": [
+    "done 29 Aug",
+    "done 5 Sep",
+    "cita 24 Sep",
+    "—",
+    "—"
+  ]
+}

@@ -1,0 +1,46 @@
+.shell {
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr);
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Screen padding is 34px top / 40px sides, capped so long tables stay readable. */
+.screen {
+  padding: 34px 40px 60px;
+  max-width: 1320px;
+}
+
+.pageHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.pageTitle {
+  font-size: 26px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.pageStamp {
+  font-size: 13px;
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+}
+
+.pageLead {
+  margin: 0 0 26px;
+  font-size: 14px;
+  color: var(--ink-2);
+  max-width: 62ch;
+}

@@ -1,0 +1,241 @@
+.plainLink,
+.plainLink:hover {
+  text-decoration: none;
+  display: block;
+}
+
+/* Amber action card. Omitted entirely when nothing is outstanding — an empty
+   version of this card would still read as a demand. */
+.actionCard {
+  background: color-mix(in oklch, var(--warn) 8%, var(--panel));
+  border: 1px solid color-mix(in oklch, var(--warn) 40%, transparent);
+  border-radius: 18px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.actionTitle {
+  font-size: 19px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.actionBody {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ------------------------------------------------------------------- stepper */
+
+.stepper {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.step {
+  display: flex;
+  gap: 14px;
+  padding-bottom: 18px;
+  position: relative;
+}
+
+.step:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: 10px;
+  top: 24px;
+  bottom: 0;
+  width: 2px;
+  background: var(--line);
+}
+
+.mark {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  background: var(--panel);
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  flex: none;
+  z-index: 1;
+}
+
+.markDone {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.markNow {
+  border-color: var(--accent);
+}
+
+.stepText {
+  min-width: 0;
+  padding-top: 1px;
+}
+
+.stepLabel {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.future {
+  color: var(--ink-3);
+  font-weight: 500;
+}
+
+.stepMeta {
+  font-size: 14.5px;
+  color: var(--ink-3);
+  line-height: 1.5;
+  margin-top: 2px;
+}
+
+/* ----------------------------------------------------------------- documents */
+
+.docs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.doc {
+  border-radius: 16px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.docLabel {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.docMeta {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+/* --------------------------------------------------------------- appointment */
+
+.appt {
+  padding: 0;
+  overflow: hidden;
+}
+
+.apptTop {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 18px;
+}
+
+.apptDate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 14px;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  flex: none;
+  line-height: 1.1;
+}
+
+.apptTime {
+  font-size: 16.5px;
+  font-weight: 600;
+}
+
+.apptPlace {
+  font-size: 14.5px;
+  color: var(--ink-2);
+  margin-top: 3px;
+  line-height: 1.45;
+}
+
+.bring {
+  background: var(--panel-2);
+  padding: 16px 18px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.bringList {
+  margin: 8px 0 0;
+  padding-left: 20px;
+  font-size: 15px;
+  color: var(--ink-2);
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.apptButtons {
+  display: flex;
+  gap: 10px;
+  padding: 16px 18px;
+  border-top: 1px solid var(--line-soft);
+}
+
+/* ------------------------------------------------------------------ payments */
+
+.payments {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.payment {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.payLabel {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.payMeta {
+  font-size: 14.5px;
+  color: var(--ink-3);
+  margin-top: 2px;
+}
+
+.payRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 7px;
+  flex: none;
+}
+
+.promise {
+  padding: 18px;
+}

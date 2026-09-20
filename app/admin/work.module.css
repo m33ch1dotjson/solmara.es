@@ -1,0 +1,129 @@
+/* Counter strip: one bordered rounded row, cells separated by 1px gaps over a
+   --line background rather than by borders. */
+.counters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 34px;
+}
+
+.counter {
+  background: var(--panel);
+  padding: 16px 18px;
+}
+
+.counterHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.counterLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-2);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.counterValue {
+  margin-top: 8px;
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.counterSub {
+  font-size: 12px;
+  color: var(--ink-3);
+  margin-top: 2px;
+}
+
+/* ------------------------------------------------------------------ row groups */
+
+.group {
+  margin-bottom: 34px;
+}
+
+.groupHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.groupTitle {
+  font-size: 14px;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+}
+
+.rule {
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.groupHint {
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+.rows {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--panel);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1.8fr) 124px;
+  gap: 14px;
+  align-items: center;
+  min-height: var(--row);
+  padding: 10px 18px;
+  border-top: 1px solid var(--line-soft);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.row:first-child {
+  border-top: none;
+}
+
+.row:hover {
+  background: var(--panel-2);
+  text-decoration: none;
+}
+
+/* The middle three cells truncate. The due chip never does. */
+.client,
+.service,
+.action {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.client {
+  font-size: 14px;
+  font-weight: 550;
+}
+
+.service {
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+.action {
+  font-size: 13.5px;
+}
+
+.due {
+  justify-self: start;
+}

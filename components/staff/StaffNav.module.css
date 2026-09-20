@@ -1,0 +1,152 @@
+.nav {
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 18px 12px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  background: var(--panel);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 8px 18px;
+}
+
+.logo {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  background: var(--accent);
+  flex: none;
+}
+
+.brandName {
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.items {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  border-radius: 8px;
+  padding: 9px 10px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--ink-2);
+  text-decoration: none;
+}
+
+.item:hover {
+  background: var(--panel-2);
+  text-decoration: none;
+}
+
+.itemActive {
+  background: color-mix(in oklch, var(--accent) 12%, transparent);
+  color: var(--accent);
+  font-weight: 650;
+}
+
+.itemActive:hover {
+  background: color-mix(in oklch, var(--accent) 16%, transparent);
+}
+
+.itemGlyph {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  width: 14px;
+  text-align: center;
+  opacity: 0.7;
+}
+
+.itemCount {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+.footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 8px 0;
+  border-top: 1px solid var(--line-soft);
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 2px 2px 4px;
+}
+
+.avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-2);
+  flex: none;
+}
+
+.userText {
+  line-height: 1.25;
+  min-width: 0;
+}
+
+.userName {
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.userTitle {
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+.itemLabel {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.adminGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.groupLabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  color: var(--ink-3);
+  padding: 0 10px 6px;
+}
