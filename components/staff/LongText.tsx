@@ -24,8 +24,11 @@ export function LongText({
   less,
 }: {
   text: string;
-  /** The caller's own typography for this text; the fold adds nothing to it. */
-  className: string;
+  /**
+   * The caller's own typography for this text; the fold adds nothing to it.
+   * Optional because a CSS module's keys are typed `string | undefined`.
+   */
+  className?: string;
   more: string;
   less: string;
 }) {
@@ -33,12 +36,14 @@ export function LongText({
 
   if (!isLong) return <p className={className}>{text}</p>;
 
+  const folded = [className, s.clamped].filter(Boolean).join(" ");
+
   return (
     <details className={s.fold}>
       {/* Everything lives inside the summary, because that is the part of a details
           element that stays visible when it is closed. */}
       <summary className={s.summary}>
-        <span className={`${className} ${s.clamped}`}>{text}</span>
+        <span className={folded}>{text}</span>
         <span className={s.toggle}>
           <span className={s.more}>{more}</span>
           <span className={s.less}>{less}</span>
