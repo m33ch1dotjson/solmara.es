@@ -17,6 +17,8 @@ export const BUCKET_PROPERTY_PHOTOS = "property-photos";
 export const BUCKET_GUIDE_FILES = "process-guide-files";
 /** Staff avatars and the workspace logo. Private like the rest; read through signed URLs. */
 export const BUCKET_WORKSPACE = "workspace-files";
+/** Finalised invoice PDFs. Private: an invoice is somebody's financial record. */
+export const BUCKET_INVOICES = "invoices";
 
 /** Ten minutes: long enough to open a file, short enough that a shared link dies. */
 const SIGNED_URL_SECONDS = 600;
@@ -43,6 +45,33 @@ export async function upload(bucket: string, key: string, file: File) {
 
   if (error) throw new Error(`upload mislukt: ${error.message}`);
   return { key, size: file.size, mimeType: file.type };
+}
+
+/**
+ * Bytes we made ourselves, rather than a file somebody picked.
+ *
+ * `upsert` is on: regenerating the PDF of a finalised invoice must land on the same
+ * key, not pile up a second copy beside it.
+ */
+export async function uploadBytes(
+  bucket: string,
+  key: string,
+  bytes: Uint8Array,
+  contentType: string,
+) {
+  const { error } = await admin()
+    .storage.from(bucket)
+    .upload(key, bytes, { contentType, upsert: true });
+
+  if (error) throw new Error(`upload mislukt: ${error.message}`);
+  return { key, size: bytes.byteLength, mimeType: contentType };
+}
+
+/** Reads an object back. Used to put the logo into a PDF. */
+export async function download(bucket: string, key: string): Promise<Buffer | null> {
+  const { data, error } = await admin().storage.from(bucket).download(key);
+  if (error || !data) return null;
+  return Buffer.from(await data.arrayBuffer());
 }
 
 export async function signedUrl(bucket: string, key: string): Promise<string | null> {

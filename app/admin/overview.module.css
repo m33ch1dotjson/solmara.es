@@ -105,6 +105,17 @@
   line-height: 1.1;
 }
 
+/* An amount rather than a count: smaller, because "€1.234,56" is far longer than
+   "4" and must not wrap out of the tile. */
+.tileMoney {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
 .tileLabel {
   font-size: 14.5px;
   font-weight: 600;

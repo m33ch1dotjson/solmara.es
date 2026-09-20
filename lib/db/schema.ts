@@ -23,6 +23,7 @@ import {
   index,
   integer,
   jsonb,
+  numeric,
   pgSchema,
   text,
   timestamp,
@@ -105,8 +106,160 @@ export const workspaceSetting = app.table("workspace_setting", {
   defaultClientLocale: locale("default_client_locale").notNull().default("en"),
   defaultCountry: text("default_country").notNull().default("ES"),
   defaultCurrency: text("default_currency").notNull().default("EUR"),
+
+  /* What an invoice needs to know about the company sending it. Every field is
+     copied onto an invoice when it is finalised, never read back from here. */
+  legalName: text("legal_name"),
+  taxId: text("tax_id"),
+  address: text("address"),
+  postalCode: text("postal_code"),
+  city: text("city"),
+  province: text("province"),
+  country: text("country"),
+
+  accountHolder: text("account_holder"),
+  iban: text("iban"),
+  bic: text("bic"),
+  bankName: text("bank_name"),
+  paymentInstructions: text("payment_instructions"),
+
+  invoicePrefix: text("invoice_prefix").notNull().default("SOL"),
+  paymentTermsDays: integer("payment_terms_days").notNull().default(14),
+  invoiceLanguage: locale("invoice_language").notNull().default("nl"),
+  invoiceNotes: text("invoice_notes"),
+  invoiceLogoKey: text("invoice_logo_key"),
+
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
+
+/* --------------------------------------------------------------- invoicing */
+
+export const invoiceStatus = app.enum("invoice_status", [
+  "DRAFT",
+  "FINALIZED",
+  "SENT",
+  "PAID",
+  "CANCELLED",
+]);
+
+export const paymentMethod = app.enum("payment_method", ["TRANSFER", "CASH", "CARD", "OTHER"]);
+
+/** One row per year; the official number comes from an atomic upsert on it. */
+export const invoiceCounter = app.table("invoice_counter", {
+  year: integer("year").primaryKey(),
+  nextNumber: integer("next_number").notNull().default(1),
+});
+
+/**
+ * An invoice.
+ *
+ * The customer_* and issuer_* columns are a snapshot, not a join: an invoice is a
+ * document about a moment, and neither the client moving house nor the company
+ * changing its IBAN may rewrite one that has already gone out.
+ *
+ * Amounts are integer cents. See lib/money.ts, which is the only place that rounds.
+ */
+export const invoice = app.table(
+  "invoice",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+
+    /** Null until finalisation, so a deleted draft leaves no hole in the sequence. */
+    number: text("number").unique(),
+    numberYear: integer("number_year"),
+    numberSequence: integer("number_sequence"),
+
+    clientId: uuid("client_id").references(() => client.id, { onDelete: "set null" }),
+
+    status: invoiceStatus("status").notNull().default("DRAFT"),
+    currency: text("currency").notNull().default("EUR"),
+    language: locale("language").notNull().default("nl"),
+
+    issueDate: date("issue_date").notNull(),
+    dueDate: date("due_date").notNull(),
+
+    customerName: text("customer_name").notNull().default(""),
+    customerCompanyName: text("customer_company_name"),
+    customerEmail: text("customer_email"),
+    customerTaxId: text("customer_tax_id"),
+    customerVatNumber: text("customer_vat_number"),
+    customerAddress: text("customer_address"),
+    customerPostalCode: text("customer_postal_code"),
+    customerCity: text("customer_city"),
+    customerProvince: text("customer_province"),
+    customerCountry: text("customer_country"),
+
+    issuerLegalName: text("issuer_legal_name"),
+    issuerDisplayName: text("issuer_display_name"),
+    issuerTaxId: text("issuer_tax_id"),
+    issuerEmail: text("issuer_email"),
+    issuerPhone: text("issuer_phone"),
+    issuerWebsite: text("issuer_website"),
+    issuerAddress: text("issuer_address"),
+    issuerPostalCode: text("issuer_postal_code"),
+    issuerCity: text("issuer_city"),
+    issuerProvince: text("issuer_province"),
+    issuerCountry: text("issuer_country"),
+    issuerIban: text("issuer_iban"),
+    issuerBic: text("issuer_bic"),
+    issuerBankName: text("issuer_bank_name"),
+    issuerAccountHolder: text("issuer_account_holder"),
+    issuerLogoKey: text("issuer_logo_key"),
+
+    subtotalCents: bigint("subtotal_cents", { mode: "number" }).notNull().default(0),
+    taxTotalCents: bigint("tax_total_cents", { mode: "number" }).notNull().default(0),
+    totalCents: bigint("total_cents", { mode: "number" }).notNull().default(0),
+
+    notes: text("notes"),
+    paymentInstructions: text("payment_instructions"),
+
+    pdfStorageKey: text("pdf_storage_key"),
+
+    createdBy: uuid("created_by").references(() => staffUser.id, { onDelete: "set null" }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+
+    finalizedBy: uuid("finalized_by").references(() => staffUser.id, { onDelete: "set null" }),
+    finalizedAt: timestamp("finalized_at", { withTimezone: true }),
+    sentBy: uuid("sent_by").references(() => staffUser.id, { onDelete: "set null" }),
+    sentAt: timestamp("sent_at", { withTimezone: true }),
+    paidBy: uuid("paid_by").references(() => staffUser.id, { onDelete: "set null" }),
+    paidAt: timestamp("paid_at", { withTimezone: true }),
+    paymentMethod: paymentMethod("payment_method"),
+    paymentReference: text("payment_reference"),
+    cancelledBy: uuid("cancelled_by").references(() => staffUser.id, { onDelete: "set null" }),
+    cancelledAt: timestamp("cancelled_at", { withTimezone: true }),
+  },
+  (t) => [
+    index("invoice_client_idx").on(t.clientId, t.issueDate),
+    index("invoice_status_idx").on(t.status, t.dueDate),
+  ],
+);
+
+export const invoiceItem = app.table(
+  "invoice_item",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    invoiceId: uuid("invoice_id")
+      .notNull()
+      .references(() => invoice.id, { onDelete: "cascade" }),
+    position: integer("position").notNull().default(0),
+
+    description: text("description").notNull().default(""),
+    /** numeric(12,3) — read as a string by the driver and parsed where it is used. */
+    quantity: numeric("quantity", { precision: 12, scale: 3 }).notNull().default("1"),
+    unitPriceCents: bigint("unit_price_cents", { mode: "number" }).notNull().default(0),
+    /** numeric(5,2), a percentage: "21.00" is 21%. */
+    vatRate: numeric("vat_rate", { precision: 5, scale: 2 }).notNull().default("21"),
+
+    subtotalCents: bigint("subtotal_cents", { mode: "number" }).notNull().default(0),
+    taxCents: bigint("tax_cents", { mode: "number" }).notNull().default(0),
+    totalCents: bigint("total_cents", { mode: "number" }).notNull().default(0),
+
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("invoice_item_invoice_idx").on(t.invoiceId, t.position)],
+);
 
 /* ------------------------------------------------------------------ client */
 

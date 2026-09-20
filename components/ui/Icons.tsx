@@ -93,6 +93,18 @@ export function IconTasks() {
   );
 }
 
+/** Invoices: a document with an amount ruled off at the bottom. */
+export function IconInvoices() {
+  return (
+    <Glyph>
+      <path d="M5.5 3.5h9.2l3.8 3.8v13.2H5.5z" />
+      <path d="M14.5 3.5v4h4" />
+      <path d="M8.6 11.5h6.8M8.6 14.5h6.8" />
+      <path d="M12.4 17.6h3" />
+    </Glyph>
+  );
+}
+
 /** Help: a question in a circle, drawn in the same weight as the rest. */
 export function IconHelp({ size = 18 }: { size?: number }) {
   return (

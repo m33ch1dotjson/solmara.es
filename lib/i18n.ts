@@ -185,6 +185,7 @@ export const DICT = {
     properties: T("Properties", "Properties", "Propiedades"),
     documents: T("Documents", "Documenten", "Documentos"),
     tasks: T("Tasks", "Taken", "Tareas"),
+    invoices: T("Invoices", "Facturatie", "Facturación"),
     myAccount: T("My Account", "Mijn account", "Mi cuenta"),
     workspace: T("Workspace Settings", "Werkruimte", "Espacio de trabajo"),
     team: T("Team & Permissions", "Team & rechten", "Equipo y permisos"),
@@ -380,6 +381,244 @@ export const DICT = {
     rejectAndSend: T("Reject and send", "Afkeuren en versturen", "Rechazar y enviar"),
   },
 
+  /* ------------------------------------------------------------------ invoicing */
+
+  invoices: {
+    title: T("Invoices", "Facturatie", "Facturación"),
+    lead: T(
+      "Manage, send and track Solmavera invoices.",
+      "Beheer, verstuur en volg facturen van Solmavera.",
+      "Gestiona, envía y realiza el seguimiento de las facturas de Solmavera.",
+    ),
+    newInvoice: T("New invoice", "Nieuwe factuur", "Nueva factura"),
+    backToList: T("‹ Invoices", "‹ Facturatie", "‹ Facturación"),
+
+    searchPlaceholder: T(
+      "Search by number, client or email…",
+      "Zoek op nummer, klant of e-mail…",
+      "Buscar por número, cliente o correo…",
+    ),
+    filterLabel: T("Filter by status", "Filter op status", "Filtrar por estado"),
+    sortBy: T("Sort", "Sorteren", "Ordenar"),
+    noMatch: T("Nothing matches that.", "Daar past niets bij.", "No hay nada que coincida."),
+    noNumberYet: T("Draft", "Concept", "Borrador"),
+    dueShort: T("due", "vervalt", "vence"),
+
+    emptyTitle: T("No invoices yet", "Nog geen facturen", "Todavía no hay facturas"),
+    emptyBody: T(
+      "Make your first invoice for a client.",
+      "Maak je eerste factuur voor een klant.",
+      "Crea tu primera factura para un cliente.",
+    ),
+
+    columnNumber: T("Invoice", "Factuur", "Factura"),
+    columnClient: T("Client", "Klant", "Cliente"),
+    columnIssued: T("Issued", "Datum", "Emitida"),
+    columnDue: T("Due", "Vervaldatum", "Vence"),
+    columnAmount: T("Amount", "Bedrag", "Importe"),
+    columnStatus: T("Status", "Status", "Estado"),
+
+    status: {
+      DRAFT: T("Draft", "Concept", "Borrador"),
+      FINALIZED: T("Finalized", "Definitief", "Finalizada"),
+      SENT: T("Sent", "Verstuurd", "Enviada"),
+      PAID: T("Paid", "Betaald", "Pagada"),
+      OVERDUE: T("Overdue", "Te laat", "Vencida"),
+      CANCELLED: T("Cancelled", "Geannuleerd", "Anulada"),
+    },
+    filter: {
+      ALL: T("All", "Alles", "Todas"),
+      DRAFT: T("Draft", "Concept", "Borrador"),
+      FINALIZED: T("Finalized", "Definitief", "Finalizada"),
+      SENT: T("Sent", "Verstuurd", "Enviada"),
+      PAID: T("Paid", "Betaald", "Pagada"),
+      OVERDUE: T("Overdue", "Te laat", "Vencida"),
+    },
+    sort: {
+      NEWEST: T("Newest first", "Nieuwste eerst", "Más recientes primero"),
+      OLDEST: T("Oldest first", "Oudste eerst", "Más antiguas primero"),
+      NUMBER: T("Invoice number", "Factuurnummer", "Número de factura"),
+      AMOUNT: T("Amount", "Bedrag", "Importe"),
+    },
+
+    /* The editor */
+    draftTitle: T("Draft invoice", "Conceptfactuur", "Factura en borrador"),
+    draftLead: T(
+      "Nothing is final until you finalise it. The invoice number is assigned then, not before.",
+      "Niets ligt vast tot je de factuur definitief maakt. Het factuurnummer wordt dán toegekend, niet eerder.",
+      "Nada queda fijado hasta que finalices la factura. El número se asigna entonces, no antes.",
+    ),
+    customer: T("Recipient", "Ontvanger", "Destinatario"),
+    customerLead: T(
+      "Pick a client to fill this in, then adjust anything that is different for this invoice. Changes here stay on this invoice and do not touch the client's own record.",
+      "Kies een klant om dit in te vullen en pas aan wat voor déze factuur anders is. Wijzigingen blijven op deze factuur en raken het klantdossier niet.",
+      "Elige un cliente para rellenarlo y ajusta lo que sea distinto en esta factura. Los cambios se quedan en esta factura y no tocan la ficha del cliente.",
+    ),
+    pickClient: T("Choose a client", "Klant kiezen", "Elegir cliente"),
+    changeClient: T("Choose another client", "Andere klant kiezen", "Elegir otro cliente"),
+    searchClients: T("Search clients…", "Zoek klanten…", "Buscar clientes…"),
+    noClients: T("No clients found.", "Geen klanten gevonden.", "No se han encontrado clientes."),
+    linked: T("Linked to a client", "Gekoppeld aan een klant", "Vinculada a un cliente"),
+    customerName: T("Name", "Naam", "Nombre"),
+    companyName: T("Company", "Bedrijf", "Empresa"),
+    taxId: T("Tax ID / NIE", "Fiscaal nummer / NIE", "NIF / NIE"),
+    vatNumber: T("VAT number", "Btw-nummer", "Número de IVA"),
+    address: T("Address", "Adres", "Dirección"),
+    postalCode: T("Postal code", "Postcode", "Código postal"),
+    city: T("City", "Plaats", "Ciudad"),
+    province: T("Province", "Provincie", "Provincia"),
+    country: T("Country", "Land", "País"),
+
+    details: T("Invoice details", "Factuurgegevens", "Datos de la factura"),
+    issueDate: T("Invoice date", "Factuurdatum", "Fecha de factura"),
+    dueDate: T("Due date", "Vervaldatum", "Fecha de vencimiento"),
+    language: T("Invoice language", "Taal van de factuur", "Idioma de la factura"),
+    languageHint: T(
+      "The language of the document itself, not of the portal.",
+      "De taal van het document zelf, niet van het portaal.",
+      "El idioma del documento en sí, no el del portal.",
+    ),
+
+    lines: T("Lines", "Regels", "Líneas"),
+    description: T("Description", "Omschrijving", "Descripción"),
+    quantity: T("Quantity", "Aantal", "Cantidad"),
+    unitPrice: T("Unit price", "Prijs", "Precio"),
+    vat: T("VAT", "Btw", "IVA"),
+    lineTotal: T("Total", "Totaal", "Total"),
+    addLine: T("Add line", "Regel toevoegen", "Añadir línea"),
+    subtotal: T("Subtotal", "Subtotaal", "Subtotal"),
+    total: T("Total", "Totaal", "Total"),
+
+    notes: T("Notes and payment", "Opmerkingen en betaling", "Observaciones y pago"),
+    notesLabel: T("Note on the invoice", "Opmerking op de factuur", "Nota en la factura"),
+    paymentInstructions: T(
+      "Payment instructions",
+      "Betaalinstructies",
+      "Instrucciones de pago",
+    ),
+    paymentHint: T(
+      "The bank details come from Workspace Settings; this is anything you want to add for this invoice.",
+      "De bankgegevens komen uit de Werkruimte; dit is wat je voor déze factuur wilt toevoegen.",
+      "Los datos bancarios vienen del Espacio de trabajo; esto es lo que quieras añadir para esta factura.",
+    ),
+
+    saveDraft: T("Save draft", "Concept opslaan", "Guardar borrador"),
+    saved: T("Saved.", "Opgeslagen.", "Guardado."),
+    preview: T("Preview", "Voorbeeld", "Vista previa"),
+    finalize: T("Finalize invoice", "Factuur definitief maken", "Finalizar factura"),
+    finalizeTitle: T("Finalize this invoice?", "Deze factuur definitief maken?", "¿Finalizar esta factura?"),
+    finalizeBody: T(
+      "The invoice gets its official number, the sender and recipient are frozen as they are now, and the PDF is made. After this the amounts can no longer be changed.",
+      "De factuur krijgt haar officiële nummer, afzender en ontvanger worden vastgelegd zoals ze nu zijn, en de PDF wordt gemaakt. Daarna kunnen de bedragen niet meer wijzigen.",
+      "La factura recibe su número oficial, el emisor y el destinatario quedan fijados tal como están ahora, y se genera el PDF. Después ya no se pueden cambiar los importes.",
+    ),
+    finalizeHint: T(
+      "A recipient name and at least one line with a quantity above zero are needed before this invoice can be finalised.",
+      "Een naam van de ontvanger en minstens één regel met een aantal boven nul zijn nodig voordat deze factuur definitief kan worden.",
+      "Hacen falta un nombre de destinatario y al menos una línea con cantidad mayor que cero antes de poder finalizar.",
+    ),
+    finalized: T(
+      "Finalized. The PDF is ready.",
+      "Definitief gemaakt. De PDF staat klaar.",
+      "Finalizada. El PDF está listo.",
+    ),
+    finalizedNoPdf: T(
+      "Finalized, but the PDF could not be made. The invoice is valid; make the PDF again from the invoice.",
+      "Definitief gemaakt, maar de PDF lukte niet. De factuur is geldig; maak de PDF opnieuw vanaf de factuur.",
+      "Finalizada, pero no se pudo generar el PDF. La factura es válida; genera el PDF de nuevo desde la factura.",
+    ),
+    deleteDraft: T("Delete draft", "Concept verwijderen", "Eliminar borrador"),
+    deleteBody: T(
+      "A draft can go; it has no invoice number and nothing depends on it.",
+      "Een concept mag weg; het heeft geen factuurnummer en er hangt niets aan.",
+      "Un borrador puede eliminarse; no tiene número de factura y nada depende de él.",
+    ),
+
+    /* Errors from the server */
+    notFound: T("That invoice is gone.", "Die factuur bestaat niet meer.", "Esa factura ya no existe."),
+    notADraft: T(
+      "This invoice is final and cannot be changed.",
+      "Deze factuur is definitief en kan niet meer wijzigen.",
+      "Esta factura es definitiva y ya no se puede cambiar.",
+    ),
+    datesRequired: T(
+      "Fill in both dates.",
+      "Vul beide datums in.",
+      "Rellena las dos fechas.",
+    ),
+    needCustomer: T(
+      "The invoice needs a recipient name.",
+      "De factuur heeft een naam van de ontvanger nodig.",
+      "La factura necesita un nombre de destinatario.",
+    ),
+    needLines: T(
+      "An invoice needs at least one line.",
+      "Een factuur heeft minstens één regel nodig.",
+      "Una factura necesita al menos una línea.",
+    ),
+    needIssuer: T(
+      "Fill in the company's legal name under Workspace Settings first — an invoice cannot go out without a sender.",
+      "Vul eerst de juridische bedrijfsnaam in bij Werkruimte — een factuur kan niet zonder afzender de deur uit.",
+      "Rellena primero el nombre legal de la empresa en el Espacio de trabajo: una factura no puede salir sin emisor.",
+    ),
+    badAmount: T(
+      "A line has a quantity of zero or less.",
+      "Een regel heeft een aantal van nul of minder.",
+      "Una línea tiene una cantidad de cero o menos.",
+    ),
+
+    /* The finalised invoice */
+    amounts: T("Amounts", "Bedragen", "Importes"),
+    history: T("History", "Verloop", "Historial"),
+    locked: T("Final", "Definitief", "Definitiva"),
+    lockedBody: T(
+      "This invoice is part of the invoice history and is no longer edited. A correction is a credit note — that is the next thing to build, and deliberately not a quiet edit here.",
+      "Deze factuur hoort bij de factuurhistorie en wordt niet meer bewerkt. Een correctie is een creditnota — dat is het volgende om te bouwen, en met opzet geen stille wijziging hier.",
+      "Esta factura forma parte del historial y ya no se edita. Una corrección es un abono: eso es lo siguiente que construir, y deliberadamente no una edición silenciosa aquí.",
+    ),
+    viewPdf: T("View PDF", "PDF bekijken", "Ver PDF"),
+    downloadPdf: T("Download", "Downloaden", "Descargar"),
+    pdfMissing: T("The PDF was not made.", "De PDF is niet gemaakt.", "No se generó el PDF."),
+    makePdf: T("Make the PDF", "PDF maken", "Generar el PDF"),
+    pdfMade: T("The PDF is ready.", "De PDF staat klaar.", "El PDF está listo."),
+    pdfFailed: T(
+      "The PDF still could not be made.",
+      "De PDF lukte opnieuw niet.",
+      "El PDF sigue sin poder generarse.",
+    ),
+    markSent: T("Mark as sent", "Markeer als verstuurd", "Marcar como enviada"),
+    markedSent: T("Marked as sent.", "Gemarkeerd als verstuurd.", "Marcada como enviada."),
+    markPaid: T("Mark as paid", "Markeer als betaald", "Marcar como pagada"),
+    markedPaid: T("Marked as paid.", "Gemarkeerd als betaald.", "Marcada como pagada."),
+    paymentMethod: T("How was it paid?", "Hoe is er betaald?", "¿Cómo se ha pagado?"),
+    paymentReference: T("Reference", "Kenmerk", "Referencia"),
+    method: {
+      TRANSFER: T("Bank transfer", "Overboeking", "Transferencia"),
+      CASH: T("Cash", "Contant", "Efectivo"),
+      CARD: T("Card", "Pin of creditcard", "Tarjeta"),
+      OTHER: T("Other", "Anders", "Otro"),
+    },
+    openClient: T("Open the client", "Klant openen", "Abrir el cliente"),
+
+    eventCreated: T("Invoice created", "Factuur aangemaakt", "Factura creada"),
+    eventFinalized: T("Invoice finalized", "Factuur definitief gemaakt", "Factura finalizada"),
+    eventSent: T("Marked as sent", "Gemarkeerd als verstuurd", "Marcada como enviada"),
+    eventPaid: T("Marked as paid", "Gemarkeerd als betaald", "Marcada como pagada"),
+
+    /* On the client's own page */
+    clientSection: T("Invoices", "Facturen", "Facturas"),
+    createForClient: T("Create invoice", "Factuur maken", "Crear factura"),
+    noneForClient: T(
+      "No invoices for this client yet.",
+      "Nog geen facturen voor deze klant.",
+      "Todavía no hay facturas para este cliente.",
+    ),
+
+    /* On the overview */
+    outstanding: T("Awaiting payment", "Wacht op betaling", "Pendiente de cobro"),
+    outstandingNote: T("Sent and not yet paid", "Verstuurd en nog niet betaald", "Enviadas y sin cobrar"),
+  },
+
   /* ---------------------------------------------- the foot of the navigation */
 
   footer: {
@@ -454,6 +693,64 @@ export const DICT = {
       "Se muestra en el portal. Vacío significa el nombre de marca configurado.",
     ),
     saved: T("Workspace saved.", "Werkruimte opgeslagen.", "Espacio de trabajo guardado."),
+
+    tabGeneral: T("General", "Algemeen", "General"),
+    tabInvoicing: T("Invoicing", "Facturatie", "Facturación"),
+
+    invoiceCompany: T(
+      "Company details on invoices",
+      "Bedrijfsgegevens op facturen",
+      "Datos de la empresa en las facturas",
+    ),
+    invoiceCompanyLead: T(
+      "Copied onto each invoice at the moment it is finalised. Changing something here changes future invoices and leaves the ones already sent exactly as they were.",
+      "Wordt op elke factuur gezet op het moment dat die definitief wordt. Iets hier wijzigen verandert toekomstige facturen en laat de al verstuurde precies zoals ze waren.",
+      "Se copia en cada factura en el momento de finalizarla. Cambiar algo aquí afecta a las facturas futuras y deja intactas las ya enviadas.",
+    ),
+    legalName: T("Legal name", "Juridische naam", "Nombre legal"),
+    legalNameHint: T(
+      "Required before an invoice can be finalised.",
+      "Verplicht voordat een factuur definitief kan worden.",
+      "Obligatorio antes de poder finalizar una factura.",
+    ),
+    taxId: T("Tax ID / NIF", "Fiscaal nummer / NIF", "NIF"),
+
+    invoiceDefaults: T("Invoice defaults", "Standaarden factuur", "Valores por defecto"),
+    invoiceDefaultsLead: T(
+      "What a new invoice starts with. Each one can still be changed before it is finalised.",
+      "Waarmee een nieuwe factuur begint. Per factuur nog aan te passen tot die definitief is.",
+      "Con qué empieza una factura nueva. Cada una se puede cambiar antes de finalizarla.",
+    ),
+    invoicePrefix: T("Invoice prefix", "Prefix factuurnummer", "Prefijo de factura"),
+    invoicePrefixHint: T(
+      "SOL gives SOL-2026-001. Changing it only affects numbers handed out from now on.",
+      "SOL geeft SOL-2026-001. Wijzigen raakt alleen nummers die vanaf nu worden uitgegeven.",
+      "SOL da SOL-2026-001. Cambiarlo solo afecta a los números que se emitan a partir de ahora.",
+    ),
+    paymentTerms: T("Payment term (days)", "Betaaltermijn (dagen)", "Plazo de pago (días)"),
+    invoiceLanguage: T("Default invoice language", "Standaardtaal factuur", "Idioma por defecto"),
+    invoiceNotes: T("Default note", "Standaardopmerking", "Nota por defecto"),
+
+    payment: T("Payment details", "Betaalgegevens", "Datos de pago"),
+    paymentLead: T(
+      "Printed on every invoice. Empty until you fill in the real details — there is nothing invented here.",
+      "Staat op elke factuur. Leeg tot je de echte gegevens invult — hier is niets verzonnen.",
+      "Se imprimen en cada factura. Vacíos hasta que introduzcas los datos reales: aquí no hay nada inventado.",
+    ),
+    accountHolder: T("Account holder", "Rekeninghouder", "Titular de la cuenta"),
+    bankName: T("Bank", "Bank", "Banco"),
+
+    invoiceLogo: T("Invoice logo", "Logo op de factuur", "Logotipo de la factura"),
+    invoiceLogoLead: T(
+      "PNG or JPEG. An invoice keeps the logo it was finalised with, so replacing this does not restyle old invoices.",
+      "PNG of JPEG. Een factuur houdt het logo waarmee hij definitief werd, dus vervangen verandert oude facturen niet.",
+      "PNG o JPEG. Una factura conserva el logotipo con el que se finalizó, así que sustituirlo no cambia las antiguas.",
+    ),
+    logoType: T(
+      "Use a PNG or a JPEG — those are what a PDF can embed.",
+      "Gebruik een PNG of een JPEG — die kan een PDF insluiten.",
+      "Usa un PNG o un JPEG: son los que un PDF puede incrustar.",
+    ),
   },
 
   team: {

@@ -65,6 +65,7 @@ export function AdminShell({
     ["/admin/properties", t.nav.properties],
     ["/admin/documents", t.nav.documents],
     ["/admin/tasks", t.nav.tasks],
+    ["/admin/invoices", t.nav.invoices],
     ["/admin/account", t.nav.myAccount],
     ["/admin/workspace", t.nav.workspace],
     ["/admin/team", t.nav.team],

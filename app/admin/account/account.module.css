@@ -110,6 +110,11 @@
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 }
 
+/* A field that wants the whole row: a note, an instruction, an address line. */
+.wide {
+  grid-column: 1 / -1;
+}
+
 .field {
   display: flex;
   flex-direction: column;

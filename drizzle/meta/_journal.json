@@ -57,6 +57,13 @@
       "when": 1789947600000,
       "tag": "0007_guide_cover",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1789954800000,
+      "tag": "0008_invoicing",
+      "breakpoints": true
     }
   ]
 }

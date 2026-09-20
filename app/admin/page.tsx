@@ -2,12 +2,15 @@ import Link from "next/link";
 import {
   IconClients,
   IconDocuments,
+  IconInvoices,
   IconProcedures,
   IconProperties,
 } from "@/components/ui/Icons";
 import { staffOrRedirect } from "@/lib/auth/session";
 import { copy, fill } from "@/lib/i18n";
 import { currentLocale } from "@/lib/locale";
+import { outstandingTotal } from "@/lib/invoices";
+import { formatMoney } from "@/lib/money";
 import { listClients, listGuides, listProperties, listSentDocuments } from "@/lib/queries";
 import shell from "./staff.module.css";
 import s from "./overview.module.css";
@@ -29,11 +32,12 @@ export default async function OverviewPage() {
   const [actor, locale] = await Promise.all([staffOrRedirect(), currentLocale()]);
   const t = copy(locale);
 
-  const [clients, properties, guides, documents] = await Promise.all([
+  const [clients, properties, guides, documents, outstanding] = await Promise.all([
     listClients(actor),
     listProperties(actor),
     listGuides(actor),
     listSentDocuments(actor),
+    outstandingTotal(actor),
   ]);
 
   const waiting = documents.filter((doc) => doc.status === "RECEIVED");
@@ -104,6 +108,17 @@ export default async function OverviewPage() {
           <span className={s.tileCount}>{documents.length}</span>
           <span className={s.tileLabel}>{t.nav.documents}</span>
           <span className={s.tileNote}>{t.overview.documentsNote}</span>
+        </Link>
+
+        {/* Money owed, in money rather than a count: "three invoices" and
+            "three thousand euro" are different amounts of news. */}
+        <Link href="/admin/invoices" className={s.tile}>
+          <span className={s.tileIcon}>
+            <IconInvoices />
+          </span>
+          <span className={s.tileMoney}>{formatMoney(outstanding.cents, locale)}</span>
+          <span className={s.tileLabel}>{t.invoices.outstanding}</span>
+          <span className={s.tileNote}>{t.invoices.outstandingNote}</span>
         </Link>
       </div>
     </div>

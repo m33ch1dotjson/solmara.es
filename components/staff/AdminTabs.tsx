@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import {
   IconClients,
   IconDocuments,
+  IconInvoices,
   IconOverview,
   IconProcedures,
   IconProperties,
@@ -114,6 +115,14 @@ export function AdminTabs({
         >
           <IconTasks />
           {t.nav.tasks}
+        </Link>
+        <Link
+          href="/admin/invoices"
+          className={tabClass("/admin/invoices")}
+          aria-current={current("/admin/invoices")}
+        >
+          <IconInvoices />
+          {t.nav.invoices}
         </Link>
 
         <span className={`${s.group} ${s.groupLater}`}>{t.nav.account}</span>

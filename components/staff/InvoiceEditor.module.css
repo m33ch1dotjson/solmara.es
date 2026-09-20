@@ -1,0 +1,290 @@
+.editor {
+  padding-bottom: 40px;
+}
+
+.textarea {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--panel);
+  color: var(--ink);
+  padding: 12px 14px;
+  font-size: 14px;
+  font-family: inherit;
+  line-height: 1.55;
+  resize: vertical;
+  width: 100%;
+}
+
+.textarea:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent) 16%, transparent);
+}
+
+.clientRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.linked {
+  font-size: 12.5px;
+  color: var(--ok);
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------- line items */
+
+/*
+ * A spreadsheet row on a desk, a stack of labelled fields on a phone. The same
+ * markup both times: the header row is hidden on narrow screens and each cell
+ * carries its own label, which is what makes the phone version legible without a
+ * second component to keep in step.
+ */
+.lines {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.lineHead {
+  display: none;
+}
+
+.line {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--panel-2);
+  position: relative;
+}
+
+.cell {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.mobileLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.lineTotal {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 650;
+  justify-content: flex-end;
+}
+
+.removeLine {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-small);
+  background: var(--panel);
+  color: var(--ink-3);
+  font-size: 17px;
+  line-height: 1;
+  padding-bottom: 2px;
+}
+
+.removeLine:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+@media (min-width: 860px) {
+  .lineHead {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 90px 120px 100px 120px 40px;
+    gap: 10px;
+    padding: 0 14px;
+    font-size: 12px;
+    font-weight: 650;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  .line {
+    grid-template-columns: minmax(0, 1fr) 90px 120px 100px 120px 40px;
+    align-items: center;
+    background: transparent;
+    border-color: transparent;
+    border-bottom: 1px solid var(--line-soft);
+    border-radius: 0;
+    padding: 10px 14px;
+  }
+
+  .mobileLabel {
+    display: none;
+  }
+
+  .num input,
+  .num select {
+    text-align: right;
+  }
+
+  .lineTotal {
+    text-align: right;
+    display: block;
+  }
+
+  .removeLine {
+    position: static;
+    justify-self: end;
+  }
+}
+
+/* ---------------------------------------------------------------- totals */
+
+.totals {
+  margin-top: 22px;
+  margin-left: auto;
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.totalRow {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+
+.totalValue {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.grandTotal {
+  margin-top: 6px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  font-size: 16px;
+  font-weight: 650;
+  color: var(--ink);
+}
+
+.grandTotal .totalValue {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+/* --------------------------------------------------------------- actions */
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--panel);
+  box-shadow: var(--shadow-soft);
+}
+
+.deleteLink {
+  margin-left: auto;
+  border: none;
+  background: none;
+  color: var(--danger);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 8px;
+  border-radius: var(--radius-small);
+}
+
+.deleteLink:hover {
+  background: color-mix(in oklch, var(--danger) 10%, transparent);
+}
+
+.dangerButton {
+  border: none;
+  background: var(--danger);
+  color: oklch(1 0 0);
+  border-radius: var(--radius-control);
+  height: var(--control-h-sm);
+  padding: 0 16px;
+  font-size: 13.5px;
+  font-weight: 650;
+}
+
+.hintLine {
+  margin: 10px 2px 0;
+  font-size: 12.5px;
+  color: var(--ink-3);
+}
+
+/* ----------------------------------------------------------- client picker */
+
+.pickList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 14px;
+}
+
+.pickRow {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 11px 12px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  background: transparent;
+  text-align: left;
+}
+
+.pickRow:hover {
+  background: var(--panel-2);
+  border-color: var(--line);
+}
+
+.pickName {
+  font-size: 14.5px;
+  font-weight: 600;
+}
+
+.pickMeta {
+  font-size: 12.5px;
+  color: var(--ink-3);
+  overflow-wrap: anywhere;
+}
+
+.backRow {
+  margin: 24px 0 0;
+}
+
+.back {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+  text-decoration: none;
+}
+
+.back:hover {
+  color: var(--accent);
+}

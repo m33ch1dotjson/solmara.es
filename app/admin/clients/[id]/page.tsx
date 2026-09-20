@@ -1,11 +1,14 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ClientInvoices } from "@/components/staff/ClientInvoices";
 import { DocumentReview } from "@/components/staff/DocumentReview";
 import { InviteButton } from "@/components/staff/InviteButton";
 import { Mono, StatusPill } from "@/components/ui";
 import { staffOrRedirect } from "@/lib/auth/session";
 import { copy, fill, formatDateFor } from "@/lib/i18n";
 import { currentDatePrefs, currentLocale } from "@/lib/locale";
+import { displayStatus, listClientInvoices } from "@/lib/invoices";
+import { formatMoney } from "@/lib/money";
 import { getClient } from "@/lib/queries";
 import { BUCKET_CLIENT_DOCUMENTS, signedUrl } from "@/lib/storage";
 import shell from "../../staff.module.css";
@@ -38,6 +41,7 @@ export default async function AdminClientPage({
 
   const t = copy(locale);
   const { record, documents, invites, hasAccount } = found;
+  const invoices = await listClientInvoices(actor, id);
 
   function show(value: string | Date | null): string {
     if (!value) return t.common.blank;
@@ -141,6 +145,18 @@ export default async function AdminClientPage({
           />
         ))}
       </div>
+
+      <h2 className={s.sectionTitle}>{t.invoices.clientSection}</h2>
+      <ClientInvoices
+        clientId={record.id}
+        rows={invoices.map((row) => ({
+          id: row.id,
+          number: row.number,
+          amount: formatMoney(row.totalCents, locale, row.currency),
+          issued: formatDateFor(row.issueDate, locale, dates),
+          status: displayStatus(row.status, row.dueDate),
+        }))}
+      />
 
       {lastInvite && !hasAccount && (
         <p className={s.inviteMeta}>

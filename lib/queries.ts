@@ -386,6 +386,25 @@ export async function updateWorkspace(
     defaultCountry: string;
     defaultCurrency: string;
     logoKey?: string | null;
+
+    /* Invoicing. Read only when an invoice is finalised, and copied onto it then. */
+    legalName?: string | null;
+    taxId?: string | null;
+    address?: string | null;
+    postalCode?: string | null;
+    city?: string | null;
+    province?: string | null;
+    country?: string | null;
+    accountHolder?: string | null;
+    iban?: string | null;
+    bic?: string | null;
+    bankName?: string | null;
+    paymentInstructions?: string | null;
+    invoicePrefix?: string;
+    paymentTermsDays?: number;
+    invoiceLanguage?: "en" | "nl" | "es";
+    invoiceNotes?: string | null;
+    invoiceLogoKey?: string | null;
   },
 ) {
   if (actor.kind !== "staff" || actor.role !== "ADMIN") throw new Error("UNAUTHORISED");

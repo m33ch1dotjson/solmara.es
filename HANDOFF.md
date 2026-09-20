@@ -157,6 +157,44 @@ used to query `staff_user` directly, which its own policy blocked — you had to
 staff to discover that you were staff, so login looked broken. Do not "simplify" it
 back into a plain select.
 
+### Invoicing
+
+**The invoice row is the invoice; the PDF is a rendering of it.** It can be deleted
+and made again from the same row, which is why finalisation copies the sender and the
+recipient onto the invoice. Those `issuer_*` and `customer_*` columns are not
+denormalisation to save a join — they are the point. Changing the company address or a
+client's address must never rewrite a document that has already gone out.
+
+**Money is integer cents, and `lib/money.ts` is the only place that rounds.** The
+editor, the server action and the PDF all call `invoiceTotals()` with the same inputs,
+which is what makes the screen and the paper agree to the cent. Rounding is half-up per
+line, before the lines are added, because each line has to be a payable amount on its
+own. Never introduce a second calculation; if a total is wrong, it is wrong in one file.
+
+**The official number is handed out by the database, once, at finalisation.** A single
+atomic upsert on `app.invoice_counter` (`... on conflict do update set next_number =
+next_number + 1 returning next_number - 1`) serialises two simultaneous finalisations on
+one row lock. Verified with ten parallel transactions: ten different numbers, 1 to 10.
+Drafts deliberately have no number, so deleting one leaves no gap in the sequence — a
+gap is the thing an accountant asks about. Finalising twice returns the first number
+rather than taking a second, which is what a double click looks like.
+
+**Finalisation and PDF generation are two steps on purpose.** The number and the
+snapshot are one transaction; generating the PDF and uploading it is after, because it
+talks to storage over a network and can fail for reasons the invoice knows nothing
+about. If it fails the invoice is still valid and the detail page offers to make the PDF
+again — from the stored snapshot, never from today's settings.
+
+**PDFs are drawn with pdfkit** (`lib/invoice-pdf.ts`), not with a headless browser. It
+is in `serverExternalPackages` in `next.config.ts`: bundled, it cannot find its own font
+metrics and every invoice fails on the first line of text. Standard fonts with WinAnsi
+encoding cover Dutch and Spanish accents and the euro sign; a client whose name needs
+more than that will need an embedded TTF here, and nothing else changes.
+
+**A future fiscal integration (VeriFactu and friends) has one seam:** inside
+`finalizeInvoice`, between assigning the number and returning. Nothing today claims any
+fiscal certification, and nothing should until there is a real, verified integration.
+
 ### Storage
 
 Buckets `client-documents`, `property-photos` and `process-guide-files` are **private
@@ -253,6 +291,10 @@ The i18n layer (added last):
 - **A policy that calls a function must come after the function exists**, in the same
   file. `CREATE POLICY ... USING (app.is_admin())` fails on an undefined function like
   any other missing reference, and takes the whole migration with it.
+- **A plain value exported from a `"use client"` module arrives in a server component
+  as a client reference, not the value.** Spreading it gives `{}`. A shared constant
+  belongs in a module without the directive — this cost a 500 on the new-invoice page,
+  where the starting line ended up with no quantity.
 - When testing Supabase Storage with `curl`, send **both** `Authorization` and `apikey`.
   Omitting `apikey` gives `400 Invalid Compact JWS`, which looks like an app bug and is not.
 
