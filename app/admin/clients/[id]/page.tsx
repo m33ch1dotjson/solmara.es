@@ -1,15 +1,17 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ClientBillingCard } from "@/components/staff/ClientBillingCard";
 import { ClientInvoices } from "@/components/staff/ClientInvoices";
 import { DocumentReview } from "@/components/staff/DocumentReview";
 import { InviteButton } from "@/components/staff/InviteButton";
+import { Avatar } from "@/components/ui/Avatar";
 import { Mono, StatusPill } from "@/components/ui";
 import { staffOrRedirect } from "@/lib/auth/session";
 import { copy, fill, formatDateFor } from "@/lib/i18n";
 import { currentDatePrefs, currentLocale } from "@/lib/locale";
 import { displayStatus, listClientInvoices } from "@/lib/invoices";
 import { formatMoney } from "@/lib/money";
-import { getClient } from "@/lib/queries";
+import { getClient, initialsFor } from "@/lib/queries";
 import { BUCKET_CLIENT_DOCUMENTS, signedUrl } from "@/lib/storage";
 import shell from "../../staff.module.css";
 import s from "./client.module.css";
@@ -77,7 +79,13 @@ export default async function AdminClientPage({
       </Link>
 
       <div className={s.head}>
-        <div>
+        <div className={s.who}>
+          <Avatar
+            url={record.avatarKey ? await signedUrl(BUCKET_CLIENT_DOCUMENTS, record.avatarKey) : null}
+            initials={initialsFor(record.name)}
+            size={52}
+          />
+          <div>
           <h1 className={shell.pageTitle}>{record.name}</h1>
           <div className={s.meta}>
             <Mono size={13} color="var(--ink-3)">
@@ -105,6 +113,7 @@ export default async function AdminClientPage({
                 : t.clientDetail.detailsNotFilled}
             </span>
           </div>
+        </div>
         </div>
         {hasAccount ? (
           <span className={s.quiet}>{t.clients.hasAccount}</span>
@@ -145,6 +154,22 @@ export default async function AdminClientPage({
           />
         ))}
       </div>
+
+      <ClientBillingCard
+        id={record.id}
+        initials={initialsFor(record.name)}
+        avatarUrl={record.avatarKey ? await signedUrl(BUCKET_CLIENT_DOCUMENTS, record.avatarKey) : null}
+        values={{
+          companyName: record.companyName ?? "",
+          phone: record.phone ?? "",
+          postalCode: record.postalCode ?? "",
+          city: record.city ?? "",
+          province: record.province ?? "",
+          country: record.country ?? "",
+          taxId: record.taxId ?? "",
+          vatNumber: record.vatNumber ?? "",
+        }}
+      />
 
       <h2 className={s.sectionTitle}>{t.invoices.clientSection}</h2>
       <ClientInvoices

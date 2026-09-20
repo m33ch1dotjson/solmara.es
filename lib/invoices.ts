@@ -132,7 +132,14 @@ export async function listClientsForPicker(actor: Actor) {
         preferredLocale: client.preferredLocale,
         addressSpain: client.addressSpain,
         addressHomeCountry: client.addressHomeCountry,
-        nationality: client.nationality,
+        // Everything the office already knows, so nobody retypes a NIF per invoice.
+        companyName: client.companyName,
+        postalCode: client.postalCode,
+        city: client.city,
+        province: client.province,
+        country: client.country,
+        taxId: client.taxId,
+        vatNumber: client.vatNumber,
       })
       .from(client)
       .orderBy(asc(client.name)),

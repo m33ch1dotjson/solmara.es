@@ -1,0 +1,425 @@
+.wrap {
+  margin-top: 18px;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+/* Two small buttons, Finder-style. The active one takes the accent. */
+.toggle {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--panel);
+  overflow: hidden;
+}
+
+.toggleButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  color: var(--ink-3);
+  transition: background 150ms ease, color 150ms ease;
+}
+
+.toggleButton + .toggleButton {
+  border-left: 1px solid var(--line-soft);
+}
+
+.toggleButton:hover {
+  background: var(--panel-2);
+  color: var(--ink);
+}
+
+.toggleOn {
+  background: color-mix(in oklch, var(--accent) 14%, transparent);
+  color: var(--accent);
+}
+
+.toggleOn:hover {
+  background: color-mix(in oklch, var(--accent) 14%, transparent);
+  color: var(--accent);
+}
+
+.controls {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.search {
+  flex: 1 1 260px;
+  min-width: 0;
+  height: var(--control-h);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--panel);
+  color: var(--ink);
+  padding: 0 14px;
+  font-size: 14px;
+}
+
+.search:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent) 16%, transparent);
+}
+
+.sortField {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.sortLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.select {
+  height: var(--control-h);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--panel);
+  color: var(--ink);
+  padding: 0 12px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.chip {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--ink-2);
+  border-radius: var(--radius-pill);
+  height: 32px;
+  padding: 0 14px;
+  font-size: 13px;
+  font-weight: 550;
+  white-space: nowrap;
+}
+
+.chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.chipOn {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.count {
+  margin: 16px 0 12px;
+  font-size: 13px;
+  color: var(--ink-3);
+}
+
+/* ------------------------------------------------------------------- cards */
+
+/*
+ * One column on a phone, two on a tablet, three or four on a desk — decided by how
+ * much room there is rather than by a list of device widths, so no layout ever ends
+ * in a row with one card and a lot of nothing.
+ */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(268px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--panel);
+  box-shadow: var(--shadow-soft);
+  color: inherit;
+  text-decoration: none;
+  transition: box-shadow 150ms ease, border-color 150ms ease;
+}
+
+.card:hover {
+  text-decoration: none;
+  box-shadow: var(--shadow);
+  border-color: color-mix(in oklch, var(--accent) 40%, var(--line));
+}
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-width: 0;
+}
+
+.cardWho {
+  min-width: 0;
+}
+
+.cardName {
+  display: block;
+  font-size: 15.5px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  overflow-wrap: anywhere;
+}
+
+.card:hover .cardName {
+  color: var(--accent);
+}
+
+.cardCompany {
+  display: block;
+  font-size: 13px;
+  color: var(--ink-2);
+  overflow-wrap: anywhere;
+}
+
+.cardLines {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  /* Keeps cards the same height whether or not somebody has a phone number. */
+  flex: 1;
+}
+
+.cardLine {
+  display: flex;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--ink-2);
+  overflow-wrap: anywhere;
+}
+
+.glyph {
+  color: var(--ink-3);
+  flex: none;
+  width: 14px;
+  text-align: center;
+}
+
+.cardFoot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line-soft);
+  flex-wrap: wrap;
+}
+
+.code {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--ink-3);
+}
+
+.details {
+  margin-left: auto;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------- the list */
+
+.listWrap {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--panel);
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+}
+
+.table {
+  display: none;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  padding: 13px 18px;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 11px 18px;
+  border-bottom: 1px solid var(--line-soft);
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.rowLink {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  color: inherit;
+  text-decoration: none;
+  min-width: 0;
+}
+
+.rowName {
+  display: block;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.rowLink:hover .rowName {
+  color: var(--accent);
+}
+
+.rowSub {
+  display: block;
+  font-size: 12px;
+  color: var(--ink-3);
+  overflow-wrap: anywhere;
+}
+
+.muted {
+  color: var(--ink-2);
+  font-size: 13.5px;
+  overflow-wrap: anywhere;
+}
+
+/* The phone version of the same list: no table to squeeze, no sideways scroll. */
+.compact {
+  display: flex;
+  flex-direction: column;
+}
+
+.compactRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line-soft);
+  color: inherit;
+  text-decoration: none;
+}
+
+.compactRow:last-child {
+  border-bottom: none;
+}
+
+.compactWho {
+  min-width: 0;
+  flex: 1;
+}
+
+@media (min-width: 860px) {
+  .table {
+    display: table;
+  }
+
+  .compact {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------------ pills */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-pill);
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--panel-2);
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.pillACTIVE {
+  background: color-mix(in oklch, var(--ok) 14%, transparent);
+  color: var(--ok);
+}
+
+.pillINVITED {
+  background: color-mix(in oklch, var(--info) 13%, transparent);
+  color: var(--info);
+}
+
+.pillCLOSED {
+  background: var(--panel-2);
+  color: var(--ink-3);
+}
+
+/* ---------------------------------------------------------------- paging */
+
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.pageButton {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--ink-2);
+  border-radius: var(--radius-control);
+  height: var(--control-h-sm);
+  padding: 0 14px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.pageButton:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.pageButton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.pageOf {
+  font-size: 13px;
+  color: var(--ink-3);
+}
+
+.empty {
+  margin: 0;
+  padding: 36px 24px;
+  text-align: center;
+  font-size: 13.5px;
+  color: var(--ink-3);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-card);
+}

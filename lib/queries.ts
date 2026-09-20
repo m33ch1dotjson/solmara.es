@@ -39,6 +39,11 @@ export async function listClients(actor: Actor) {
         code: client.code,
         name: client.name,
         email: client.email,
+        phone: client.phone,
+        companyName: client.companyName,
+        city: client.city,
+        country: client.country,
+        avatarKey: client.avatarKey,
         status: client.status,
         detailsCompletedAt: client.detailsCompletedAt,
         createdAt: client.createdAt,
@@ -303,6 +308,46 @@ export function initialsFor(name: string): string {
   const first = parts[0]?.[0] ?? "";
   const last = parts.length > 1 ? (parts[parts.length - 1]?.[0] ?? "") : "";
   return (first + last).toUpperCase();
+}
+
+/**
+ * The billing details a colleague keeps about a client.
+ *
+ * Separate from what the client fills in themselves: this is the office's own view
+ * of who to invoice, and a client editing their profile never touches it.
+ */
+export async function updateClientBilling(
+  actor: Actor,
+  id: string,
+  input: {
+    companyName: string | null;
+    phone: string | null;
+    postalCode: string | null;
+    city: string | null;
+    province: string | null;
+    country: string | null;
+    taxId: string | null;
+    vatNumber: string | null;
+    avatarKey?: string | null;
+  },
+) {
+  if (actor.kind !== "staff") throw new Error("UNAUTHORISED");
+  return asActor(actor, async (tx) => {
+    const [updated] = await tx
+      .update(client)
+      .set({ ...input, updatedAt: new Date() })
+      .where(eq(client.id, id))
+      .returning({ id: client.id });
+    return Boolean(updated);
+  });
+}
+
+/** Grid or list, for this colleague alone. */
+export async function setClientsView(actor: Actor, view: "GRID" | "LIST") {
+  if (actor.kind !== "staff") throw new Error("UNAUTHORISED");
+  return asActor(actor, (tx) =>
+    tx.update(staffUser).set({ clientsView: view }).where(eq(staffUser.id, actor.id)),
+  );
 }
 
 /* ------------------------------------------------------------------- the team */

@@ -1,36 +1,54 @@
-import Link from "next/link";
-import { NewClientForm } from "@/components/staff/NewClientForm";
-import { InviteButton } from "@/components/staff/InviteButton";
-import { Mono, StatusPill } from "@/components/ui";
+import { ClientsBrowser } from "@/components/staff/ClientsBrowser";
 import { staffOrRedirect } from "@/lib/auth/session";
 import { brand } from "@/lib/brand";
-import { copy, fill } from "@/lib/i18n";
-import { currentLocale } from "@/lib/locale";
-import { listClients } from "@/lib/queries";
+import { copy, formatDateFor } from "@/lib/i18n";
+import { currentDatePrefs, currentLocale } from "@/lib/locale";
+import { initialsFor, listClients, myStaffProfile } from "@/lib/queries";
+import { BUCKET_CLIENT_DOCUMENTS, signedUrl } from "@/lib/storage";
 import shell from "../staff.module.css";
-import s from "../admin.module.css";
+
+/*
+ * The client directory.
+ *
+ * One query, one list, two ways of looking at it. Search, filter, sort and paging
+ * all happen in the browser over that one array — at this size that answers while
+ * you type, and when the office has a thousand clients the filter moves into the
+ * query and the two renderers do not change at all.
+ */
 
 export async function generateMetadata() {
   return { title: copy(await currentLocale()).clients.title };
 }
 
-/** The pill's tone comes from the status vocabulary; the word comes from the dictionary. */
-const PILL_STATUS = {
-  INVITED: "required",
-  ACTIVE: "approved",
-  CLOSED: "waived",
-} as const;
-
 export default async function ClientsPage() {
-  const [actor, locale] = await Promise.all([staffOrRedirect(), currentLocale()]);
-  const clients = await listClients(actor);
+  const [actor, locale, dates] = await Promise.all([
+    staffOrRedirect(),
+    currentLocale(),
+    currentDatePrefs(),
+  ]);
   const t = copy(locale);
 
-  const pillLabel = {
-    INVITED: t.clients.statusInvited,
-    ACTIVE: t.clients.statusActive,
-    CLOSED: t.clients.statusClosed,
-  };
+  const [clients, me] = await Promise.all([listClients(actor), myStaffProfile(actor)]);
+
+  const rows = await Promise.all(
+    clients.map(async (row) => ({
+      id: row.id,
+      code: row.code,
+      name: row.name,
+      initials: initialsFor(row.name),
+      email: row.email,
+      phone: row.phone ?? "",
+      companyName: row.companyName ?? "",
+      place: [row.city, row.country].filter(Boolean).join(", "),
+      status: row.status,
+      hasAccount: row.hasAccount,
+      // Signed per render like every other private file; ten minutes is plenty for
+      // a list somebody is looking at now.
+      avatarUrl: row.avatarKey ? await signedUrl(BUCKET_CLIENT_DOCUMENTS, row.avatarKey) : null,
+      created: formatDateFor(row.createdAt, locale, dates),
+      createdRaw: row.createdAt.toISOString(),
+    })),
+  );
 
   return (
     <div className={shell.screen}>
@@ -39,42 +57,11 @@ export default async function ClientsPage() {
       </div>
       <p className={shell.pageLead}>{t.clients.lead}</p>
 
-      <NewClientForm defaultLocale={brand.defaultLocale} />
-
-      <h2 className={s.sectionTitle}>
-        {fill(clients.length === 1 ? t.clients.countOne : t.clients.countMany, {
-          n: clients.length,
-        })}
-      </h2>
-
-      {clients.length === 0 ? (
-        <p className={s.empty}>{t.clients.empty}</p>
-      ) : (
-        <div className={s.rows}>
-          {clients.map((row) => (
-            <div key={row.id} className={s.row}>
-              <Mono size={12.5} color="var(--ink-3)">
-                {row.code}
-              </Mono>
-              <Link href={`/admin/clients/${row.id}`} className={s.rowText}>
-                <div className={s.rowName}>{row.name}</div>
-                <div className={s.rowMeta}>{row.email}</div>
-              </Link>
-              <StatusPill
-                status={PILL_STATUS[row.status]}
-                audience="staff"
-                locale={locale}
-                labelOverride={pillLabel[row.status]}
-              />
-              {row.hasAccount ? (
-                <span className={s.rowQuiet}>{t.clients.hasAccount}</span>
-              ) : (
-                <InviteButton clientId={row.id} clientName={row.name} />
-              )}
-            </div>
-          ))}
-        </div>
-      )}
+      <ClientsBrowser
+        rows={rows}
+        view={me?.clientsView === "LIST" ? "LIST" : "GRID"}
+        defaultLocale={brand.defaultLocale}
+      />
     </div>
   );
 }

@@ -17,14 +17,24 @@ import s from "./forms.module.css";
  * colleague picking Spanish for a client is picking "Español", and the list reads
  * the same whichever language the admin screens happen to be in.
  */
-export function NewClientForm({ defaultLocale }: { defaultLocale: Locale }) {
+export function NewClientForm({
+  defaultLocale,
+  onSaved,
+}: {
+  defaultLocale: Locale;
+  /** Lets the dialog it now lives in know it may close. */
+  onSaved?: () => void;
+}) {
   const { t } = useCopy();
   const formRef = useRef<HTMLFormElement>(null);
 
   const [state, action, pending] = useActionState(
     async (_prev: ActionResult | null, form: FormData) => {
       const result = await createClientAction(form);
-      if (result.ok) formRef.current?.reset();
+      if (result.ok) {
+        formRef.current?.reset();
+        onSaved?.();
+      }
       return result;
     },
     null,

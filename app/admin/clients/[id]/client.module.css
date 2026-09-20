@@ -95,3 +95,11 @@
   color: var(--ink-3);
   white-space: nowrap;
 }
+
+/* The face next to the name, so the person is recognisable before the text is read. */
+.who {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}

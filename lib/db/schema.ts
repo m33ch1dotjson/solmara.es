@@ -82,6 +82,8 @@ export const staffUser = app.table(
     timeZone: text("time_zone").notNull().default("Europe/Madrid"),
     /** "LONG" | "DD/MM/YYYY" | "MM/DD/YYYY" | "YYYY-MM-DD" */
     dateStyle: text("date_style").notNull().default("LONG"),
+    /** "GRID" | "LIST" — how this colleague likes the client list. */
+    clientsView: text("clients_view").notNull().default("GRID"),
     /** A growing set of switches, so a new one is not a migration. */
     notify: jsonb("notify").notNull().default({}),
 
@@ -284,12 +286,25 @@ export const client = app.table(
     preferredLocale: locale("preferred_locale").notNull().default("en"),
 
     phone: text("phone"),
+    /** A photograph, in the private client bucket. Optional, always. */
+    avatarKey: text("avatar_key"),
     dateOfBirth: date("date_of_birth"),
     nationality: text("nationality"),
     passportNumber: text("passport_number"),
     passportExpiry: date("passport_expiry"),
     addressHomeCountry: text("address_home_country"),
     addressSpain: text("address_spain"),
+
+    /* What an invoice needs. Filled by staff, copied onto an invoice when one is
+       made, and never read back from here once that invoice is final. */
+    companyName: text("company_name"),
+    postalCode: text("postal_code"),
+    city: text("city"),
+    province: text("province"),
+    country: text("country"),
+    /** NIE or NIF; which of the two depends on the person. */
+    taxId: text("tax_id"),
+    vatNumber: text("vat_number"),
 
     /** Internal. Never leaves the admin side — see the client_self function. */
     internalNotes: text("internal_notes"),
