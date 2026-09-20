@@ -242,10 +242,19 @@ attempt at this test was wrong in exactly that way.
 
 Roughly in the order they block things.
 
-1. **No outbound mail.** Brevo SMTP was the plan and is not configured. Consequences:
-   magic links are unreliable, and **a client who forgets their password cannot reset
-   it** — the owner accepted that explicitly for now. Once SMTP works, magic link can
-   become the default again by swapping which half of the sign-in screen leads.
+1. **Outbound mail now works** (owner, 2026-09-20). Brevo is wired up as Supabase's
+   custom SMTP — note there are no Brevo variables in `.env.local`, because auth mail
+   is sent by Supabase, not by this app. The Brevo *domain* is still awaiting approval,
+   so treat deliverability as provisional until it is. What this unblocks, none of it
+   built yet:
+   - **Password reset for clients.** There is no forgot-password route at all today;
+     `app/(client)/signin/page.tsx` has password + magic link and nothing else. This was
+     the accepted gap while mail was down, and it no longer has to be one.
+   - **Magic link as the default route**, by swapping which half of the sign-in screen
+     leads. The comment at the top of that file says as much.
+   - The 429 hourly cap still deserves its honest message, but with custom SMTP the
+     limit is Supabase's configurable one, not the shared mailer's — re-check the number
+     before trusting `t.signin.rateLimited`.
 2. **`portal.solmara.es` DNS is blocked.** Cloudflare will not accept a subdomain-only
    zone on their plan, and the owner does not want the apex in Cloudflare because the
    agency manages it. Options given: move the whole zone, use a VPS with a CNAME, or
