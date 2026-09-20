@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { AdminTabs } from "@/components/staff/AdminTabs";
+import { StaffLogin } from "@/components/staff/StaffLogin";
 import { currentActor } from "@/lib/auth/session";
 import { brand } from "@/lib/brand";
 import s from "./staff.module.css";
@@ -10,17 +11,25 @@ export const metadata: Metadata = {
 };
 
 /*
- * Every admin screen sits behind this. The check is in the layout rather than in
- * each page, so a new page added later is protected by default instead of by
+ * Every admin screen sits behind this. The check lives in the layout rather than in
+ * each page, so a page added later is protected by default instead of by someone
  * remembering.
  *
- * Someone signed in with an address that is in neither staff_user nor
- * client_contact gets no actor at all, and is sent back to sign in.
+ * A signed-out visitor gets the staff sign-in here, on /admin itself — no bounce to
+ * the client portal's door. A signed-in client gets sent to their own side, because
+ * this is not their building.
  */
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const actor = await currentActor();
 
-  if (!actor) redirect("/signin?next=/admin");
+  if (!actor) {
+    return (
+      <div className={`themeStaff ${s.shell}`}>
+        <StaffLogin brandName={brand.staffName} />
+      </div>
+    );
+  }
+
   if (actor.kind !== "staff") redirect("/");
 
   return (
