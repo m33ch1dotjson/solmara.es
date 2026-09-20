@@ -28,10 +28,8 @@
 }
 
 .logo {
-  width: 30px;
-  height: 30px;
-  border-radius: var(--radius-small);
-  background: var(--accent);
+  color: var(--brand-mark);
+  flex: none;
 }
 
 .brandName {
@@ -121,4 +119,9 @@
   font-size: 13px;
   color: var(--danger);
   font-weight: 550;
+}
+
+/* Pushes the switcher to the far end of the brand row. */
+.spacer {
+  flex: 1;
 }

@@ -58,14 +58,19 @@ export const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "im
 export const ALLOWED_DOCUMENT_TYPES = [...ALLOWED_IMAGE_TYPES, "application/pdf"];
 export const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
 
+/**
+ * Why an upload was refused. A code rather than a sentence: this layer has no
+ * business knowing which language the person on the other end reads, and a message
+ * baked in here could only ever come out in one.
+ */
+export type UploadRefusal = "empty" | "tooLarge" | "type";
+
 export function validateUpload(
   file: File,
   allowed: string[],
-): { ok: true } | { ok: false; error: string } {
-  if (file.size === 0) return { ok: false, error: "Het bestand is leeg." };
-  if (file.size > MAX_UPLOAD_BYTES) return { ok: false, error: "Het bestand is groter dan 10 MB." };
-  if (!allowed.includes(file.type)) {
-    return { ok: false, error: "Dit bestandstype accepteren we niet." };
-  }
+): { ok: true } | { ok: false; reason: UploadRefusal } {
+  if (file.size === 0) return { ok: false, reason: "empty" };
+  if (file.size > MAX_UPLOAD_BYTES) return { ok: false, reason: "tooLarge" };
+  if (!allowed.includes(file.type)) return { ok: false, reason: "type" };
   return { ok: true };
 }

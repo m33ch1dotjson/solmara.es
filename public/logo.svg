@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 976 976" role="img" aria-label="Solmavera">
+  <!--
+    Traced from the supplied mark. It is built from circular arcs of one constant
+    width, so it is drawn as three stroked paths rather than filled outlines: that
+    keeps the file small, scales cleanly, and lets the colour come from CSS.
+
+    Geometry, measured off the original at 976x976:
+      stroke width 85
+      top cup     centre (571,148), centre-line radius 176.5
+      bottom cap  centre (392,828), centre-line radius 173.5
+      the S       two arcs of radius 350, from (219,148) to (757,828)
+  -->
+  <g fill="none" stroke="currentColor" stroke-width="85">
+    <path d="M 394.5 148 A 176.5 176.5 0 0 0 747.5 148" />
+    <path d="M 219 148 A 350 350 0 0 0 488 488 A 350 350 0 0 1 757 828" />
+    <path d="M 218.5 828 A 173.5 173.5 0 0 1 565.5 828" />
+  </g>
+</svg>

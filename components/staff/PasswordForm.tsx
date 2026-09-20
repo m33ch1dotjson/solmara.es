@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useCopy } from "@/components/ui/LocaleProvider";
 import { browserClient } from "@/lib/auth/supabase-browser";
+import { fill } from "@/lib/i18n";
 import s from "./forms.module.css";
 
 /*
@@ -17,6 +19,7 @@ import s from "./forms.module.css";
 const MINIMUM = 8;
 
 export function PasswordForm() {
+  const { t } = useCopy();
   const [password, setPassword] = useState("");
   const [repeat, setRepeat] = useState("");
   const [pending, setPending] = useState(false);
@@ -28,11 +31,11 @@ export function PasswordForm() {
     setError(null);
 
     if (password.length < MINIMUM) {
-      setError(`Gebruik minstens ${MINIMUM} tekens.`);
+      setError(fill(t.account.tooShort, { n: MINIMUM }));
       return;
     }
     if (password !== repeat) {
-      setError("De twee wachtwoorden zijn niet gelijk.");
+      setError(t.account.mismatch);
       return;
     }
 
@@ -55,7 +58,7 @@ export function PasswordForm() {
     <form onSubmit={submit} className={s.form}>
       <div className={s.grid}>
         <label className={s.field}>
-          <span className={s.label}>Nieuw wachtwoord</span>
+          <span className={s.label}>{t.account.newPassword}</span>
           <input
             type="password"
             className={s.input}
@@ -67,7 +70,7 @@ export function PasswordForm() {
         </label>
 
         <label className={s.field}>
-          <span className={s.label}>Nog een keer</span>
+          <span className={s.label}>{t.common.passwordAgain}</span>
           <input
             type="password"
             className={s.input}
@@ -81,10 +84,10 @@ export function PasswordForm() {
 
       <div className={s.actions}>
         <button type="submit" className={s.primary} disabled={pending}>
-          {pending ? "Bezig…" : "Wachtwoord instellen"}
+          {pending ? t.common.busy : t.account.submit}
         </button>
         {error && <span className={s.error}>{error}</span>}
-        {done && <span className={s.success}>Gelukt. Je kunt nu met dit wachtwoord inloggen.</span>}
+        {done && <span className={s.success}>{t.account.done}</span>}
       </div>
     </form>
   );

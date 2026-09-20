@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { redeemInviteAction } from "@/app/invite/actions";
+import { useCopy } from "@/components/ui/LocaleProvider";
 import { browserClient } from "@/lib/auth/supabase-browser";
+import { fill } from "@/lib/i18n";
 import s from "./client-forms.module.css";
 
 /*
@@ -22,6 +24,7 @@ import s from "./client-forms.module.css";
 const MINIMUM = 8;
 
 export function InviteSignup({ email }: { email: string }) {
+  const { t } = useCopy();
   const [password, setPassword] = useState("");
   const [repeat, setRepeat] = useState("");
   const [pending, setPending] = useState(false);
@@ -32,11 +35,11 @@ export function InviteSignup({ email }: { email: string }) {
     setError(null);
 
     if (password.length < MINIMUM) {
-      setError("Kies een wachtwoord van minstens " + MINIMUM + " tekens.");
+      setError(fill(t.invite.tooShort, { n: MINIMUM }));
       return;
     }
     if (password !== repeat) {
-      setError("De twee wachtwoorden zijn niet gelijk.");
+      setError(t.invite.mismatch);
       return;
     }
 
@@ -54,16 +57,14 @@ export function InviteSignup({ email }: { email: string }) {
 
       if (failure) {
         setPending(false);
-        setError(
-          "Er bestaat al een account voor dit adres, maar dit wachtwoord hoort er niet bij. Vraag uw contactpersoon om hulp.",
-        );
+        setError(t.invite.existsWrongPassword);
         return;
       }
     }
 
     if (failure) {
       setPending(false);
-      setError("Aanmaken lukte niet. Probeer het zo opnieuw.");
+      setError(t.invite.createFailed);
       return;
     }
 
@@ -71,9 +72,7 @@ export function InviteSignup({ email }: { email: string }) {
     // cannot arrive yet. Say so plainly rather than leaving a spinner.
     if (!data.session) {
       setPending(false);
-      setError(
-        "Uw account is aangemaakt, maar er wordt nog om een bevestiging per e-mail gevraagd. Laat uw contactpersoon die instelling uitzetten, dan kunt u meteen verder.",
-      );
+      setError(t.invite.confirmationPending);
       return;
     }
 
@@ -84,15 +83,13 @@ export function InviteSignup({ email }: { email: string }) {
   return (
     <form onSubmit={submit} className={s.form}>
       <label className={s.field}>
-        <span className={s.label}>Uw e-mailadres</span>
+        <span className={s.label}>{t.invite.emailLabel}</span>
         <input className={s.input} value={email} readOnly aria-readonly="true" />
-        <span className={s.hint}>
-          Klopt dit adres niet? Laat het uw contactpersoon weten, dan maken zij een nieuwe link.
-        </span>
+        <span className={s.hint}>{t.invite.emailHint}</span>
       </label>
 
       <label className={s.field}>
-        <span className={s.label}>Kies een wachtwoord</span>
+        <span className={s.label}>{t.invite.choosePassword}</span>
         <input
           type="password"
           className={s.input}
@@ -101,11 +98,11 @@ export function InviteSignup({ email }: { email: string }) {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <span className={s.hint}>Minstens {MINIMUM} tekens.</span>
+        <span className={s.hint}>{fill(t.invite.minimum, { n: MINIMUM })}</span>
       </label>
 
       <label className={s.field}>
-        <span className={s.label}>Nog een keer</span>
+        <span className={s.label}>{t.common.passwordAgain}</span>
         <input
           type="password"
           className={s.input}
@@ -117,7 +114,7 @@ export function InviteSignup({ email }: { email: string }) {
       </label>
 
       <button type="submit" className={s.primary} disabled={pending}>
-        {pending ? "Bezig…" : "Account aanmaken"}
+        {pending ? t.common.busy : t.invite.submit}
       </button>
 
       {error && <p className={s.error}>{error}</p>}

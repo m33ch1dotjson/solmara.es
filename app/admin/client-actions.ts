@@ -2,6 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { requireStaff } from "@/lib/auth/session";
+import { copy } from "@/lib/i18n";
+import { currentLocale } from "@/lib/locale";
 import { reviewDocument } from "@/lib/queries";
 import type { ActionResult } from "./actions";
 
@@ -13,17 +15,16 @@ import type { ActionResult } from "./actions";
  */
 export async function reviewDocumentAction(form: FormData): Promise<ActionResult> {
   const actor = await requireStaff();
+  const t = copy(await currentLocale());
 
   const documentId = String(form.get("documentId") ?? "");
   const approve = form.get("decision") === "approve";
   const note = String(form.get("note") ?? "").trim();
 
-  if (!documentId) return { ok: false, error: "Geen document opgegeven." };
-  if (!approve && !note) {
-    return { ok: false, error: "Geef een reden op. De klant leest die en moet weten wat er mis is." };
-  }
+  if (!documentId) return { ok: false, error: t.errors.noDocument };
+  if (!approve && !note) return { ok: false, error: t.errors.reasonRequired };
 
   await reviewDocument(actor, { documentId, approve, note });
   revalidatePath("/admin");
-  return { ok: true, message: approve ? "Goedgekeurd." : "Afgekeurd, de klant ziet de reden." };
+  return { ok: true, message: approve ? t.saved.approved : t.saved.rejected };
 }

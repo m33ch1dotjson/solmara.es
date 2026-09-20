@@ -13,10 +13,7 @@
 }
 
 .logo {
-  width: 30px;
-  height: 30px;
-  border-radius: var(--radius-small);
-  background: var(--accent);
+  color: var(--brand-mark);
   flex: none;
 }
 

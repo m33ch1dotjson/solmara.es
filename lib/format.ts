@@ -8,12 +8,14 @@
 
 import type { Locale } from "./brand";
 import type { Money } from "./domain";
+import { LOCALE_TAG as INTL_LOCALE } from "./i18n";
 
-const INTL_LOCALE: Record<Locale, string> = {
-  en: "en-GB",
-  nl: "nl-NL",
-  es: "es-ES",
-};
+/*
+ * Nothing imports this yet: it came with the original design handoff, for the
+ * invoicing and case-timeline screens the portal has not grown back. The BCP 47 tags
+ * come from lib/i18n.ts rather than a second copy here, so a language added there
+ * cannot leave this file formatting dates in the wrong one.
+ */
 
 export function formatMoney(amount: Money, locale: Locale): string {
   return new Intl.NumberFormat(INTL_LOCALE[locale], {

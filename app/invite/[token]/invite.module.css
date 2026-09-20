@@ -15,10 +15,8 @@
 }
 
 .logo {
-  width: 30px;
-  height: 30px;
-  border-radius: var(--radius-small);
-  background: var(--accent);
+  color: var(--brand-mark);
+  flex: none;
 }
 
 .h1 {
@@ -40,4 +38,10 @@
   font-size: 14.5px;
   line-height: 1.5;
   color: var(--ink-3);
+}
+
+/* The switcher sits above the mark: this may be the first page a client ever sees. */
+.topRow {
+  display: flex;
+  justify-content: flex-end;
 }

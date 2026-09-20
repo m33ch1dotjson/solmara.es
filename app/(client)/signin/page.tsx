@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useCopy } from "@/components/ui/LocaleProvider";
 import { browserClient } from "@/lib/auth/supabase-browser";
 import shell from "../portal.module.css";
 import s from "./signin.module.css";
@@ -20,6 +21,7 @@ import s from "./signin.module.css";
  * behaviour, known or not: otherwise this form is a way to enumerate the client list.
  */
 export default function SignInPage() {
+  const { t } = useCopy();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [pending, setPending] = useState(false);
@@ -39,7 +41,7 @@ export default function SignInPage() {
 
     if (failure) {
       setPending(false);
-      setError("Die combinatie klopt niet.");
+      setError(t.signin.wrong);
       return;
     }
 
@@ -63,11 +65,7 @@ export default function SignInPage() {
     if (failure) {
       // 429 is the mailer's hourly cap, not a transient hiccup. Telling someone to
       // try again in a minute sends them into a loop that cannot succeed.
-      setError(
-        failure.status === 429
-          ? "Er zijn te veel mails verstuurd. Probeer het over een uur opnieuw, of log in met uw wachtwoord."
-          : "Versturen lukte niet. Log in met uw wachtwoord of probeer het zo opnieuw.",
-      );
+      setError(failure.status === 429 ? t.signin.rateLimited : t.signin.sendFailed);
       return;
     }
 
@@ -80,13 +78,10 @@ export default function SignInPage() {
         <div className={s.tile} aria-hidden="true">
           ✉
         </div>
-        <h1 className={shell.h1}>Kijk in uw e-mail</h1>
-        <p className={shell.body}>
-          Als wij een account hebben voor dat adres, is er een inloglink onderweg. Open die op dit
-          apparaat en u bent binnen.
-        </p>
+        <h1 className={shell.h1}>{t.signin.checkMail}</h1>
+        <p className={shell.body}>{t.signin.checkMailLead}</p>
         <button type="button" className={s.textLink} onClick={() => setLinkSent(false)}>
-          Terug naar inloggen
+          {t.signin.backToSignIn}
         </button>
       </div>
     );
@@ -94,14 +89,11 @@ export default function SignInPage() {
 
   return (
     <form className={s.block} onSubmit={signIn}>
-      <h1 className={shell.h1}>Inloggen</h1>
-      <p className={shell.body}>
-        Vul het e-mailadres in dat u aan ons hebt doorgegeven, met het wachtwoord dat u zelf hebt
-        gekozen.
-      </p>
+      <h1 className={shell.h1}>{t.signin.title}</h1>
+      <p className={shell.body}>{t.signin.lead}</p>
 
       <label className={s.field}>
-        <span className={s.label}>E-mailadres</span>
+        <span className={s.label}>{t.common.email}</span>
         <input
           type="email"
           required
@@ -114,7 +106,7 @@ export default function SignInPage() {
       </label>
 
       <label className={s.field}>
-        <span className={s.label}>Wachtwoord</span>
+        <span className={s.label}>{t.common.password}</span>
         <input
           type="password"
           required
@@ -126,21 +118,19 @@ export default function SignInPage() {
       </label>
 
       <button type="submit" className={s.primary} disabled={pending}>
-        {pending ? "Bezig…" : "Inloggen"}
+        {pending ? t.common.busy : t.common.signIn}
       </button>
 
       {error && <p className={s.error}>{error}</p>}
 
       <div className={s.divider}>
-        <span>of</span>
+        <span>{t.common.or}</span>
       </div>
 
       <button type="button" className={s.secondary} onClick={sendLink} disabled={pending || !email}>
-        Stuur mij een inloglink
+        {t.signin.sendLink}
       </button>
-      <p className={shell.note}>
-        Vul eerst uw e-mailadres in. De link werkt één keer en vervalt na 30 minuten.
-      </p>
+      <p className={shell.note}>{t.signin.linkHint}</p>
     </form>
   );
 }

@@ -24,6 +24,9 @@
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
   /* Radii. Cards are generous, controls a step tighter, pills fully round. */
+  /* The mark keeps its own colour, whatever the interface accent is. */
+  --brand-mark: #f16b3c;
+
   --radius-card: 16px;
   --radius-control: 10px;
   --radius-small: 8px;

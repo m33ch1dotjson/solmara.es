@@ -108,3 +108,9 @@
   flex-direction: column;
   gap: 16px;
 }
+
+/* The signed-out shell has no header, so the switcher stands on its own row. */
+.loose {
+  display: flex;
+  justify-content: flex-end;
+}

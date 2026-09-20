@@ -1,0 +1,53 @@
+/* A segmented control, sized like the other header controls so the row stays even. */
+
+.group {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--panel);
+  overflow: hidden;
+  flex: none;
+}
+
+.option {
+  border: none;
+  background: transparent;
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 0 9px;
+  height: 32px;
+  cursor: pointer;
+  transition: color 150ms ease, background 150ms ease;
+}
+
+.option + .option {
+  border-left: 1px solid var(--line-soft);
+}
+
+.option:hover {
+  color: var(--ink);
+  background: var(--panel-2);
+}
+
+/* The current language is stated, not merely highlighted: it is also the only
+   button that does nothing when pressed. */
+.on {
+  color: var(--accent-ink);
+  background: var(--accent);
+}
+
+.on:hover {
+  color: var(--accent-ink);
+  background: var(--accent);
+}
+
+/* Taller on the client side, where the whole portal is built for thumbs. */
+.tall .option {
+  height: 42px;
+  font-size: 12.5px;
+  padding: 0 11px;
+}

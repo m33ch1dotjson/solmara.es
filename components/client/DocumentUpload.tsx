@@ -2,6 +2,8 @@
 
 import { useActionState, useRef } from "react";
 import { uploadDocumentAction, type ActionResult } from "@/app/(client)/actions";
+import { useCopy } from "@/components/ui/LocaleProvider";
+import { fill, formatDate, type Copy } from "@/lib/i18n";
 import s from "./client-forms.module.css";
 
 type Status = "REQUIRED" | "RECEIVED" | "APPROVED" | "REJECTED";
@@ -18,12 +20,25 @@ type Status = "REQUIRED" | "RECEIVED" | "APPROVED" | "REJECTED";
  * banner, no warning triangle: the person reading this took a photo an authority
  * will not accept, which is not carelessness.
  */
-const PRESENTATION: Record<Status, { tone: string; label: string }> = {
-  REQUIRED: { tone: "mute", label: "Nog nodig" },
-  RECEIVED: { tone: "info", label: "Wij controleren hem" },
-  APPROVED: { tone: "ok", label: "Gecontroleerd en akkoord" },
-  REJECTED: { tone: "danger", label: "Niet geaccepteerd" },
+const TONE: Record<Status, string> = {
+  REQUIRED: "mute",
+  RECEIVED: "info",
+  APPROVED: "ok",
+  REJECTED: "danger",
 };
+
+function statusLabel(status: Status, t: Copy): string {
+  switch (status) {
+    case "REQUIRED":
+      return t.documents.statusRequired;
+    case "RECEIVED":
+      return t.documents.statusReceived;
+    case "APPROVED":
+      return t.documents.statusApproved;
+    case "REJECTED":
+      return t.documents.statusRejected;
+  }
+}
 
 export function DocumentUpload({
   kind,
@@ -44,6 +59,7 @@ export function DocumentUpload({
   previewUrl: string | null;
   mimeType: string | null;
 }) {
+  const { t, locale } = useCopy();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [state, action, pending] = useActionState(
@@ -55,7 +71,6 @@ export function DocumentUpload({
     null,
   );
 
-  const presentation = PRESENTATION[status];
   const needsAction = status === "REQUIRED" || status === "REJECTED";
   const isImage = mimeType?.startsWith("image/") ?? false;
 
@@ -63,23 +78,27 @@ export function DocumentUpload({
     <form
       action={action}
       className={needsAction ? `${s.card} ${s.cardActive}` : s.card}
-      style={{ ["--tone" as string]: `var(--${presentation.tone})` }}
+      style={{ ["--tone" as string]: `var(--${TONE[status]})` }}
     >
       <input type="hidden" name="kind" value={kind} />
 
       <div className={s.cardHead}>
         <span className={s.cardTitle}>{title}</span>
-        <span className={s.pill}>{presentation.label}</span>
+        <span className={s.pill}>{statusLabel(status, t)}</span>
       </div>
 
       {previewUrl && (
         <div className={s.preview}>
           {isImage ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={previewUrl} alt={`Wat u stuurde voor ${title.toLowerCase()}`} className={s.previewImage} />
+            <img
+              src={previewUrl}
+              alt={fill(t.documents.previewAlt, { title: title.toLowerCase() })}
+              className={s.previewImage}
+            />
           ) : (
             <a href={previewUrl} target="_blank" rel="noreferrer" className={s.previewFile}>
-              Het bestand openen dat u stuurde
+              {t.documents.openSent}
             </a>
           )}
         </div>
@@ -91,8 +110,9 @@ export function DocumentUpload({
 
       {uploadedAt && status !== "REQUIRED" && (
         <p className={s.meta}>
-          Ontvangen op{" "}
-          {new Date(uploadedAt).toLocaleDateString("nl-NL", { day: "numeric", month: "long" })}
+          {fill(t.documents.receivedOn, {
+            date: formatDate(uploadedAt, locale, { day: "numeric", month: "long" }),
+          })}
         </p>
       )}
 
@@ -109,10 +129,10 @@ export function DocumentUpload({
           />
           <button type="submit" className={s.primary} disabled={pending}>
             {pending
-              ? "Bezig met versturen…"
+              ? t.documents.sending
               : status === "REQUIRED"
-                ? "Versturen"
-                : "Vervangen door een nieuwe"}
+                ? t.documents.send
+                : t.documents.replace}
           </button>
         </>
       )}

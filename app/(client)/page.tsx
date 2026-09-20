@@ -3,6 +3,8 @@ import { DetailsForm } from "@/components/client/DetailsForm";
 import { DocumentUpload } from "@/components/client/DocumentUpload";
 import { Mono } from "@/components/ui";
 import { currentActor } from "@/lib/auth/session";
+import { copy, fill } from "@/lib/i18n";
+import { currentLocale } from "@/lib/locale";
 import { clientDocuments, clientSelf } from "@/lib/queries";
 import { BUCKET_CLIENT_DOCUMENTS, signedUrl } from "@/lib/storage";
 import shell from "./portal.module.css";
@@ -19,9 +21,14 @@ export default async function ClientHomePage() {
   if (!actor) redirect("/signin");
   if (actor.kind === "staff") redirect("/admin");
 
-  const [self, documents] = await Promise.all([clientSelf(actor), clientDocuments(actor)]);
+  const [self, documents, locale] = await Promise.all([
+    clientSelf(actor),
+    clientDocuments(actor),
+    currentLocale(),
+  ]);
   if (!self) redirect("/signin");
 
+  const t = copy(locale);
   const passport = documents.find((d) => d.kind === "PASSPORT");
   const photo = documents.find((d) => d.kind === "PHOTO");
 
@@ -38,13 +45,15 @@ export default async function ClientHomePage() {
   return (
     <>
       <div>
-        <h1 className={shell.h1}>Hallo {self.name.split(" ")[0]}</h1>
+        <h1 className={shell.h1}>
+          {fill(t.home.greeting, { name: self.name.split(" ")[0] ?? self.name })}
+        </h1>
         <p className={s.summary}>
           {outstanding === 0
-            ? "Alles is binnen. Wij hebben op dit moment niets van u nodig."
+            ? t.home.allIn
             : outstanding === 1
-              ? "Er ontbreekt nog één bestand. Daarna hebben wij alles."
-              : `Er ontbreken nog ${outstanding} bestanden. Daarna hebben wij alles.`}
+              ? t.home.missingOne
+              : fill(t.home.missingMany, { n: outstanding })}
         </p>
         <Mono size={12.5} color="var(--ink-3)">
           {self.code}
@@ -52,17 +61,14 @@ export default async function ClientHomePage() {
       </div>
 
       <section className={s.section}>
-        <h2 className={shell.sectionTitle}>Wat wij nodig hebben</h2>
-        <p className={shell.sectionSub}>
-          Een foto met uw telefoon is prima, een scanner hoeft niet. Wij controleren elk bestand met
-          de hand, meestal binnen één werkdag.
-        </p>
+        <h2 className={shell.sectionTitle}>{t.home.needTitle}</h2>
+        <p className={shell.sectionSub}>{t.home.needLead}</p>
 
         <div className={s.uploads}>
           <DocumentUpload
             kind="PASSPORT"
-            title="Paspoort"
-            help="De pagina met uw foto erop. Zorg dat alle vier de hoeken op de foto staan."
+            title={t.documents.passportTitle}
+            help={t.documents.passportHelp}
             status={passport?.status ?? "REQUIRED"}
             rejectionNote={passport?.rejectionNote ?? null}
             uploadedAt={passport?.uploadedAt?.toISOString() ?? null}
@@ -71,8 +77,8 @@ export default async function ClientHomePage() {
           />
           <DocumentUpload
             kind="PHOTO"
-            title="Pasfoto"
-            help="Effen witte achtergrond, gezicht volledig zichtbaar, geen bril."
+            title={t.documents.photoTitle}
+            help={t.documents.photoHelp}
             status={photo?.status ?? "REQUIRED"}
             rejectionNote={photo?.rejectionNote ?? null}
             uploadedAt={photo?.uploadedAt?.toISOString() ?? null}
@@ -83,10 +89,8 @@ export default async function ClientHomePage() {
       </section>
 
       <section className={s.section}>
-        <h2 className={shell.sectionTitle}>Uw gegevens</h2>
-        <p className={shell.sectionSub}>
-          Vul aan wat u weet. U kunt dit later altijd aanpassen.
-        </p>
+        <h2 className={shell.sectionTitle}>{t.home.detailsTitle}</h2>
+        <p className={shell.sectionSub}>{t.home.detailsLead}</p>
         <DetailsForm
           completed={self.details_completed_at != null}
           initial={{

@@ -4,7 +4,8 @@ import { DocumentReview } from "@/components/staff/DocumentReview";
 import { InviteButton } from "@/components/staff/InviteButton";
 import { Mono, StatusPill } from "@/components/ui";
 import { staffOrRedirect } from "@/lib/auth/session";
-import { brand } from "@/lib/brand";
+import { copy, fill, formatDate } from "@/lib/i18n";
+import { currentLocale } from "@/lib/locale";
 import { getClient } from "@/lib/queries";
 import { BUCKET_CLIENT_DOCUMENTS, signedUrl } from "@/lib/storage";
 import shell from "../../staff.module.css";
@@ -15,34 +16,29 @@ import s from "./client.module.css";
  * and the internal note nobody outside this page ever sees.
  */
 
-const STATUS_PILL = {
-  INVITED: { status: "required" as const, label: "Uitgenodigd" },
-  ACTIVE: { status: "approved" as const, label: "Actief" },
-  CLOSED: { status: "waived" as const, label: "Afgesloten" },
-};
-
-const DOC_TITLE = { PASSPORT: "Paspoort", PHOTO: "Pasfoto" } as const;
-
-function show(value: string | Date | null): string {
-  if (!value) return "—";
-  if (value instanceof Date) {
-    return value.toLocaleDateString("nl-NL", { day: "numeric", month: "long", year: "numeric" });
-  }
-  return value;
-}
+const PILL_STATUS = {
+  INVITED: "required",
+  ACTIVE: "approved",
+  CLOSED: "waived",
+} as const;
 
 export default async function AdminClientPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const actor = await staffOrRedirect();
+  const [actor, locale] = await Promise.all([staffOrRedirect(), currentLocale()]);
   const { id } = await params;
   const found = await getClient(actor, id);
   if (!found) notFound();
 
+  const t = copy(locale);
   const { record, documents, invites, hasAccount } = found;
-  const pill = STATUS_PILL[record.status];
+
+  function show(value: string | Date | null): string {
+    if (!value) return t.common.blank;
+    return value instanceof Date ? formatDate(value, locale) : value;
+  }
 
   // Signed per render, ten minutes. Downloads are logged by the storage layer.
   const withUrls = await Promise.all(
@@ -53,22 +49,23 @@ export default async function AdminClientPage({
   );
 
   const facts: Array<[string, string]> = [
-    ["E-mailadres", show(record.email)],
-    ["Telefoonnummer", show(record.phone)],
-    ["Geboortedatum", show(record.dateOfBirth)],
-    ["Nationaliteit", show(record.nationality)],
-    ["Paspoortnummer", show(record.passportNumber)],
-    ["Paspoort geldig tot", show(record.passportExpiry)],
-    ["Adres eigen land", show(record.addressHomeCountry)],
-    ["Adres in Spanje", show(record.addressSpain)],
+    [t.common.email, show(record.email)],
+    [t.fields.phone, show(record.phone)],
+    [t.fields.dateOfBirth, show(record.dateOfBirth)],
+    [t.fields.nationality, show(record.nationality)],
+    [t.fields.passportNumber, show(record.passportNumber)],
+    [t.fields.passportExpiry, show(record.passportExpiry)],
+    [t.fields.addressHomeCountry, show(record.addressHomeCountry)],
+    [t.fields.addressSpain, show(record.addressSpain)],
   ];
 
+  const docTitle = { PASSPORT: t.documents.passportTitle, PHOTO: t.documents.photoTitle };
   const lastInvite = invites[0];
 
   return (
     <div className={shell.screen}>
       <Link href="/admin" className={s.back}>
-        ‹ Alle klanten
+        {t.clientDetail.back}
       </Link>
 
       <div className={s.head}>
@@ -80,27 +77,35 @@ export default async function AdminClientPage({
             </Mono>
             <span className={s.sep}>·</span>
             <StatusPill
-              status={pill.status}
+              status={PILL_STATUS[record.status]}
               audience="staff"
-              locale={brand.defaultLocale}
-              labelOverride={pill.label}
+              locale={locale}
+              labelOverride={
+                record.status === "INVITED"
+                  ? t.clients.statusInvited
+                  : record.status === "ACTIVE"
+                    ? t.clients.statusActive
+                    : t.clients.statusClosed
+              }
             />
             <span className={s.sep}>·</span>
             <span>
               {record.detailsCompletedAt
-                ? `Gegevens ingevuld op ${show(record.detailsCompletedAt)}`
-                : "Gegevens nog niet ingevuld"}
+                ? fill(t.clientDetail.detailsFilledOn, {
+                    date: show(record.detailsCompletedAt),
+                  })
+                : t.clientDetail.detailsNotFilled}
             </span>
           </div>
         </div>
         {hasAccount ? (
-          <span className={s.quiet}>Heeft een account</span>
+          <span className={s.quiet}>{t.clients.hasAccount}</span>
         ) : (
           <InviteButton clientId={record.id} clientName={record.name} />
         )}
       </div>
 
-      <h2 className={s.sectionTitle}>Gegevens</h2>
+      <h2 className={s.sectionTitle}>{t.clientDetail.sectionDetails}</h2>
       <dl className={s.facts}>
         {facts.map(([label, value]) => (
           <div key={label} className={s.fact}>
@@ -112,18 +117,18 @@ export default async function AdminClientPage({
 
       {record.internalNotes && (
         <>
-          <h2 className={s.sectionTitle}>Interne notitie</h2>
+          <h2 className={s.sectionTitle}>{t.clientDetail.sectionNote}</h2>
           <p className={s.note}>{record.internalNotes}</p>
         </>
       )}
 
-      <h2 className={s.sectionTitle}>Documenten</h2>
+      <h2 className={s.sectionTitle}>{t.clientDetail.sectionDocuments}</h2>
       <div className={s.documents}>
         {withUrls.map((doc) => (
           <DocumentReview
             key={doc.id}
             documentId={doc.id}
-            title={DOC_TITLE[doc.kind]}
+            title={docTitle[doc.kind]}
             status={doc.status}
             url={doc.url}
             mimeType={doc.mimeType}
@@ -135,8 +140,12 @@ export default async function AdminClientPage({
 
       {lastInvite && !hasAccount && (
         <p className={s.inviteMeta}>
-          Laatste link aangemaakt op {show(lastInvite.createdAt)},{" "}
-          {lastInvite.usedAt ? "inmiddels gebruikt" : `geldig tot ${show(lastInvite.expiresAt)}`}.
+          {lastInvite.usedAt
+            ? fill(t.clientDetail.lastLinkUsed, { date: show(lastInvite.createdAt) })
+            : fill(t.clientDetail.lastLinkValid, {
+                date: show(lastInvite.createdAt),
+                until: show(lastInvite.expiresAt),
+              })}
         </p>
       )}
     </div>

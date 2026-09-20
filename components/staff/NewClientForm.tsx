@@ -2,7 +2,9 @@
 
 import { useActionState, useRef } from "react";
 import { createClientAction, type ActionResult } from "@/app/admin/actions";
+import { useCopy } from "@/components/ui/LocaleProvider";
 import type { Locale } from "@/lib/brand";
+import { LOCALES, LOCALE_NAME } from "@/lib/i18n";
 import s from "./forms.module.css";
 
 /*
@@ -10,8 +12,13 @@ import s from "./forms.module.css";
  * the link to, and the language to write to them in. Everything else — passport,
  * date of birth, address in Spain — the client fills in themselves, which is the
  * whole point of the link.
+ *
+ * The language options are endonyms rather than translations of each other. A
+ * colleague picking Spanish for a client is picking "Español", and the list reads
+ * the same whichever language the admin screens happen to be in.
  */
 export function NewClientForm({ defaultLocale }: { defaultLocale: Locale }) {
+  const { t } = useCopy();
   const formRef = useRef<HTMLFormElement>(null);
 
   const [state, action, pending] = useActionState(
@@ -27,34 +34,36 @@ export function NewClientForm({ defaultLocale }: { defaultLocale: Locale }) {
     <form ref={formRef} action={action} className={s.form}>
       <div className={s.grid}>
         <label className={s.field}>
-          <span className={s.label}>Naam</span>
+          <span className={s.label}>{t.newClient.name}</span>
           <input name="name" className={s.input} required autoComplete="off" />
         </label>
 
         <label className={s.field}>
-          <span className={s.label}>E-mailadres</span>
+          <span className={s.label}>{t.common.email}</span>
           <input name="email" type="email" className={s.input} required autoComplete="off" />
         </label>
 
         <label className={s.field}>
-          <span className={s.label}>Taal</span>
+          <span className={s.label}>{t.newClient.language}</span>
           <select name="locale" className={s.input} defaultValue={defaultLocale}>
-            <option value="nl">Nederlands</option>
-            <option value="en">Engels</option>
-            <option value="es">Spaans</option>
+            {LOCALES.map((option) => (
+              <option key={option} value={option}>
+                {LOCALE_NAME[option]}
+              </option>
+            ))}
           </select>
         </label>
       </div>
 
       <label className={s.field}>
-        <span className={s.label}>Interne notitie</span>
+        <span className={s.label}>{t.newClient.internalNote}</span>
         <textarea name="internalNotes" className={s.textarea} rows={2} />
-        <span className={s.hint}>Alleen voor het team. De klant ziet dit nooit.</span>
+        <span className={s.hint}>{t.newClient.internalNoteHint}</span>
       </label>
 
       <div className={s.actions}>
         <button type="submit" className={s.primary} disabled={pending}>
-          {pending ? "Bezig…" : "Klant aanmaken"}
+          {pending ? t.common.busy : t.newClient.submit}
         </button>
         {state?.ok === false && <span className={s.error}>{state.error}</span>}
         {state?.ok === true && state.message && <span className={s.success}>{state.message}</span>}

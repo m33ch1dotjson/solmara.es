@@ -5,6 +5,8 @@ import { and, eq } from "drizzle-orm";
 import { requireClient } from "@/lib/auth/session";
 import { asActor } from "@/lib/db/act";
 import { clientDocument, event } from "@/lib/db/schema";
+import { copy, fill, type Copy } from "@/lib/i18n";
+import { currentLocale } from "@/lib/locale";
 import { updateClientSelf } from "@/lib/queries";
 import {
   ALLOWED_DOCUMENT_TYPES,
@@ -12,6 +14,7 @@ import {
   storageKey,
   upload,
   validateUpload,
+  type UploadRefusal,
 } from "@/lib/storage";
 
 /*
@@ -21,6 +24,10 @@ import {
  *
  * Each action calls requireClient() itself. A server action is its own endpoint, so
  * the layout guarding the page guards nothing here.
+ *
+ * Messages are resolved per call rather than passed in from the browser: what
+ * language somebody reads is the cookie's business, and a caller who could name the
+ * wording could also name a sentence we never wrote.
  */
 
 export type ActionResult = { ok: true; message?: string } | { ok: false; error: string };
@@ -34,20 +41,28 @@ function optional(form: FormData, key: string): string | null {
   return text(form, key) || null;
 }
 
+/** Turns a storage layer refusal into something the client can read. */
+function refusal(reason: UploadRefusal, t: Copy): string {
+  if (reason === "empty") return t.errors.fileEmpty;
+  if (reason === "tooLarge") return t.errors.fileTooLarge;
+  return t.errors.fileType;
+}
+
 export async function saveDetailsAction(form: FormData): Promise<ActionResult> {
   const actor = await requireClient();
+  const t = copy(await currentLocale());
 
   const name = text(form, "name");
-  if (!name) return { ok: false, error: "Vul uw naam in." };
+  if (!name) return { ok: false, error: t.errors.nameRequired };
 
   const dateOfBirth = optional(form, "dateOfBirth");
   if (dateOfBirth && Number.isNaN(Date.parse(dateOfBirth))) {
-    return { ok: false, error: "Geboortedatum is geen geldige datum." };
+    return { ok: false, error: t.errors.dateOfBirthInvalid };
   }
 
   const passportExpiry = optional(form, "passportExpiry");
   if (passportExpiry && Number.isNaN(Date.parse(passportExpiry))) {
-    return { ok: false, error: "Vervaldatum paspoort is geen geldige datum." };
+    return { ok: false, error: t.errors.passportExpiryInvalid };
   }
 
   await updateClientSelf(actor, {
@@ -62,24 +77,25 @@ export async function saveDetailsAction(form: FormData): Promise<ActionResult> {
   });
 
   revalidatePath("/");
-  return { ok: true, message: "Uw gegevens zijn opgeslagen." };
+  return { ok: true, message: t.saved.details };
 }
 
 export async function uploadDocumentAction(form: FormData): Promise<ActionResult> {
   const actor = await requireClient();
+  const t = copy(await currentLocale());
 
   const kind = text(form, "kind");
   if (kind !== "PASSPORT" && kind !== "PHOTO") {
-    return { ok: false, error: "Onbekend documenttype." };
+    return { ok: false, error: t.errors.documentKindUnknown };
   }
 
   const file = form.get("file");
   if (!(file instanceof File) || file.size === 0) {
-    return { ok: false, error: "Kies eerst een bestand." };
+    return { ok: false, error: t.errors.chooseFile };
   }
 
   const check = validateUpload(file, ALLOWED_DOCUMENT_TYPES);
-  if (!check.ok) return { ok: false, error: check.error };
+  if (!check.ok) return { ok: false, error: refusal(check.reason, t) };
 
   try {
     // The path starts with the client id and is otherwise random, so one client's
@@ -113,9 +129,9 @@ export async function uploadDocumentAction(form: FormData): Promise<ActionResult
     });
 
     revalidatePath("/");
-    return { ok: true, message: "Ontvangen. Wij kijken er binnen één werkdag naar." };
+    return { ok: true, message: t.saved.documentReceived };
   } catch (error) {
-    const reason = error instanceof Error ? error.message : "onbekende fout";
-    return { ok: false, error: `Uploaden mislukt: ${reason}` };
+    const reason = error instanceof Error ? error.message : t.errors.unknownReason;
+    return { ok: false, error: fill(t.errors.uploadFailed, { reason }) };
   }
 }

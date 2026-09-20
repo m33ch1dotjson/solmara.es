@@ -2,17 +2,22 @@ import { DeleteButton } from "@/components/staff/DeleteButton";
 import { PropertyForm } from "@/components/staff/PropertyForm";
 import { Mono } from "@/components/ui";
 import { staffOrRedirect } from "@/lib/auth/session";
+import { copy, fill, formatDate } from "@/lib/i18n";
+import { currentLocale } from "@/lib/locale";
 import { listProperties } from "@/lib/queries";
 import { BUCKET_PROPERTY_PHOTOS, signedUrl } from "@/lib/storage";
 import { deletePropertyAction } from "../actions";
 import shell from "../staff.module.css";
 import s from "../admin.module.css";
 
-export const metadata = { title: "Properties" };
+export async function generateMetadata() {
+  return { title: copy(await currentLocale()).properties.title };
+}
 
 export default async function PropertiesPage() {
-  const actor = await staffOrRedirect();
+  const [actor, locale] = await Promise.all([staffOrRedirect(), currentLocale()]);
   const properties = await listProperties(actor);
+  const t = copy(locale);
 
   // Signed URLs are minted per render and expire in ten minutes. Nothing here is
   // a public object, so a screenshot of the page is not a permanent link.
@@ -30,21 +35,20 @@ export default async function PropertiesPage() {
   return (
     <div className={shell.screen}>
       <div className={shell.pageHead}>
-        <h1 className={shell.pageTitle}>Properties</h1>
+        <h1 className={shell.pageTitle}>{t.properties.title}</h1>
       </div>
-      <p className={shell.pageLead}>
-        Interessante woningen, alleen voor het team. Klanten zien deze lijst niet — er is geen
-        enkele route waarlangs ze erbij kunnen.
-      </p>
+      <p className={shell.pageLead}>{t.properties.lead}</p>
 
       <PropertyForm />
 
       <h2 className={s.sectionTitle}>
-        {withUrls.length} {withUrls.length === 1 ? "property" : "properties"}
+        {fill(withUrls.length === 1 ? t.properties.countOne : t.properties.countMany, {
+          n: withUrls.length,
+        })}
       </h2>
 
       {withUrls.length === 0 ? (
-        <p className={s.empty}>Nog niets. Voeg hierboven de eerste toe.</p>
+        <p className={s.empty}>{t.properties.empty}</p>
       ) : (
         <div className={s.cardList}>
           {withUrls.map((item) => (
@@ -61,7 +65,7 @@ export default async function PropertiesPage() {
                       <img
                         key={url}
                         src={url}
-                        alt={`${item.title}, foto ${i + 1}`}
+                        alt={fill(t.properties.photoAlt, { title: item.title, n: i + 1 })}
                         className={s.thumb}
                       />
                     ))}
@@ -70,16 +74,12 @@ export default async function PropertiesPage() {
 
                 <div className={s.cardMeta}>
                   <Mono size={11.5}>{item.photos.length}</Mono>{" "}
-                  {item.photos.length === 1 ? "foto" : "foto&apos;s"} ·{" "}
-                  {new Date(item.createdAt).toLocaleDateString("nl-NL", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })}
+                  {item.photos.length === 1 ? t.properties.photoOne : t.properties.photoMany} ·{" "}
+                  {formatDate(item.createdAt, locale)}
                 </div>
               </div>
               <div className={s.cardActions}>
-                <DeleteButton id={item.id} action={deletePropertyAction} label="Verwijderen" />
+                <DeleteButton id={item.id} action={deletePropertyAction} />
               </div>
             </div>
           ))}

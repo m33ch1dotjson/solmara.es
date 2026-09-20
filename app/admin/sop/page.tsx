@@ -1,36 +1,39 @@
 import { DeleteButton } from "@/components/staff/DeleteButton";
 import { SopForm } from "@/components/staff/SopForm";
-import { STAFF_TERMS } from "@/lib/staff-terms";
 import { staffOrRedirect } from "@/lib/auth/session";
+import { copy, fill, formatDate } from "@/lib/i18n";
+import { currentLocale } from "@/lib/locale";
 import { listSops } from "@/lib/queries";
 import { deleteSopAction } from "../actions";
 import shell from "../staff.module.css";
 import s from "../admin.module.css";
 
-export const metadata = { title: STAFF_TERMS.procedures };
+export async function generateMetadata() {
+  return { title: copy(await currentLocale()).procedures.title };
+}
 
 export default async function SopPage() {
-  const actor = await staffOrRedirect();
+  const [actor, locale] = await Promise.all([staffOrRedirect(), currentLocale()]);
   const sops = await listSops(actor);
+  const t = copy(locale);
 
   return (
     <div className={shell.screen}>
       <div className={shell.pageHead}>
-        <h1 className={shell.pageTitle}>{STAFF_TERMS.procedures}</h1>
+        <h1 className={shell.pageTitle}>{t.procedures.title}</h1>
       </div>
-      <p className={shell.pageLead}>
-Werkinstructies voor het team. Klanten zien deze nooit — er is geen enkele route
-        waarlangs ze erbij kunnen.
-      </p>
+      <p className={shell.pageLead}>{t.procedures.lead}</p>
 
       <SopForm />
 
       <h2 className={s.sectionTitle}>
-        {sops.length} {sops.length === 1 ? STAFF_TERMS.procedure : STAFF_TERMS.procedures}
+        {fill(sops.length === 1 ? t.procedures.countOne : t.procedures.countMany, {
+          n: sops.length,
+        })}
       </h2>
 
       {sops.length === 0 ? (
-        <p className={s.empty}>Nog niets. Voeg hierboven de eerste toe.</p>
+        <p className={s.empty}>{t.procedures.empty}</p>
       ) : (
         <div className={s.cardList}>
           {sops.map((item) => (
@@ -38,16 +41,10 @@ Werkinstructies voor het team. Klanten zien deze nooit — er is geen enkele rou
               <div className={s.cardBody}>
                 <div className={s.cardTitle}>{item.title}</div>
                 <p className={s.cardText}>{item.description}</p>
-                <div className={s.cardMeta}>
-                  {new Date(item.createdAt).toLocaleDateString("nl-NL", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })}
-                </div>
+                <div className={s.cardMeta}>{formatDate(item.createdAt, locale)}</div>
               </div>
               <div className={s.cardActions}>
-                <DeleteButton id={item.id} action={deleteSopAction} label="Verwijderen" />
+                <DeleteButton id={item.id} action={deleteSopAction} />
               </div>
             </div>
           ))}

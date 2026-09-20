@@ -2,6 +2,8 @@
 
 import { useActionState, useState } from "react";
 import { saveDetailsAction, type ActionResult } from "@/app/(client)/actions";
+import { useCopy } from "@/components/ui/LocaleProvider";
+import { formatDate, type Copy } from "@/lib/i18n";
 import s from "./client-forms.module.css";
 
 /*
@@ -26,39 +28,42 @@ interface Details {
   addressSpain: string | null;
 }
 
-const FIELDS: Array<{
+interface Field {
   name: keyof Details;
   label: string;
   type?: string;
   hint?: string;
   required?: boolean;
-}> = [
-  { name: "name", label: "Volledige naam", required: true, hint: "Zoals in uw paspoort staat." },
-  { name: "phone", label: "Telefoonnummer", type: "tel" },
-  { name: "dateOfBirth", label: "Geboortedatum", type: "date" },
-  { name: "nationality", label: "Nationaliteit" },
-  { name: "passportNumber", label: "Paspoortnummer" },
-  { name: "passportExpiry", label: "Paspoort geldig tot", type: "date" },
-  { name: "addressHomeCountry", label: "Adres in uw eigen land" },
-  {
-    name: "addressSpain",
-    label: "Adres in Spanje",
-    hint: "Hebt u er nog geen, vul dan de plaats in waar u zoekt.",
-  },
-];
+}
 
-function show(value: string | null, type?: string): string {
-  if (!value) return "—";
-  if (type !== "date") return value;
-  const parsed = new Date(value);
-  return Number.isNaN(parsed.getTime())
-    ? value
-    : parsed.toLocaleDateString("nl-NL", { day: "numeric", month: "long", year: "numeric" });
+/*
+ * Built from the dictionary rather than declared at module scope: a label is copy,
+ * and a list of labels fixed at import time cannot follow the switcher.
+ */
+function fieldsFor(t: Copy): Field[] {
+  return [
+    { name: "name", label: t.fields.name, required: true, hint: t.fields.nameHint },
+    { name: "phone", label: t.fields.phone, type: "tel" },
+    { name: "dateOfBirth", label: t.fields.dateOfBirth, type: "date" },
+    { name: "nationality", label: t.fields.nationality },
+    { name: "passportNumber", label: t.fields.passportNumber },
+    { name: "passportExpiry", label: t.fields.passportExpiry, type: "date" },
+    { name: "addressHomeCountry", label: t.fields.addressHomeCountry },
+    { name: "addressSpain", label: t.fields.addressSpain, hint: t.fields.addressSpainHint },
+  ];
 }
 
 export function DetailsForm({ initial, completed }: { initial: Details; completed: boolean }) {
+  const { t, locale } = useCopy();
   const [editing, setEditing] = useState(!completed);
   const [values, setValues] = useState(initial);
+
+  const fields = fieldsFor(t);
+
+  function show(value: string | null, type?: string): string {
+    if (!value) return t.common.blank;
+    return type === "date" ? formatDate(value, locale) : value;
+  }
 
   const [state, action, pending] = useActionState(
     async (_prev: ActionResult | null, form: FormData) => {
@@ -92,7 +97,7 @@ export function DetailsForm({ initial, completed }: { initial: Details; complete
     return (
       <div className={s.summary}>
         <dl className={s.summaryGrid}>
-          {FIELDS.map((field) => (
+          {fields.map((field) => (
             <div key={field.name} className={s.summaryRow}>
               <dt className={s.summaryLabel}>{field.label}</dt>
               <dd className={s.summaryValue}>{show(values[field.name], field.type)}</dd>
@@ -102,7 +107,7 @@ export function DetailsForm({ initial, completed }: { initial: Details; complete
 
         <div className={s.summaryFoot}>
           <button type="button" className={s.secondaryWide} onClick={() => setEditing(true)}>
-            Gegevens aanpassen
+            {t.home.editDetails}
           </button>
           {state?.ok === true && state.message && <p className={s.success}>{state.message}</p>}
         </div>
@@ -112,7 +117,7 @@ export function DetailsForm({ initial, completed }: { initial: Details; complete
 
   return (
     <form action={action} className={s.form}>
-      {FIELDS.map((field) => (
+      {fields.map((field) => (
         <label key={field.name} className={s.field}>
           <span className={s.label}>{field.label}</span>
           <input
@@ -128,12 +133,12 @@ export function DetailsForm({ initial, completed }: { initial: Details; complete
       ))}
 
       <button type="submit" className={s.primary} disabled={pending}>
-        {pending ? "Bezig…" : "Gegevens opslaan"}
+        {pending ? t.common.busy : t.home.saveDetails}
       </button>
 
       {completed && (
         <button type="button" className={s.textLink} onClick={() => setEditing(false)}>
-          Annuleren
+          {t.common.cancel}
         </button>
       )}
 

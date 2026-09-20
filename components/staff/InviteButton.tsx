@@ -2,6 +2,8 @@
 
 import { useState, useTransition } from "react";
 import { createInviteAction } from "@/app/admin/actions";
+import { useCopy } from "@/components/ui/LocaleProvider";
+import { fill } from "@/lib/i18n";
 import s from "./forms.module.css";
 
 /*
@@ -10,6 +12,7 @@ import s from "./forms.module.css";
  * two links in their sent mail still works.
  */
 export function InviteButton({ clientId, clientName }: { clientId: string; clientName: string }) {
+  const { t } = useCopy();
   const [pending, start] = useTransition();
   const [url, setUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
@@ -26,7 +29,7 @@ export function InviteButton({ clientId, clientName }: { clientId: string; clien
     });
   }
 
-  async function copy() {
+  async function copyLink() {
     if (!url) return;
     try {
       await navigator.clipboard.writeText(url);
@@ -41,9 +44,14 @@ export function InviteButton({ clientId, clientName }: { clientId: string; clien
   if (url) {
     return (
       <div className={s.inviteResult}>
-        <input className={s.inviteUrl} value={url} readOnly aria-label={`Link voor ${clientName}`} />
-        <button type="button" className={s.secondary} onClick={copy}>
-          {copied ? "Gekopieerd" : "Kopieer"}
+        <input
+          className={s.inviteUrl}
+          value={url}
+          readOnly
+          aria-label={fill(t.clients.linkFor, { name: clientName })}
+        />
+        <button type="button" className={s.secondary} onClick={copyLink}>
+          {copied ? t.common.copied : t.common.copy}
         </button>
       </div>
     );
@@ -52,7 +60,7 @@ export function InviteButton({ clientId, clientName }: { clientId: string; clien
   return (
     <div className={s.inviteResult}>
       <button type="button" className={s.secondary} onClick={generate} disabled={pending}>
-        {pending ? "Bezig…" : "Link genereren"}
+        {pending ? t.common.busy : t.clients.generateLink}
       </button>
       {error && <span className={s.error}>{error}</span>}
     </div>

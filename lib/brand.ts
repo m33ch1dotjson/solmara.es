@@ -1,10 +1,9 @@
 /*
  * Brand is configuration, never code.
  *
- * "Solmara" is the working name; the production brand becomes "Solmavera". Nothing
- * brand-specific may be baked into layout, copy, identifiers or storage paths — a
- * rename must be a change of values here (or of the environment), not a search and
- * replace through the codebase.
+ * The brand is Solmavera. It was Solmara while testing, which is why none of it is
+ * baked into layout, copy, identifiers or storage paths: the rename was a change of
+ * values here, not a search and replace through the codebase.
  *
  * One deliberate exception: `caseCodePrefix` applies to NEW case codes only.
  * A case already communicated to a client as SM-CASE-0042 keeps that code forever;
@@ -50,13 +49,13 @@ function envInt(key: string, fallback: number): number {
 }
 
 export const brand: Brand = {
-  staffName: env("BRAND_STAFF_NAME", "Solmara Portal"),
-  clientName: env("BRAND_CLIENT_NAME", "Solmara"),
-  legalName: env("BRAND_LEGAL_NAME", "Solmara S.L."),
+  staffName: env("BRAND_STAFF_NAME", "Solmavera Portal"),
+  clientName: env("BRAND_CLIENT_NAME", "Solmavera"),
+  legalName: env("BRAND_LEGAL_NAME", "Solmavera S.L."),
   portalDomain: env("BRAND_PORTAL_DOMAIN", "app.solmara.es"),
-  publicWebsite: env("BRAND_PUBLIC_WEBSITE", "solmara.es"),
-  emailFrom: env("BRAND_EMAIL_FROM", "noreply@solmara.es"),
-  emailReplyTo: env("BRAND_EMAIL_REPLY_TO", "info@solmara.es"),
+  publicWebsite: env("BRAND_PUBLIC_WEBSITE", "solmavera.es"),
+  emailFrom: env("BRAND_EMAIL_FROM", "noreply@solmavera.es"),
+  emailReplyTo: env("BRAND_EMAIL_REPLY_TO", "info@solmavera.es"),
   caseCodePrefix: env("BRAND_CASE_CODE_PREFIX", "SM"),
   accentHue: envInt("BRAND_ACCENT_HUE", 250),
   defaultLocale: env("BRAND_DEFAULT_LOCALE", "en") as Locale,

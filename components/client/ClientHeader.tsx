@@ -1,4 +1,7 @@
-import { brand } from "@/lib/brand";
+import { Logo } from "@/components/ui/Logo";
+import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+import { brand, type Locale } from "@/lib/brand";
+import { copy } from "@/lib/i18n";
 import s from "./ClientHeader.module.css";
 
 /*
@@ -9,19 +12,22 @@ import s from "./ClientHeader.module.css";
  * destination there is nothing to navigate to, and a bar holding one live button
  * reads as clutter.
  */
-export function ClientHeader({ name }: { name: string }) {
+export function ClientHeader({ name, locale }: { name: string; locale: Locale }) {
+  const t = copy(locale);
+
   return (
     <header className={s.bar}>
       <div className={s.brand}>
-        <span className={s.logo} aria-hidden="true" />
+        <Logo size={30} className={s.logo} />
         <span className={s.wordmark}>{brand.clientName}</span>
       </div>
 
       <div className={s.right}>
         <span className={s.name}>{name}</span>
+        <LanguageSwitcher locale={locale} size="tall" />
         <form action="/auth/signout" method="post">
           <button type="submit" className={s.signout}>
-            Uitloggen
+            {t.common.signOut}
           </button>
         </form>
       </div>

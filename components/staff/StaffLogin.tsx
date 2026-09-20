@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+import { useCopy } from "@/components/ui/LocaleProvider";
+import { Logo } from "@/components/ui/Logo";
 import { browserClient } from "@/lib/auth/supabase-browser";
 import s from "./StaffLogin.module.css";
 
@@ -21,6 +24,7 @@ import s from "./StaffLogin.module.css";
  * works here.
  */
 export function StaffLogin({ brandName }: { brandName: string }) {
+  const { t, locale } = useCopy();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [pending, setPending] = useState(false);
@@ -39,7 +43,7 @@ export function StaffLogin({ brandName }: { brandName: string }) {
 
     if (signInError) {
       setPending(false);
-      setError("Die combinatie klopt niet.");
+      setError(t.staffLogin.wrong);
       return;
     }
 
@@ -52,15 +56,17 @@ export function StaffLogin({ brandName }: { brandName: string }) {
     <div className={s.screen}>
       <div className={s.card}>
         <div className={s.brand}>
-          <span className={s.logo} aria-hidden="true" />
+          <Logo size={30} className={s.logo} />
           <span className={s.brandName}>{brandName}</span>
+          <span className={s.spacer} />
+          <LanguageSwitcher locale={locale} />
         </div>
 
         <form onSubmit={submit} className={s.form}>
-          <h1 className={s.title}>Inloggen</h1>
+          <h1 className={s.title}>{t.staffLogin.title}</h1>
 
           <label className={s.field}>
-            <span className={s.label}>E-mailadres</span>
+            <span className={s.label}>{t.common.email}</span>
             <input
               type="email"
               required
@@ -72,7 +78,7 @@ export function StaffLogin({ brandName }: { brandName: string }) {
           </label>
 
           <label className={s.field}>
-            <span className={s.label}>Wachtwoord</span>
+            <span className={s.label}>{t.common.password}</span>
             <input
               type="password"
               required
@@ -84,7 +90,7 @@ export function StaffLogin({ brandName }: { brandName: string }) {
           </label>
 
           <button type="submit" className={s.primary} disabled={pending}>
-            {pending ? "Bezig…" : "Inloggen"}
+            {pending ? t.common.busy : t.common.signIn}
           </button>
 
           {error && <p className={s.error}>{error}</p>}

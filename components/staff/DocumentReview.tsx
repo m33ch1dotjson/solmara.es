@@ -2,23 +2,46 @@
 
 import { useState, useTransition } from "react";
 import { reviewDocumentAction } from "@/app/admin/client-actions";
+import { useCopy } from "@/components/ui/LocaleProvider";
+import { fill, formatDate, type Copy } from "@/lib/i18n";
 import s from "./forms.module.css";
 import d from "./DocumentReview.module.css";
 
 type Status = "REQUIRED" | "RECEIVED" | "APPROVED" | "REJECTED";
 
-const PRESENTATION: Record<Status, { tone: string; label: string }> = {
-  REQUIRED: { tone: "mute", label: "Nog niet ontvangen" },
-  RECEIVED: { tone: "info", label: "Wacht op beoordeling" },
-  APPROVED: { tone: "ok", label: "Goedgekeurd" },
-  REJECTED: { tone: "danger", label: "Afgekeurd" },
+const TONE: Record<Status, string> = {
+  REQUIRED: "mute",
+  RECEIVED: "info",
+  APPROVED: "ok",
+  REJECTED: "danger",
 };
+
+/*
+ * The staff wording for a status, which is not the client wording: a colleague reads
+ * "waiting for review" where the client reads "we are checking it". Same row in the
+ * database, two different sentences on purpose.
+ */
+function statusLabel(status: Status, t: Copy): string {
+  switch (status) {
+    case "REQUIRED":
+      return t.review.statusRequired;
+    case "RECEIVED":
+      return t.review.statusReceived;
+    case "APPROVED":
+      return t.review.statusApproved;
+    case "REJECTED":
+      return t.review.statusRejected;
+  }
+}
 
 /*
  * One document, with the decision attached.
  *
  * Rejecting needs a reason and the button stays disabled without one: the client
  * reads that note, and "not accepted" on its own tells them nothing they can act on.
+ *
+ * The note itself is typed by a colleague and stored as typed — it is not translated
+ * on the way to the client, who may well be reading the rest of the page in Spanish.
  */
 export function DocumentReview({
   documentId,
@@ -37,12 +60,12 @@ export function DocumentReview({
   uploadedAt: string | null;
   rejectionNote: string | null;
 }) {
+  const { t, locale } = useCopy();
   const [rejecting, setRejecting] = useState(false);
   const [note, setNote] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [pending, start] = useTransition();
 
-  const presentation = PRESENTATION[status];
   const isImage = mimeType?.startsWith("image/") ?? false;
 
   function decide(approve: boolean) {
@@ -62,10 +85,10 @@ export function DocumentReview({
   }
 
   return (
-    <div className={d.card} style={{ ["--tone" as string]: `var(--${presentation.tone})` }}>
+    <div className={d.card} style={{ ["--tone" as string]: `var(--${TONE[status]})` }}>
       <div className={d.head}>
         <span className={d.title}>{title}</span>
-        <span className={d.pill}>{presentation.label}</span>
+        <span className={d.pill}>{statusLabel(status, t)}</span>
       </div>
 
       {url ? (
@@ -75,22 +98,17 @@ export function DocumentReview({
             <img src={url} alt={title} className={d.image} />
           ) : (
             <a href={url} target="_blank" rel="noreferrer" className={d.fileLink}>
-              Bestand openen
+              {t.review.openFile}
             </a>
           )}
         </div>
       ) : (
-        <p className={d.empty}>De klant heeft dit nog niet gestuurd.</p>
+        <p className={d.empty}>{t.review.notSentYet}</p>
       )}
 
       {uploadedAt && (
         <p className={d.meta}>
-          Ontvangen op{" "}
-          {new Date(uploadedAt).toLocaleDateString("nl-NL", {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-          })}
+          {fill(t.review.receivedOn, { date: formatDate(uploadedAt, locale) })}
         </p>
       )}
 
@@ -104,10 +122,10 @@ export function DocumentReview({
             disabled={pending}
             onClick={() => decide(true)}
           >
-            Goedkeuren
+            {t.review.approve}
           </button>
           <button type="button" className={s.dangerGhost} onClick={() => setRejecting(true)}>
-            Afkeuren
+            {t.review.reject}
           </button>
         </div>
       )}
@@ -115,15 +133,15 @@ export function DocumentReview({
       {rejecting && (
         <div className={d.rejectPanel}>
           <label className={s.field}>
-            <span className={s.label}>Waarom niet?</span>
+            <span className={s.label}>{t.review.whyNot}</span>
             <textarea
               className={s.textarea}
               rows={3}
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              placeholder="De onderrand staat er niet op, waardoor de machineleesbare regel niet te lezen is."
+              placeholder={t.review.whyNotPlaceholder}
             />
-            <span className={s.hint}>De klant leest deze tekst letterlijk.</span>
+            <span className={s.hint}>{t.review.clientReads}</span>
           </label>
           <div className={d.actions}>
             <button
@@ -132,10 +150,10 @@ export function DocumentReview({
               disabled={pending || note.trim() === ""}
               onClick={() => decide(false)}
             >
-              Afkeuren en versturen
+              {t.review.rejectAndSend}
             </button>
             <button type="button" className={s.secondary} onClick={() => setRejecting(false)}>
-              Annuleren
+              {t.common.cancel}
             </button>
           </div>
         </div>

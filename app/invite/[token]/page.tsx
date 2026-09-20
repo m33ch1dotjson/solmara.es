@@ -1,9 +1,15 @@
 import { InviteSignup } from "@/components/client/InviteSignup";
+import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+import { Logo } from "@/components/ui/Logo";
 import { brand } from "@/lib/brand";
+import { copy, fill } from "@/lib/i18n";
+import { currentLocale } from "@/lib/locale";
 import { lookupInvite } from "@/lib/queries";
 import s from "./invite.module.css";
 
-export const metadata = { title: "Uitnodiging" };
+export async function generateMetadata() {
+  return { title: copy(await currentLocale()).invite.metaTitle };
+}
 
 /*
  * Where the link from a staff member lands.
@@ -14,6 +20,9 @@ export const metadata = { title: "Uitnodiging" };
  *
  * An invalid or expired token gets the same neutral screen as an unknown one: no
  * hint about whether it ever existed, and no address shown.
+ *
+ * This is often the first thing a client ever sees of us, and quite possibly in a
+ * language they do not read, so the switcher sits at the top of both states.
  */
 export default async function InvitePage({
   params,
@@ -21,18 +30,19 @@ export default async function InvitePage({
   params: Promise<{ token: string }>;
 }) {
   const { token } = await params;
-  const invite = await lookupInvite(token);
+  const [invite, locale] = await Promise.all([lookupInvite(token), currentLocale()]);
+  const t = copy(locale);
 
   if (!invite || !invite.valid) {
     return (
       <main className={`themeClient ${s.shell}`}>
         <div className={s.column}>
-          <span className={s.logo} aria-hidden="true" />
-          <h1 className={s.h1}>Deze link werkt niet meer</h1>
-          <p className={s.body}>
-            De link is verlopen of al gebruikt. Vraag uw contactpersoon bij {brand.clientName} om
-            een nieuwe — dat kost hen één klik.
-          </p>
+          <div className={s.topRow}>
+            <LanguageSwitcher locale={locale} size="tall" />
+          </div>
+          <Logo size={34} className={s.logo} />
+          <h1 className={s.h1}>{t.invite.deadTitle}</h1>
+          <p className={s.body}>{fill(t.invite.deadBody, { brand: brand.clientName })}</p>
         </div>
       </main>
     );
@@ -41,19 +51,20 @@ export default async function InvitePage({
   return (
     <main className={`themeClient ${s.shell}`}>
       <div className={s.column}>
-        <span className={s.logo} aria-hidden="true" />
-        <h1 className={s.h1}>Welkom {invite.client_name.split(" ")[0]}</h1>
-        <p className={s.body}>
-          Wij hebben een account voor u klaargezet bij {brand.clientName}. U krijgt een link per
-          e-mail waarmee u meteen bent ingelogd — geen wachtwoord om te bedenken of te onthouden.
-        </p>
+        <div className={s.topRow}>
+          <LanguageSwitcher locale={locale} size="tall" />
+        </div>
+        <Logo size={34} className={s.logo} />
+        <h1 className={s.h1}>
+          {fill(t.invite.welcome, {
+            name: invite.client_name.split(" ")[0] ?? invite.client_name,
+          })}
+        </h1>
+        <p className={s.body}>{fill(t.invite.body, { brand: brand.clientName })}</p>
 
         <InviteSignup email={invite.email} />
 
-        <p className={s.note}>
-          Daarna vult u uw gegevens in en stuurt u een foto van uw paspoort en een pasfoto. Dat
-          duurt ongeveer vijf minuten met de camera van uw telefoon.
-        </p>
+        <p className={s.note}>{t.invite.note}</p>
       </div>
     </main>
   );

@@ -21,10 +21,7 @@
 }
 
 .logo {
-  width: 30px;
-  height: 30px;
-  border-radius: var(--radius-small);
-  background: var(--accent);
+  color: var(--brand-mark);
   flex: none;
 }
 
@@ -70,6 +67,14 @@
   align-items: center;
   gap: 10px;
   padding: 12px 0;
+}
+
+/* Language and theme travel together: two small controls, one row, never wrapping
+   apart from each other. */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .user {
@@ -156,6 +161,10 @@
 
   .user {
     text-align: center;
+  }
+
+  .controls {
+    justify-content: center;
   }
 
   .signout {

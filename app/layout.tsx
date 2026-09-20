@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
+import { LocaleProvider } from "@/components/ui/LocaleProvider";
 import { brand } from "@/lib/brand";
+import { currentLocale } from "@/lib/locale";
 import "./globals.css";
 
 /*
@@ -33,9 +35,16 @@ const themeScript = `
 })();
 `;
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+/*
+ * Language is resolved once, here, and put in two places: `lang` on <html>, so
+ * screen readers and spellcheckers pronounce the page correctly, and the provider,
+ * so every client component below can read its own copy.
+ */
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const locale = await currentLocale();
+
   return (
-    <html lang={brand.defaultLocale} suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <head>
         {/*
           Fonts are loaded with a stylesheet link rather than next/font, which
@@ -51,7 +60,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body style={{ ["--accent-h" as string]: String(brand.accentHue) }}>{children}</body>
+      <body style={{ ["--accent-h" as string]: String(brand.accentHue) }}>
+        <LocaleProvider locale={locale}>{children}</LocaleProvider>
+      </body>
     </html>
   );
 }
