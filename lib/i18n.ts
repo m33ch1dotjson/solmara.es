@@ -115,7 +115,9 @@ export const DICT = {
 
     overview: T("Overview", "Overzicht", "Resumen"),
     clients: T("Clients", "Klanten", "Clientes"),
-    procedures: T("Service Procedures", "Service Procedures", "Procedimientos"),
+    /* Broader than "Service Procedures" on purpose: it holds internal processes
+       too, not only the services we sell. */
+    guides: T("Process Guide", "Process Guide", "Guía de procesos"),
     properties: T("Properties", "Properties", "Propiedades"),
     documents: T("Documents", "Documenten", "Documentos"),
     tasks: T("Tasks", "Taken", "Tareas"),
@@ -143,7 +145,11 @@ export const DICT = {
     ),
     withoutAccount: T("{n} without an account", "{n} zonder account", "{n} sin cuenta"),
     photoCount: T("{n} photographs", "{n} foto’s", "{n} fotografías"),
-    proceduresNote: T("Internal working instructions", "Interne werkinstructies", "Instrucciones internas"),
+    guidesNote: T(
+      "How we do the work",
+      "Hoe wij het werk doen",
+      "Cómo hacemos el trabajo",
+    ),
     documentsNote: T("Sent by clients", "Door klanten gestuurd", "Enviados por clientes"),
   },
 
@@ -308,30 +314,87 @@ export const DICT = {
     rejectAndSend: T("Reject and send", "Afkeuren en versturen", "Rechazar y enviar"),
   },
 
-  /* ----------------------------------------------------------- service procedures */
+  /* --------------------------------------------------------------- process guide */
 
-  procedures: {
-    title: T("Service Procedures", "Service Procedures", "Procedimientos"),
+  guides: {
+    title: T("Process Guide", "Process Guide", "Guía de procesos"),
     lead: T(
-      "Working instructions for the team. Clients never see these — there is no route by which they could reach them.",
-      "Werkinstructies voor het team. Klanten zien deze nooit — er is geen enkele route waarlangs ze erbij kunnen.",
-      "Instrucciones de trabajo para el equipo. Los clientes nunca las ven: no existe ninguna vía por la que puedan llegar a ellas.",
+      "How we do the work: step by step, for the team. Clients never see any of this — there is no route by which they could reach it.",
+      "Hoe wij het werk doen: stap voor stap, voor het team. Klanten zien hier niets van — er is geen enkele route waarlangs ze erbij kunnen.",
+      "Cómo hacemos el trabajo: paso a paso, para el equipo. Los clientes no ven nada de esto: no existe ninguna vía por la que puedan llegar.",
     ),
-    countOne: T("{n} Service Procedure", "{n} Service Procedure", "{n} procedimiento"),
-    countMany: T("{n} Service Procedures", "{n} Service Procedures", "{n} procedimientos"),
+    newGuide: T("New Process Guide", "Nieuwe Process Guide", "Nueva guía"),
+    untitled: T("Untitled guide", "Nieuwe guide", "Guía sin título"),
+    searchPlaceholder: T(
+      "Search process guides…",
+      "Zoek in Process Guides…",
+      "Buscar en las guías…",
+    ),
+    filterLabel: T("Filter by category", "Filter op categorie", "Filtrar por categoría"),
+    all: T("All", "Alles", "Todas"),
     empty: T(
-      "Nothing yet. Add the first one above.",
-      "Nog niets. Voeg hierboven de eerste toe.",
-      "Todavía nada. Añade el primero arriba.",
+      "No guides yet. Write the first one.",
+      "Nog geen guides. Schrijf de eerste.",
+      "Todavía no hay guías. Escribe la primera.",
     ),
-    formTitle: T("Title", "Titel", "Título"),
-    formDescription: T("Description", "Beschrijving", "Descripción"),
-    formHint: T(
-      "For internal use. Line breaks are kept.",
-      "Voor intern gebruik. Regelafbrekingen blijven staan.",
-      "Para uso interno. Se conservan los saltos de línea.",
+    noMatch: T(
+      "Nothing matches that.",
+      "Daar past niets bij.",
+      "No hay nada que coincida.",
     ),
-    submit: T("Save Service Procedure", "Service Procedure opslaan", "Guardar procedimiento"),
+    stillEmpty: T("Still empty.", "Nog leeg.", "Todavía vacía."),
+    lastUpdated: T("Last updated {date}", "Bijgewerkt op {date}", "Actualizada el {date}"),
+    backToList: T("‹ Process Guide", "‹ Process Guide", "‹ Guía de procesos"),
+
+    /* Actions, on the card menu and in the document header. */
+    moreActions: T("More", "Meer", "Más"),
+    edit: T("Edit", "Bewerken", "Editar"),
+    duplicate: T("Duplicate", "Dupliceren", "Duplicar"),
+    print: T("Print / PDF", "Printen / PDF", "Imprimir / PDF"),
+    copyPrefix: T("Copy of", "Kopie van", "Copia de"),
+    saveChanges: T("Save changes", "Wijzigingen opslaan", "Guardar cambios"),
+    saved: T("Saved.", "Opgeslagen.", "Guardada."),
+    titleLabel: T("Title", "Titel", "Título"),
+    titleRequired: T(
+      "A guide needs a title.",
+      "Een guide heeft een titel nodig.",
+      "Una guía necesita un título.",
+    ),
+    categoryLabel: T("Category", "Categorie", "Categoría"),
+    bodyLabel: T("Guide content", "Inhoud van de guide", "Contenido de la guía"),
+
+    /* The editor toolbar. The one-character buttons are the same in every language. */
+    toolbar: T("Formatting", "Opmaak", "Formato"),
+    toolHeading1: T("Title", "Kop 1", "Título"),
+    toolHeading2: T("Heading", "Kop 2", "Encabezado"),
+    toolHeading3: T("Subheading", "Kop 3", "Subtítulo"),
+    toolParagraph: T("Text", "Tekst", "Texto"),
+    toolLink: T("Link", "Link", "Enlace"),
+    toolTable: T("Table", "Tabel", "Tabla"),
+    toolImage: T("Image", "Afbeelding", "Imagen"),
+    linkPrompt: T(
+      "Where should this link go?",
+      "Waar moet deze link heen?",
+      "¿A dónde debe llevar este enlace?",
+    ),
+
+    attachments: T("Attachments", "Bijlagen", "Adjuntos"),
+    noAttachments: T("No attachments.", "Geen bijlagen.", "Sin adjuntos."),
+    addAttachment: T("Add attachment", "Bijlage toevoegen", "Añadir adjunto"),
+
+    category: {
+      RESIDENCY: T(
+        "Residency & Immigration",
+        "Verblijf & immigratie",
+        "Residencia e inmigración",
+      ),
+      REAL_ESTATE: T("Real Estate", "Vastgoed", "Inmobiliaria"),
+      ADMINISTRATION: T("Administration", "Administratie", "Administración"),
+      TAX_BUSINESS: T("Tax & Business", "Belasting & zaken", "Fiscal y empresas"),
+      VEHICLES: T("Vehicles", "Voertuigen", "Vehículos"),
+      INSURANCE: T("Insurance", "Verzekeringen", "Seguros"),
+      OTHER: T("Other", "Overig", "Otros"),
+    },
   },
 
   /* ------------------------------------------------------------------- properties */

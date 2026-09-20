@@ -1,0 +1,261 @@
+.newButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: none;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: var(--radius-control);
+  height: var(--control-h-sm);
+  padding: 0 16px;
+  font-size: 13.5px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.newButton:disabled {
+  background: var(--line);
+  color: var(--ink-3);
+  cursor: not-allowed;
+}
+
+.wrap {
+  margin-top: 20px;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+}
+
+.search {
+  width: 100%;
+  max-width: 420px;
+  height: var(--control-h);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--panel);
+  padding: 0 14px;
+  font-size: 14px;
+}
+
+.search:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent) 16%, transparent);
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.chip {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--ink-2);
+  border-radius: var(--radius-pill);
+  height: 32px;
+  padding: 0 14px;
+  font-size: 13px;
+  font-weight: 550;
+  white-space: nowrap;
+  transition: border-color 150ms ease, color 150ms ease, background 150ms ease;
+}
+
+.chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.chipOn {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.chipOn:hover {
+  color: var(--accent-ink);
+}
+
+.grid {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--panel);
+  box-shadow: var(--shadow-soft);
+  transition: box-shadow 150ms ease, border-color 150ms ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow);
+  border-color: color-mix(in oklch, var(--accent) 40%, var(--line));
+}
+
+.cardLink {
+  display: block;
+  padding: 20px 20px 14px;
+  color: inherit;
+  text-decoration: none;
+  flex: 1;
+}
+
+.cardLink:hover {
+  text-decoration: none;
+}
+
+.cardTitle {
+  margin: 0 0 8px;
+  font-size: 16.5px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.cardLink:hover .cardTitle {
+  color: var(--accent);
+}
+
+/* Three lines, never four: the card is a way in, not the document. */
+.cardPreview {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+}
+
+.cardFoot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px 12px 20px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.badge {
+  font-size: 11.5px;
+  font-weight: 650;
+  color: var(--ink-2);
+  background: var(--panel-2);
+  border-radius: var(--radius-pill);
+  padding: 4px 10px;
+  white-space: nowrap;
+}
+
+.updated {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+.empty {
+  margin: 24px 0 0;
+  padding: 32px;
+  text-align: center;
+  font-size: 13.5px;
+  color: var(--ink-3);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-card);
+}
+
+/* ------------------------------------------------------------------ the ••• */
+
+.menuWrap {
+  position: relative;
+  flex: none;
+}
+
+.menuButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 28px;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: var(--radius-small);
+  color: var(--ink-3);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
+.menuButton:hover {
+  background: var(--panel-2);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+.menu {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 6px);
+  z-index: 20;
+  min-width: 190px;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.menuItem {
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+  font-size: 13.5px;
+  font-weight: 550;
+  padding: 9px 10px;
+  border-radius: var(--radius-small);
+}
+
+.menuItem:hover {
+  background: var(--panel-2);
+}
+
+.menuDanger {
+  color: var(--danger);
+}
+
+.menuDanger:hover {
+  background: color-mix(in oklch, var(--danger) 12%, transparent);
+}
+
+.menuLine {
+  height: 1px;
+  background: var(--line-soft);
+  margin: 5px 4px;
+}
+
+/* In the document header the menu hangs downwards; there is nothing above it. */
+.menuDown {
+  top: calc(100% + 6px);
+  bottom: auto;
+}
+
+@media print {
+  .newButton,
+  .controls,
+  .filters,
+  .menuWrap {
+    display: none;
+  }
+}

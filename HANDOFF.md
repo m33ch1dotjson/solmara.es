@@ -17,9 +17,11 @@ Two audiences that never meet:
 
 - **Clients** sign in at the domain root and see one page: their own details, and the
   two files we ask for (passport page, passport photograph).
-- **Staff** sign in at `/admin` and get three tabs — Klanten, Service Procedures,
-  Properties. Staff create a client, generate an invite link, and hand it over
-  (WhatsApp, in practice — outbound mail is not configured yet).
+- **Staff** sign in at `/admin` and get a rail: Overview, Clients, Process Guide,
+  Properties, Documents, Tasks, and Settings under an Account heading. Staff create a
+  client, generate an invite link, and hand it over (WhatsApp, in practice — outbound
+  mail now works, but nothing sends an invite by itself yet).
+  *Tasks is a placeholder: the tab exists, the table does not, and the page says so.*
 
 The public marketing site is **not this**. `solmara.es` is a WordPress site managed by
 an agency at Strato, and the brand there is being renamed to Solmavera. Do not touch
@@ -75,7 +77,8 @@ app/
     signin/               password first, magic link second
   admin/                  staff, behind a check in the layout
     page.tsx              Klanten
-    sop/ properties/ account/ clients/[id]/
+    process-guide/  the internal handbook: list, [id] document, file/[id] server
+    properties/ documents/ tasks/ account/ clients/[id]/
     actions.ts            staff server actions
   invite/[token]/         where the link a staff member sends lands
   auth/callback/ signout/
@@ -149,11 +152,28 @@ back into a plain select.
 
 ### Storage
 
-Buckets `client-documents` and `property-photos` are **private with no storage
-policies at all**. Uploads go through our server with the secret key; reads are signed
-URLs valid for 600 seconds, minted per render. A screenshot of a page is therefore not
-a permanent link to somebody's passport. Do not add a storage policy to "make it
-easier" — that is the whole protection.
+Buckets `client-documents`, `property-photos` and `process-guide-files` are **private
+with no storage policies at all**. Uploads go through our server with the secret key;
+reads are signed URLs valid for 600 seconds, minted per render. A screenshot of a page
+is therefore not a permanent link to somebody's passport. Do not add a storage policy
+to "make it easier" — that is the whole protection. A new bucket is made with
+`node --env-file=.env.local scripts/create-bucket.mjs <name>`, on the container, which
+creates it private.
+
+**A Process Guide body never holds a storage key or a signed URL.** It holds
+`/admin/process-guide/file/<id>`, a route that checks you are staff and then redirects
+to a URL minted just now. A signed URL saved into HTML is dead ten minutes later, and
+a storage key in a document is a key sitting in a database column that clients'
+documents also live in.
+
+**Guide HTML is sanitised by `lib/sanitize.ts` on the way in, and only there.** It is
+an allowlist — tags, attributes, and the two URL shapes a link and an image may have —
+and it is the only thing between a paste into a contentEditable and
+`dangerouslySetInnerHTML`. It is hand-written on purpose: seven known authors, a short
+tag list, and no parser dependency to keep current for a decade. **If guide content
+ever becomes client-visible, replace it with a parser-based sanitiser first.** SVG is
+deliberately not an allowed upload type: it is a document that can carry script, and
+ours are served from our own origin.
 
 ### The tunnel
 

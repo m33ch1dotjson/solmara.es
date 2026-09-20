@@ -1,0 +1,146 @@
+.editor {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--panel);
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  border-bottom: 1px solid var(--line-soft);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: var(--panel);
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+}
+
+.tool {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: var(--radius-small);
+  color: var(--ink-2);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.toolWide {
+  font-weight: 550;
+}
+
+.tool:hover {
+  background: var(--panel-2);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+.tool:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.toolLine {
+  width: 1px;
+  height: 20px;
+  background: var(--line);
+  margin: 0 4px;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.problem {
+  margin: 0;
+  padding: 10px 16px 0;
+  font-size: 13px;
+  color: var(--danger);
+  font-weight: 550;
+}
+
+/* The writing surface keeps the reading surface's measure and rhythm, so switching
+   between the two does not reflow the document under you. */
+.area {
+  padding: 24px 26px 40px;
+  min-height: 420px;
+  font-size: 15.5px;
+  line-height: 1.7;
+  color: var(--ink);
+  outline: none;
+}
+
+.area:focus-visible {
+  outline: none;
+}
+
+.area h1 {
+  font-size: 25px;
+  margin: 28px 0 10px;
+}
+
+.area h2 {
+  font-size: 20px;
+  margin: 26px 0 8px;
+}
+
+.area h3 {
+  font-size: 17px;
+  margin: 22px 0 6px;
+}
+
+.area p {
+  margin: 0 0 14px;
+}
+
+.area ul,
+.area ol {
+  margin: 0 0 14px;
+  padding-left: 24px;
+}
+
+.area li {
+  margin-bottom: 6px;
+}
+
+.area a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.area img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-control);
+  border: 1px solid var(--line);
+}
+
+.area table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 16px;
+}
+
+.area th,
+.area td {
+  border: 1px solid var(--line);
+  padding: 8px 10px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.area th {
+  background: var(--panel-2);
+  font-weight: 650;
+}
+
+.area hr {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 22px 0;
+}

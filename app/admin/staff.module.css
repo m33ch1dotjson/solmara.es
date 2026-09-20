@@ -21,6 +21,21 @@
   min-width: 0;
 }
 
+/* On paper there is no rail, so the grid column it lived in must go with it —
+   otherwise every printed page starts 240px in from the left. */
+@media print {
+  .shell {
+    display: block;
+    min-height: 0;
+    background: none;
+  }
+
+  .screen {
+    padding: 0;
+    max-width: none;
+  }
+}
+
 .screen {
   padding: 36px 32px 72px;
   max-width: 1180px;

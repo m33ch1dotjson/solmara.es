@@ -18,9 +18,10 @@ import {
   clientDocument,
   clientInvite,
   event,
+  processGuide,
+  processGuideFile,
   property,
   propertyPhoto,
-  sop,
 } from "@/lib/db/schema";
 
 /** Invites last two weeks. Long enough to be useful, short enough to expire. */
@@ -226,34 +227,206 @@ export async function listSentDocuments(actor: Actor) {
   );
 }
 
-/* --------------------------------------------------------------------- SOPs */
+/* ------------------------------------------------------------- process guide */
 
-export async function listSops(actor: Actor) {
-  return asActor(actor, (tx) =>
-    tx.select().from(sop).orderBy(asc(sop.sortOrder), desc(sop.createdAt)),
-  );
-}
+export type GuideCategory = (typeof processGuide.category.enumValues)[number];
 
-export async function createSop(
-  actor: Actor,
-  input: { title: string; description: string },
-) {
+export async function listGuides(actor: Actor) {
   if (actor.kind !== "staff") throw new Error("UNAUTHORISED");
   return asActor(actor, (tx) =>
     tx
-      .insert(sop)
-      .values({
-        title: input.title.trim(),
-        description: input.description.trim(),
-        createdBy: actor.id,
-      })
-      .returning(),
+      .select()
+      .from(processGuide)
+      .orderBy(asc(processGuide.sortOrder), desc(processGuide.updatedAt)),
   );
 }
 
-export async function deleteSop(actor: Actor, id: string) {
+export async function getGuide(actor: Actor, id: string) {
   if (actor.kind !== "staff") throw new Error("UNAUTHORISED");
-  return asActor(actor, (tx) => tx.delete(sop).where(eq(sop.id, id)));
+  return asActor(actor, async (tx) => {
+    const rows = await tx.select().from(processGuide).where(eq(processGuide.id, id)).limit(1);
+    const record = rows[0];
+    if (!record) return null;
+
+    const files = await tx
+      .select()
+      .from(processGuideFile)
+      .where(eq(processGuideFile.guideId, id))
+      .orderBy(asc(processGuideFile.createdAt));
+
+    return { record, files };
+  });
+}
+
+/** Just the row behind a file id, for the route that serves it. */
+export async function getGuideFile(actor: Actor, id: string) {
+  if (actor.kind !== "staff") throw new Error("UNAUTHORISED");
+  return asActor(actor, async (tx) => {
+    const rows = await tx
+      .select()
+      .from(processGuideFile)
+      .where(eq(processGuideFile.id, id))
+      .limit(1);
+    return rows[0] ?? null;
+  });
+}
+
+export async function createGuide(
+  actor: Actor,
+  input: { title: string; category?: GuideCategory; content?: string },
+) {
+  if (actor.kind !== "staff") throw new Error("UNAUTHORISED");
+  return asActor(actor, async (tx) => {
+    const [created] = await tx
+      .insert(processGuide)
+      .values({
+        title: input.title.trim(),
+        category: input.category ?? "OTHER",
+        content: input.content ?? "",
+        createdBy: actor.id,
+      })
+      .returning();
+    if (!created) throw new Error("GUIDE_NOT_CREATED");
+    return created;
+  });
+}
+
+export async function updateGuide(
+  actor: Actor,
+  id: string,
+  input: { title: string; category: GuideCategory; content: string },
+) {
+  if (actor.kind !== "staff") throw new Error("UNAUTHORISED");
+  return asActor(actor, async (tx) => {
+    const [updated] = await tx
+      .update(processGuide)
+      .set({
+        title: input.title.trim(),
+        category: input.category,
+        content: input.content,
+        updatedAt: new Date(),
+      })
+      .where(eq(processGuide.id, id))
+      .returning();
+    return updated ?? null;
+  });
+}
+
+/**
+ * A copy of a guide, including its attachments as rows.
+ *
+ * The files themselves are not copied in storage: both rows point at the same
+ * object. Deleting one guide therefore must not delete the object — which is why
+ * deleteGuide below only removes storage objects that no other row still refers to.
+ */
+export async function duplicateGuide(actor: Actor, id: string, titlePrefix: string) {
+  if (actor.kind !== "staff") throw new Error("UNAUTHORISED");
+  return asActor(actor, async (tx) => {
+    const rows = await tx.select().from(processGuide).where(eq(processGuide.id, id)).limit(1);
+    const source = rows[0];
+    if (!source) return null;
+
+    const [copy] = await tx
+      .insert(processGuide)
+      .values({
+        title: `${titlePrefix} ${source.title}`,
+        category: source.category,
+        content: source.content,
+        createdBy: actor.id,
+      })
+      .returning();
+    if (!copy) throw new Error("GUIDE_NOT_DUPLICATED");
+
+    const files = await tx
+      .select()
+      .from(processGuideFile)
+      .where(eq(processGuideFile.guideId, id));
+
+    if (files.length > 0) {
+      await tx.insert(processGuideFile).values(
+        files.map((file) => ({
+          guideId: copy.id,
+          kind: file.kind,
+          filename: file.filename,
+          storageKey: file.storageKey,
+          mimeType: file.mimeType,
+          sizeBytes: file.sizeBytes,
+          uploadedBy: actor.id,
+        })),
+      );
+    }
+
+    return copy;
+  });
+}
+
+/**
+ * Deletes a guide and returns the storage keys that nothing else points at, so the
+ * caller can clear them. A duplicated guide shares its files with the original;
+ * deleting the copy must not empty the original's attachments.
+ */
+export async function deleteGuide(actor: Actor, id: string): Promise<string[]> {
+  if (actor.kind !== "staff") throw new Error("UNAUTHORISED");
+  return asActor(actor, async (tx) => {
+    const mine = await tx
+      .select()
+      .from(processGuideFile)
+      .where(eq(processGuideFile.guideId, id));
+
+    // The cascade removes the file rows with the guide.
+    await tx.delete(processGuide).where(eq(processGuide.id, id));
+
+    if (mine.length === 0) return [];
+
+    const stillUsed = await tx
+      .select({ storageKey: processGuideFile.storageKey })
+      .from(processGuideFile);
+    const used = new Set(stillUsed.map((row) => row.storageKey));
+
+    return mine.map((file) => file.storageKey).filter((key) => !used.has(key));
+  });
+}
+
+export async function addGuideFile(
+  actor: Actor,
+  input: {
+    guideId: string;
+    kind: "IMAGE" | "ATTACHMENT";
+    filename: string;
+    storageKey: string;
+    mimeType: string;
+    sizeBytes: number;
+  },
+) {
+  if (actor.kind !== "staff") throw new Error("UNAUTHORISED");
+  return asActor(actor, async (tx) => {
+    const [created] = await tx
+      .insert(processGuideFile)
+      .values({ ...input, uploadedBy: actor.id })
+      .returning();
+    if (!created) throw new Error("FILE_NOT_RECORDED");
+    return created;
+  });
+}
+
+/** Removes one file row, and reports whether its object is now unreferenced. */
+export async function removeGuideFile(actor: Actor, id: string) {
+  if (actor.kind !== "staff") throw new Error("UNAUTHORISED");
+  return asActor(actor, async (tx) => {
+    const [deleted] = await tx
+      .delete(processGuideFile)
+      .where(eq(processGuideFile.id, id))
+      .returning();
+    if (!deleted) return null;
+
+    const others = await tx
+      .select({ id: processGuideFile.id })
+      .from(processGuideFile)
+      .where(eq(processGuideFile.storageKey, deleted.storageKey))
+      .limit(1);
+
+    return { ...deleted, orphaned: others.length === 0 };
+  });
 }
 
 /* --------------------------------------------------------------- properties */

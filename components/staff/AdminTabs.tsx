@@ -67,20 +67,20 @@ export function AdminTabs({ brandName, user }: { brandName: string; user: string
           {t.nav.clients}
         </Link>
         <Link
+          href="/admin/process-guide"
+          className={tabClass("/admin/process-guide")}
+          aria-current={current("/admin/process-guide")}
+        >
+          <IconProcedures />
+          {t.nav.guides}
+        </Link>
+        <Link
           href="/admin/properties"
           className={tabClass("/admin/properties")}
           aria-current={current("/admin/properties")}
         >
           <IconProperties />
           {t.nav.properties}
-        </Link>
-        <Link
-          href="/admin/sop"
-          className={tabClass("/admin/sop")}
-          aria-current={current("/admin/sop")}
-        >
-          <IconProcedures />
-          {t.nav.procedures}
         </Link>
         <Link
           href="/admin/documents"

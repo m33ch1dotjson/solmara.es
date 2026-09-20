@@ -185,21 +185,68 @@ export const clientDocument = app.table(
   ],
 );
 
-/* -------------------------------------------------------------------- SOPs */
+/* ----------------------------------------------------------- process guide */
 
-/** Internal working instructions. Staff only — no client policy exists for this table. */
-export const sop = app.table(
-  "sop",
+export const guideCategory = app.enum("guide_category", [
+  "RESIDENCY",
+  "REAL_ESTATE",
+  "ADMINISTRATION",
+  "TAX_BUSINESS",
+  "VEHICLES",
+  "INSURANCE",
+  "OTHER",
+]);
+
+export const guideFileKind = app.enum("guide_file_kind", ["IMAGE", "ATTACHMENT"]);
+
+/**
+ * The internal handbook. Staff only — no client policy exists for this table.
+ *
+ * `content` is HTML, written by the document editor and sanitised on the way in by
+ * lib/sanitize.ts. It is never rendered to a client; nothing outside /admin reads it.
+ */
+export const processGuide = app.table(
+  "process_guide",
   {
     id: uuid("id").primaryKey().defaultRandom(),
     title: text("title").notNull(),
-    description: text("description").notNull(),
+    content: text("content").notNull().default(""),
+    category: guideCategory("category").notNull().default("OTHER"),
     sortOrder: integer("sort_order").notNull().default(0),
     createdBy: uuid("created_by").references(() => staffUser.id, { onDelete: "set null" }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },
-  (t) => [index("sop_order_idx").on(t.sortOrder, t.createdAt)],
+  (t) => [
+    index("process_guide_order_idx").on(t.sortOrder, t.createdAt),
+    index("process_guide_category_idx").on(t.category),
+  ],
+);
+
+/**
+ * Files belonging to a guide: screenshots placed inside the text, and templates
+ * hanging under it. The same protection for both, so they are the same table.
+ *
+ * A body never holds a storage key or a signed URL. It holds
+ * /admin/process-guide/file/<id>, which checks the reader is staff and mints a fresh
+ * ten-minute URL — a signed URL saved into HTML would be dead by the next read.
+ */
+export const processGuideFile = app.table(
+  "process_guide_file",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    guideId: uuid("guide_id")
+      .notNull()
+      .references(() => processGuide.id, { onDelete: "cascade" }),
+    kind: guideFileKind("kind").notNull().default("ATTACHMENT"),
+    filename: text("filename").notNull(),
+    storageKey: text("storage_key").notNull(),
+    mimeType: text("mime_type"),
+    sizeBytes: integer("size_bytes"),
+    uploadedBy: uuid("uploaded_by").references(() => staffUser.id, { onDelete: "set null" }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("process_guide_file_guide_idx").on(t.guideId, t.createdAt)],
 );
 
 /* -------------------------------------------------------------- properties */

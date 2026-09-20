@@ -1,0 +1,361 @@
+.page {
+  padding: 28px 32px 80px;
+  max-width: 900px;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.back {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+  text-decoration: none;
+}
+
+.back:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.primary {
+  border: none;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: var(--radius-control);
+  height: var(--control-h-sm);
+  padding: 0 16px;
+  font-size: 13.5px;
+  font-weight: 650;
+}
+
+.primary:disabled {
+  background: var(--line);
+  color: var(--ink-3);
+  cursor: not-allowed;
+}
+
+.ghost {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--ink-2);
+  border-radius: var(--radius-control);
+  height: var(--control-h-sm);
+  padding: 0 14px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ghost:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* The sheet. Wide enough for a table, narrow enough to read a paragraph without
+   losing the line. */
+.document {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--panel);
+  box-shadow: var(--shadow-soft);
+  padding: 40px 44px 44px;
+}
+
+.title {
+  font-size: 30px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.titleInput {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--panel);
+  padding: 10px 14px;
+  font-size: 26px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  font-family: inherit;
+}
+
+.titleInput:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 14px 0 0;
+  flex-wrap: wrap;
+}
+
+.updated {
+  font-size: 13px;
+  color: var(--ink-3);
+}
+
+.categoryField {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.categoryLabel {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.select {
+  height: var(--control-h-sm);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--panel);
+  color: var(--ink);
+  padding: 0 10px;
+  font-size: 13.5px;
+  font-family: inherit;
+}
+
+.rule {
+  border: none;
+  border-top: 1px solid var(--line-soft);
+  margin: 24px 0 8px;
+}
+
+.blank {
+  font-size: 14px;
+  color: var(--ink-3);
+  font-style: italic;
+}
+
+.error {
+  margin: 16px 0 0;
+  font-size: 13.5px;
+  color: var(--danger);
+  font-weight: 550;
+}
+
+/* ------------------------------------------------------------- the guide body */
+
+.body {
+  font-size: 15.5px;
+  line-height: 1.7;
+  color: var(--ink);
+}
+
+.body h1 {
+  font-size: 25px;
+  margin: 30px 0 10px;
+}
+
+.body h2 {
+  font-size: 20px;
+  margin: 28px 0 8px;
+}
+
+.body h3 {
+  font-size: 17px;
+  margin: 24px 0 6px;
+}
+
+.body p {
+  margin: 0 0 14px;
+}
+
+.body ul,
+.body ol {
+  margin: 0 0 16px;
+  padding-left: 24px;
+}
+
+.body li {
+  margin-bottom: 7px;
+}
+
+.body a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.body blockquote {
+  margin: 0 0 16px;
+  padding: 2px 0 2px 16px;
+  border-left: 3px solid var(--line);
+  color: var(--ink-2);
+}
+
+.body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-control);
+  border: 1px solid var(--line);
+  margin: 4px 0;
+}
+
+.body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 18px;
+}
+
+.body th,
+.body td {
+  border: 1px solid var(--line);
+  padding: 9px 11px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.body th {
+  background: var(--panel-2);
+  font-weight: 650;
+}
+
+.body hr {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 24px 0;
+}
+
+.body code {
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  background: var(--panel-2);
+  padding: 1px 5px;
+  border-radius: var(--radius-small);
+}
+
+/* ---------------------------------------------------------------- attachments */
+
+.attachments {
+  margin-top: 36px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.attachTitle {
+  font-size: 15px;
+  font-weight: 650;
+  margin: 0 0 12px;
+}
+
+.attachEmpty {
+  margin: 0 0 12px;
+  font-size: 13.5px;
+  color: var(--ink-3);
+}
+
+.attachList {
+  list-style: none;
+  margin: 0 0 14px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.attachRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--panel-2);
+}
+
+.attachName {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.attachName:hover {
+  text-decoration: underline;
+}
+
+.attachSize {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  margin-left: auto;
+}
+
+.attachRemove {
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--danger);
+  border-radius: var(--radius-small);
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 5px 9px;
+}
+
+.attachRemove:hover {
+  border-color: color-mix(in oklch, var(--danger) 40%, transparent);
+}
+
+.hiddenInput {
+  display: none;
+}
+
+/* ---------------------------------------------------------------------- print */
+
+/*
+ * Printing gives the guide and nothing else: no rail, no buttons, no card chrome.
+ * The navigation hides itself in AdminTabs.module.css; this is the document's half.
+ */
+@media print {
+  .page {
+    padding: 0;
+    max-width: none;
+  }
+
+  .top,
+  .actions {
+    display: none;
+  }
+
+  .document {
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    background: transparent;
+  }
+
+  .attachRemove {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .page {
+    padding: 20px 16px 60px;
+  }
+
+  .document {
+    padding: 24px 20px 28px;
+  }
+
+  .title {
+    font-size: 24px;
+  }
+}

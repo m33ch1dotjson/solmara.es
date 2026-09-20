@@ -9,9 +9,7 @@ import {
   createClient,
   createInvite,
   createProperty,
-  createSop,
   deleteProperty,
-  deleteSop,
 } from "@/lib/queries";
 import {
   ALLOWED_IMAGE_TYPES,
@@ -99,32 +97,6 @@ export async function createInviteAction(form: FormData): Promise<ActionResult> 
   } catch {
     return { ok: false, error: t.errors.inviteFailed };
   }
-}
-
-export async function createSopAction(form: FormData): Promise<ActionResult> {
-  const actor = await requireStaff();
-  const t = copy(await currentLocale());
-
-  const title = text(form, "title");
-  const description = text(form, "description");
-
-  if (!title) return { ok: false, error: t.errors.titleRequired };
-  if (!description) return { ok: false, error: t.errors.descriptionRequired };
-
-  await createSop(actor, { title, description });
-  revalidatePath("/admin/sop");
-  return { ok: true, message: t.saved.procedure };
-}
-
-export async function deleteSopAction(form: FormData): Promise<ActionResult> {
-  const actor = await requireStaff();
-  const t = copy(await currentLocale());
-
-  const id = text(form, "id");
-  if (!id) return { ok: false, error: t.errors.nothingToDelete };
-  await deleteSop(actor, id);
-  revalidatePath("/admin/sop");
-  return { ok: true };
 }
 
 export async function createPropertyAction(form: FormData): Promise<ActionResult> {

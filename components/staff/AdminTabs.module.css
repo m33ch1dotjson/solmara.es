@@ -128,6 +128,14 @@
   color: var(--accent);
 }
 
+/* A printed Process Guide is the document and nothing else: no rail, no buttons.
+   The document's own half of this lives in GuideDocument.module.css. */
+@media print {
+  .bar {
+    display: none;
+  }
+}
+
 /* ------------------------------------------------------------- the left rail */
 
 @media (min-width: 900px) {

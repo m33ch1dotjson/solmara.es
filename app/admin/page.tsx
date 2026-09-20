@@ -8,7 +8,7 @@ import {
 import { staffOrRedirect } from "@/lib/auth/session";
 import { copy, fill } from "@/lib/i18n";
 import { currentLocale } from "@/lib/locale";
-import { listClients, listProperties, listSentDocuments, listSops } from "@/lib/queries";
+import { listClients, listGuides, listProperties, listSentDocuments } from "@/lib/queries";
 import shell from "./staff.module.css";
 import s from "./overview.module.css";
 
@@ -29,10 +29,10 @@ export default async function OverviewPage() {
   const [actor, locale] = await Promise.all([staffOrRedirect(), currentLocale()]);
   const t = copy(locale);
 
-  const [clients, properties, sops, documents] = await Promise.all([
+  const [clients, properties, guides, documents] = await Promise.all([
     listClients(actor),
     listProperties(actor),
-    listSops(actor),
+    listGuides(actor),
     listSentDocuments(actor),
   ]);
 
@@ -88,13 +88,13 @@ export default async function OverviewPage() {
           </span>
         </Link>
 
-        <Link href="/admin/sop" className={s.tile}>
+        <Link href="/admin/process-guide" className={s.tile}>
           <span className={s.tileIcon}>
             <IconProcedures />
           </span>
-          <span className={s.tileCount}>{sops.length}</span>
-          <span className={s.tileLabel}>{t.nav.procedures}</span>
-          <span className={s.tileNote}>{t.overview.proceduresNote}</span>
+          <span className={s.tileCount}>{guides.length}</span>
+          <span className={s.tileLabel}>{t.nav.guides}</span>
+          <span className={s.tileNote}>{t.overview.guidesNote}</span>
         </Link>
 
         <Link href="/admin/documents" className={s.tile}>
