@@ -1,0 +1,160 @@
+.page {
+  padding: 22px 16px 64px;
+  max-width: 900px;
+}
+
+@media (min-width: 700px) {
+  .page {
+    padding: 28px 32px 80px;
+  }
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.back {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+  text-decoration: none;
+}
+
+.back:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.actions {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+
+.title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
+}
+
+.address {
+  margin: 8px 0 0;
+  font-size: 15px;
+  color: var(--ink-2);
+  overflow-wrap: anywhere;
+}
+
+.notes {
+  margin: 16px 0 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink);
+  white-space: pre-wrap;
+}
+
+.added {
+  margin: 18px 0 0;
+  font-size: 12.5px;
+  color: var(--ink-3);
+}
+
+.wide {
+  grid-column: 1 / -1;
+}
+
+.textarea {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--panel);
+  color: var(--ink);
+  padding: 12px 14px;
+  font-size: 14px;
+  font-family: inherit;
+  line-height: 1.55;
+  resize: vertical;
+  width: 100%;
+}
+
+.textarea:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent) 16%, transparent);
+}
+
+/* ------------------------------------------------------------- photographs */
+
+.photos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.photo {
+  position: relative;
+}
+
+.photoButton {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  overflow: hidden;
+  background: var(--panel-2);
+  cursor: zoom-in;
+  line-height: 0;
+}
+
+.photoButton:hover {
+  border-color: var(--accent);
+}
+
+.photoImage {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+}
+
+/* Always visible, not on hover: on a touch screen there is no hover, and a control
+   you cannot reveal is a control that does not exist. */
+.photoRemove {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid oklch(1 0 0 / 0.3);
+  border-radius: var(--radius-pill);
+  background: oklch(0.15 0.01 250 / 0.6);
+  color: oklch(1 0 0);
+  font-size: 17px;
+  line-height: 1;
+  padding-bottom: 2px;
+}
+
+.photoRemove:hover {
+  background: var(--danger);
+  border-color: var(--danger);
+}
+
+.danger {
+  border: none;
+  background: var(--danger);
+  color: oklch(1 0 0);
+  border-radius: var(--radius-control);
+  height: var(--control-h-sm);
+  padding: 0 16px;
+  font-size: 13.5px;
+  font-weight: 650;
+}

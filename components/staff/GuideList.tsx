@@ -15,6 +15,7 @@ export type GuideCard = {
   category: string;
   preview: string;
   updated: string;
+  coverUrl: string | null;
   haystack: string;
 };
 
@@ -115,6 +116,12 @@ export function GuideList({ cards }: { cards: GuideCard[] }) {
           {shown.map((card) => (
             <article key={card.id} className={s.card}>
               <Link href={`/admin/process-guide/${card.id}`} className={s.cardLink}>
+                {card.coverUrl && (
+                  // A thumbnail, deliberately short: the card is a way in, and a
+                  // guide without a picture must not look like a broken one.
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={card.coverUrl} alt="" className={s.cardCover} />
+                )}
                 <h2 className={s.cardTitle}>{card.title}</h2>
                 <p className={s.cardPreview}>{card.preview || t.guides.stillEmpty}</p>
               </Link>

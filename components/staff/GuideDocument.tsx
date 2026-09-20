@@ -8,6 +8,7 @@ import {
   duplicateGuideAction,
   removeGuideFileAction,
   saveGuideAction,
+  setGuideCoverAction,
   uploadGuideFileAction,
 } from "@/app/admin/process-guide/actions";
 import { useCopy } from "@/components/ui/LocaleProvider";
@@ -38,6 +39,7 @@ export function GuideDocument({
   content,
   updated,
   attachments,
+  coverUrl,
   startInEdit,
   printOnOpen,
 }: {
@@ -47,6 +49,7 @@ export function GuideDocument({
   content: string;
   updated: string;
   attachments: Attachment[];
+  coverUrl: string | null;
   startInEdit: boolean;
   printOnOpen: boolean;
 }) {
@@ -63,6 +66,19 @@ export function GuideDocument({
   const [busy, startBusy] = useTransition();
 
   const attachInput = useRef<HTMLInputElement>(null);
+  const coverInput = useRef<HTMLInputElement>(null);
+
+  function changeCover(file: File | null) {
+    setError(null);
+    startBusy(async () => {
+      const form = new FormData();
+      form.set("guideId", id);
+      if (file) form.set("file", file);
+      const result = await setGuideCoverAction(form);
+      if (!result.ok) setError(result.error);
+      else router.refresh();
+    });
+  }
 
   useEffect(() => {
     if (!printOnOpen) return;
@@ -203,6 +219,51 @@ export function GuideDocument({
               <span className={s.updated}>{t.guides.lastUpdated.replace("{date}", updated)}</span>
             </p>
           </>
+        )}
+
+        {/* The cover sits between the heading and the text: big enough to be worth
+            having, small enough not to be the document. */}
+        {coverUrl && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={coverUrl} alt="" className={s.cover} />
+        )}
+
+        {editing && (
+          <div className={s.coverEdit}>
+            <span className={s.coverLabel}>{t.guides.cover}</span>
+            <p className={s.coverLead}>{t.guides.coverLead}</p>
+            <input
+              ref={coverInput}
+              type="file"
+              accept="image/*"
+              className={s.hiddenInput}
+              onChange={(event) => {
+                const file = event.target.files?.[0];
+                if (file) changeCover(file);
+                event.target.value = "";
+              }}
+            />
+            <div className={s.coverActions}>
+              <button
+                type="button"
+                className={s.ghost}
+                disabled={busy}
+                onClick={() => coverInput.current?.click()}
+              >
+                {busy ? t.common.busy : coverUrl ? t.guides.replaceCover : t.guides.chooseCover}
+              </button>
+              {coverUrl && (
+                <button
+                  type="button"
+                  className={s.ghost}
+                  disabled={busy}
+                  onClick={() => changeCover(null)}
+                >
+                  {t.guides.removeCover}
+                </button>
+              )}
+            </div>
+          </div>
         )}
 
         <hr className={s.rule} />

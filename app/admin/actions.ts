@@ -9,7 +9,6 @@ import {
   createClient,
   createInvite,
   createProperty,
-  deleteProperty,
 } from "@/lib/queries";
 import {
   ALLOWED_IMAGE_TYPES,
@@ -150,15 +149,4 @@ export async function createPropertyAction(form: FormData): Promise<ActionResult
     message:
       uploaded === 0 ? t.saved.property : fill(t.saved.propertyWithPhotos, { n: uploaded }),
   };
-}
-
-export async function deletePropertyAction(form: FormData): Promise<ActionResult> {
-  const actor = await requireStaff();
-  const t = copy(await currentLocale());
-
-  const id = text(form, "id");
-  if (!id) return { ok: false, error: t.errors.noProperty };
-  await deleteProperty(actor, id);
-  revalidatePath("/admin/properties");
-  return { ok: true };
 }

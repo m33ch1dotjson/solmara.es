@@ -5,14 +5,21 @@ import { createPropertyAction, type ActionResult } from "@/app/admin/actions";
 import { useCopy } from "@/components/ui/LocaleProvider";
 import s from "./forms.module.css";
 
-export function PropertyForm() {
+/**
+ * Creating a property. Lives in a dialog now; `onSaved` is how the dialog learns it
+ * can close, so the form itself still knows nothing about where it is rendered.
+ */
+export function PropertyForm({ onSaved }: { onSaved?: () => void } = {}) {
   const { t } = useCopy();
   const formRef = useRef<HTMLFormElement>(null);
 
   const [state, action, pending] = useActionState(
     async (_prev: ActionResult | null, form: FormData) => {
       const result = await createPropertyAction(form);
-      if (result.ok) formRef.current?.reset();
+      if (result.ok) {
+        formRef.current?.reset();
+        onSaved?.();
+      }
       return result;
     },
     null,

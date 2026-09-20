@@ -38,6 +38,9 @@ export default async function ProcessGuidePage() {
     category: guide.category,
     preview: guidePreview(guide.content),
     updated: formatDateFor(guide.updatedAt, locale, dates),
+    // The file route, not a signed URL: it checks the reader and signs on the spot,
+    // so a list of twenty covers costs no signing round trips to render.
+    coverUrl: guide.coverFileId ? `/admin/process-guide/file/${guide.coverFileId}` : null,
     // What search reads. Built server-side so the browser never holds the full text
     // of every guide just to search it.
     haystack: `${guide.title} ${guidePreview(guide.content, 2000)}`.toLowerCase(),

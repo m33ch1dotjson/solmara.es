@@ -249,6 +249,12 @@ export const processGuide = app.table(
     title: text("title").notNull(),
     content: text("content").notNull().default(""),
     category: guideCategory("category").notNull().default("OTHER"),
+    /**
+     * Which of this guide's files is the cover. Not a second storage key: the cover
+     * is an ordinary file row, so it is served and cleaned up by the same machinery.
+     * Typed loosely to avoid a circular reference between the two tables.
+     */
+    coverFileId: uuid("cover_file_id"),
     sortOrder: integer("sort_order").notNull().default(0),
     createdBy: uuid("created_by").references(() => staffUser.id, { onDelete: "set null" }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),

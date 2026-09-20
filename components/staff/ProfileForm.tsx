@@ -2,6 +2,7 @@
 
 import { useRef, useState, useTransition } from "react";
 import { saveProfileAction } from "@/app/admin/account/actions";
+import { Avatar } from "@/components/ui/Avatar";
 import { useCopy } from "@/components/ui/LocaleProvider";
 import s from "@/app/admin/account/account.module.css";
 
@@ -55,14 +56,7 @@ export function ProfileForm({
       <p className={s.cardLead}>{t.account.profileLead}</p>
 
       <div className={s.avatarRow}>
-        {avatarUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={avatarUrl} alt="" className={s.avatar} />
-        ) : (
-          <span className={s.avatarFallback} aria-hidden="true">
-            {initials}
-          </span>
-        )}
+        <Avatar url={avatarUrl} initials={initials} size={64} />
 
         <div className={s.avatarActions}>
           <input

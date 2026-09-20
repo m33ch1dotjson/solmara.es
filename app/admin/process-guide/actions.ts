@@ -11,6 +11,7 @@ import {
   deleteGuide,
   duplicateGuide,
   removeGuideFile,
+  setGuideCover,
   updateGuide,
   type GuideCategory,
 } from "@/lib/queries";
@@ -151,6 +152,57 @@ export async function uploadGuideFileAction(
     });
     refresh();
     return { ok: true, id: row.id, filename: row.filename };
+  } catch {
+    return { ok: false, error: t.errors.uploadFailed };
+  }
+}
+
+/**
+ * Uploads a picture and makes it this guide's cover in one go, because those are
+ * never two separate wishes.
+ */
+export async function setGuideCoverAction(
+  form: FormData,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const actor = await requireStaff();
+  const t = copy(await currentLocale());
+
+  const guideId = text(form, "guideId");
+  if (!guideId) return { ok: false, error: t.errors.createFailed };
+
+  // No file means "remove the cover". The file row stays: it may still be used
+  // inside the text, and deleting it there would leave a broken image behind.
+  const file = form.get("file");
+  if (!(file instanceof File) || file.size === 0) {
+    await setGuideCover(actor, guideId, null);
+    refresh();
+    return { ok: true };
+  }
+
+  const check = validateUpload(file, ALLOWED_IMAGE_TYPES);
+  if (!check.ok) {
+    const reason = {
+      empty: t.errors.fileEmpty,
+      tooLarge: t.errors.fileTooLarge,
+      type: t.errors.fileType,
+    };
+    return { ok: false, error: reason[check.reason] };
+  }
+
+  try {
+    const key = storageKey(`guide/${guideId}`, file.name);
+    await upload(BUCKET_GUIDE_FILES, key, file);
+    const row = await addGuideFile(actor, {
+      guideId,
+      kind: "IMAGE",
+      filename: file.name,
+      storageKey: key,
+      mimeType: file.type,
+      sizeBytes: file.size,
+    });
+    await setGuideCover(actor, guideId, row.id);
+    refresh();
+    return { ok: true };
   } catch {
     return { ok: false, error: t.errors.uploadFailed };
   }

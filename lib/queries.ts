@@ -464,7 +464,13 @@ export async function createGuide(
 export async function updateGuide(
   actor: Actor,
   id: string,
-  input: { title: string; category: GuideCategory; content: string },
+  input: {
+    title: string;
+    category: GuideCategory;
+    content: string;
+    /** undefined leaves the cover alone; null removes it. */
+    coverFileId?: string | null;
+  },
 ) {
   if (actor.kind !== "staff") throw new Error("UNAUTHORISED");
   return asActor(actor, async (tx) => {
@@ -474,6 +480,7 @@ export async function updateGuide(
         title: input.title.trim(),
         category: input.category,
         content: input.content,
+        ...(input.coverFileId === undefined ? {} : { coverFileId: input.coverFileId }),
         updatedAt: new Date(),
       })
       .where(eq(processGuide.id, id))
@@ -555,6 +562,17 @@ export async function deleteGuide(actor: Actor, id: string): Promise<string[]> {
 
     return mine.map((file) => file.storageKey).filter((key) => !used.has(key));
   });
+}
+
+/** Points a guide at one of its own files as the cover, or clears it. */
+export async function setGuideCover(actor: Actor, guideId: string, fileId: string | null) {
+  if (actor.kind !== "staff") throw new Error("UNAUTHORISED");
+  return asActor(actor, (tx) =>
+    tx
+      .update(processGuide)
+      .set({ coverFileId: fileId, updatedAt: new Date() })
+      .where(eq(processGuide.id, guideId)),
+  );
 }
 
 export async function addGuideFile(
@@ -650,9 +668,73 @@ export async function addPropertyPhoto(
   );
 }
 
-export async function deleteProperty(actor: Actor, id: string) {
+export async function getProperty(actor: Actor, id: string) {
   if (actor.kind !== "staff") throw new Error("UNAUTHORISED");
-  return asActor(actor, (tx) => tx.delete(property).where(eq(property.id, id)));
+  return asActor(actor, async (tx) => {
+    const rows = await tx.select().from(property).where(eq(property.id, id)).limit(1);
+    const record = rows[0];
+    if (!record) return null;
+
+    const photos = await tx
+      .select()
+      .from(propertyPhoto)
+      .where(eq(propertyPhoto.propertyId, id))
+      .orderBy(asc(propertyPhoto.sortOrder), asc(propertyPhoto.createdAt));
+
+    return { record, photos };
+  });
+}
+
+export async function updateProperty(
+  actor: Actor,
+  id: string,
+  input: { title: string; address: string; notes: string | null },
+) {
+  if (actor.kind !== "staff") throw new Error("UNAUTHORISED");
+  return asActor(actor, async (tx) => {
+    const [updated] = await tx
+      .update(property)
+      .set({
+        title: input.title.trim(),
+        address: input.address.trim(),
+        notes: input.notes?.trim() || null,
+      })
+      .where(eq(property.id, id))
+      .returning();
+    return updated ?? null;
+  });
+}
+
+/** Removes one photograph and hands back its storage key, so the object goes too. */
+export async function deletePropertyPhoto(actor: Actor, id: string) {
+  if (actor.kind !== "staff") throw new Error("UNAUTHORISED");
+  return asActor(actor, async (tx) => {
+    const [deleted] = await tx
+      .delete(propertyPhoto)
+      .where(eq(propertyPhoto.id, id))
+      .returning();
+    return deleted ?? null;
+  });
+}
+
+/**
+ * Deletes a property and returns the storage keys that went with it.
+ *
+ * The rows cascade; the objects in the bucket do not. Before this, deleting a
+ * property left its photographs in storage forever — invisible, paid for, and still
+ * holding whatever was in them.
+ */
+export async function deleteProperty(actor: Actor, id: string): Promise<string[]> {
+  if (actor.kind !== "staff") throw new Error("UNAUTHORISED");
+  return asActor(actor, async (tx) => {
+    const photos = await tx
+      .select({ storageKey: propertyPhoto.storageKey })
+      .from(propertyPhoto)
+      .where(eq(propertyPhoto.propertyId, id));
+
+    await tx.delete(property).where(eq(property.id, id));
+    return photos.map((photo) => photo.storageKey);
+  });
 }
 
 /* ----------------------------------------------------------- the client side */

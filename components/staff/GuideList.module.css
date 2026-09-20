@@ -114,6 +114,16 @@
   text-decoration: none;
 }
 
+.cardCover {
+  display: block;
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: var(--radius-control);
+  border: 1px solid var(--line);
+  margin-bottom: 12px;
+}
+
 .cardTitle {
   margin: 0 0 8px;
   font-size: 16.5px;

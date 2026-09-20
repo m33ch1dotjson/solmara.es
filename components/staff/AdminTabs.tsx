@@ -14,29 +14,29 @@ import {
   IconTeam,
   IconWorkspace,
 } from "@/components/ui/Icons";
-import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { useCopy } from "@/components/ui/LocaleProvider";
 import { Logo } from "@/components/ui/Logo";
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import s from "./AdminTabs.module.css";
 
 /*
- * The staff navigation: a top bar on a phone, a left rail from 900px.
+ * The staff navigation, and nothing else.
  *
- * Grouped under two headings, Portal and Account, so the working screens and the
- * things you touch once a year do not sit in one undifferentiated list. Each row
- * carries an icon, which is what makes a long list scannable rather than read.
+ * Grouped under three headings so the working screens, your own account and the two
+ * admin screens do not sit in one undifferentiated list. Each row carries an icon,
+ * which is what makes a list this long scannable rather than read.
+ *
+ * Below 900px it is a drawer: off-canvas until the header's hamburger opens it.
  */
 export function AdminTabs({
   brandName,
-  user,
   isAdmin,
+  open,
 }: {
   brandName: string;
-  user: string;
   isAdmin: boolean;
+  open: boolean;
 }) {
-  const { t, locale } = useCopy();
+  const { t } = useCopy();
   const pathname = usePathname();
 
   // The hrefs are inline on each Link below rather than held in a list: typedRoutes
@@ -55,13 +55,17 @@ export function AdminTabs({
   }
 
   return (
-    <header className={s.bar}>
+    <nav
+      className={open ? `${s.bar} ${s.barOpen}` : s.bar}
+      aria-label={t.nav.portal}
+      aria-hidden={undefined}
+    >
       <div className={s.brand}>
         <Logo size={36} className={s.logo} />
         <span className={s.brandName}>{brandName}</span>
       </div>
 
-      <nav className={s.tabs} aria-label={t.nav.portal}>
+      <div className={s.tabs}>
         <span className={s.group}>{t.nav.portal}</span>
 
         <Link href="/admin" className={tabClass("/admin")} aria-current={current("/admin")}>
@@ -144,20 +148,7 @@ export function AdminTabs({
             </Link>
           </>
         )}
-      </nav>
-
-      <div className={s.right}>
-        <span className={s.user}>{user}</span>
-        <div className={s.controls}>
-          <LanguageSwitcher locale={locale} />
-          <ThemeToggle />
-        </div>
-        <form action="/auth/signout" method="post">
-          <button type="submit" className={s.signout}>
-            {t.common.signOut}
-          </button>
-        </form>
       </div>
-    </header>
+    </nav>
   );
 }

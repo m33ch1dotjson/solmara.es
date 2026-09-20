@@ -1,0 +1,18 @@
+.avatar {
+  flex: none;
+  border-radius: var(--radius-pill);
+  object-fit: cover;
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+}
+
+.fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in oklch, var(--accent) 14%, var(--panel-2));
+  color: var(--accent);
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}

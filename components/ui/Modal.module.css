@@ -1,0 +1,87 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+  background: oklch(0.15 0.01 250 / 0.5);
+  backdrop-filter: blur(2px);
+}
+
+/* On a phone it is a sheet from the bottom: that is where a thumb is, and it leaves
+   the top of the screen visible so the page behind is not gone, only covered. */
+.panel {
+  width: 100%;
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-bottom: none;
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+  box-shadow: var(--shadow);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.title {
+  font-size: 17px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.close {
+  margin-left: auto;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--panel);
+  color: var(--ink-2);
+  font-size: 20px;
+  line-height: 1;
+  padding-bottom: 3px;
+}
+
+.close:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* The body scrolls, not the page: with the keyboard open the panel shrinks and this
+   is what keeps the field you are typing in reachable. */
+.body {
+  padding: 20px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+@media (min-width: 700px) {
+  .backdrop {
+    align-items: center;
+    padding: 24px;
+  }
+
+  .panel {
+    max-width: 720px;
+    max-height: 86vh;
+    border-bottom: 1px solid var(--line);
+    border-radius: var(--radius-card);
+  }
+
+  .body {
+    padding: 24px;
+  }
+}

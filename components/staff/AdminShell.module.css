@@ -1,0 +1,103 @@
+.column {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Thin on purpose: this is a place to stand, not a place to look. */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 56px;
+  padding: 0 20px;
+  background: color-mix(in oklch, var(--panel) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+
+.section {
+  font-size: 14px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.controls {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+}
+
+/* --------------------------------------------------------------- the drawer */
+
+.hamburger {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  width: 38px;
+  height: 36px;
+  padding: 0 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--panel);
+  flex: none;
+}
+
+.hamburger span {
+  display: block;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--ink-2);
+}
+
+.hamburger:hover {
+  border-color: var(--accent);
+}
+
+.hamburger:hover span {
+  background: var(--accent);
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  border: none;
+  background: oklch(0.15 0.01 250 / 0.45);
+}
+
+/* From here the rail is always there and the hamburger has nothing to open. */
+@media (min-width: 900px) {
+  .hamburger,
+  .backdrop {
+    display: none;
+  }
+
+  .header {
+    padding: 0 32px;
+  }
+}
+
+@media print {
+  .header {
+    display: none;
+  }
+
+  .column {
+    min-height: 0;
+  }
+}

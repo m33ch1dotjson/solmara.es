@@ -54,6 +54,7 @@ export default async function GuidePage({
           filename: file.filename,
           sizeBytes: file.sizeBytes,
         }))}
+      coverUrl={record.coverFileId ? `/admin/process-guide/file/${record.coverFileId}` : null}
       startInEdit={query.edit === "1"}
       printOnOpen={query.print === "1"}
     />

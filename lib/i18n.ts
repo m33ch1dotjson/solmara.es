@@ -174,6 +174,7 @@ export const DICT = {
     account: T("Account", "Account", "Cuenta"),
 
     administration: T("Administration", "Beheer", "Administración"),
+    menu: T("Menu", "Menu", "Menú"),
 
     overview: T("Overview", "Overzicht", "Resumen"),
     clients: T("Clients", "Klanten", "Clientes"),
@@ -567,6 +568,15 @@ export const DICT = {
       "¿A dónde debe llevar este enlace?",
     ),
 
+    cover: T("Cover image", "Omslagfoto", "Imagen de portada"),
+    coverLead: T(
+      "Shown on the card in the list. Not required — a guide without one looks the same, only without a picture.",
+      "Staat op de kaart in de lijst. Niet verplicht — een guide zonder ziet er hetzelfde uit, alleen zonder plaatje.",
+      "Se muestra en la tarjeta de la lista. No es obligatoria: una guía sin ella se ve igual, solo que sin imagen.",
+    ),
+    chooseCover: T("Choose an image", "Kies een afbeelding", "Elegir una imagen"),
+    replaceCover: T("Replace image", "Afbeelding vervangen", "Sustituir la imagen"),
+    removeCover: T("Remove image", "Afbeelding weghalen", "Quitar la imagen"),
     attachments: T("Attachments", "Bijlagen", "Adjuntos"),
     noAttachments: T("No attachments.", "Geen bijlagen.", "Sin adjuntos."),
     addAttachment: T("Add attachment", "Bijlage toevoegen", "Añadir adjunto"),
@@ -605,6 +615,27 @@ export const DICT = {
     photoOne: T("photo", "foto", "fotografía"),
     photoMany: T("photos", "foto’s", "fotografías"),
     photoAlt: T("{title}, photo {n}", "{title}, foto {n}", "{title}, fotografía {n}"),
+    add: T("Add property", "Property toevoegen", "Añadir propiedad"),
+    emptyNow: T(
+      "No properties yet. Add the first one with the button above.",
+      "Nog geen properties. Voeg de eerste toe met de knop hierboven.",
+      "Todavía no hay propiedades. Añade la primera con el botón de arriba.",
+    ),
+    backToList: T("‹ Properties", "‹ Properties", "‹ Propiedades"),
+    saved: T("Saved.", "Opgeslagen.", "Guardado."),
+    addedOn: T("Added on {date}", "Toegevoegd op {date}", "Añadida el {date}"),
+    noPhotos: T(
+      "No photographs yet.",
+      "Nog geen foto's.",
+      "Todavía no hay fotografías.",
+    ),
+    addPhotos: T("Add photographs", "Foto's toevoegen", "Añadir fotografías"),
+    deleteTitle: T("Delete this property", "Deze property verwijderen", "Eliminar esta propiedad"),
+    deleteLead: T(
+      "The property and its photographs go, including the files themselves. There is no undo.",
+      "De property en de foto's gaan weg, ook de bestanden zelf. Dit kun je niet terugdraaien.",
+      "La propiedad y sus fotografías desaparecen, también los archivos. No se puede deshacer.",
+    ),
     formTitle: T("Title", "Titel", "Título"),
     formAddress: T("Address", "Adres", "Dirección"),
     formNotes: T("Note", "Notitie", "Nota"),

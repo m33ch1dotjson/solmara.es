@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { inviteMemberAction, setActiveAction, setRoleAction } from "@/app/admin/team/actions";
+import { Avatar } from "@/components/ui/Avatar";
 import { useCopy } from "@/components/ui/LocaleProvider";
 import a from "@/app/admin/account/account.module.css";
 import s from "./TeamTable.module.css";
@@ -143,14 +144,7 @@ export function TeamTable({ rows, meId }: { rows: Row[]; meId: string }) {
               <tr key={row.id} className={row.active ? undefined : s.dim}>
                 <td>
                   <span className={s.person}>
-                    {row.avatarUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={row.avatarUrl} alt="" className={s.face} />
-                    ) : (
-                      <span className={s.faceFallback} aria-hidden="true">
-                        {row.initials}
-                      </span>
-                    )}
+                    <Avatar url={row.avatarUrl} initials={row.initials} size={34} />
                     <span>
                       <span className={s.name}>{row.name}</span>
                       <span className={s.since}>{row.since}</span>

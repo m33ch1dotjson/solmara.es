@@ -1,23 +1,39 @@
-/* One component, two shapes: a top bar on a phone, a left rail from 900px. */
+/*
+ * One component, two shapes: a drawer on a phone, a fixed rail from 900px.
+ *
+ * Written phone-first, which is the way round that matters here — the drawer is the
+ * state with the constraints, and the rail is the one with room to spare.
+ */
 
 .bar {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  flex-wrap: wrap;
-  padding: 0 20px;
-  background: var(--panel);
-  border-bottom: 1px solid var(--line);
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 10;
+  bottom: 0;
+  left: 0;
+  z-index: 35;
+  width: 272px;
+  max-width: 86vw;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 14px;
+  background: var(--panel);
+  border-right: 1px solid var(--line);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  transform: translateX(-100%);
+  transition: transform 180ms ease;
+}
+
+.barOpen {
+  transform: translateX(0);
+  box-shadow: var(--shadow);
 }
 
 .brand {
   display: flex;
   align-items: center;
   gap: 11px;
-  padding: 14px 0;
+  padding: 4px 10px 20px;
 }
 
 .logo {
@@ -34,37 +50,38 @@
 
 .tabs {
   display: flex;
-  gap: 4px;
-  align-self: stretch;
-  /* Seven rows do not fit across a phone; they scroll sideways rather than wrap
-     into a second row that pushes the page down. */
-  overflow-x: auto;
-  scrollbar-width: none;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 0;
 }
 
-.tabs::-webkit-scrollbar {
-  display: none;
-}
-
-/* The group headings are a rail idea. On the phone bar they would be two more
-   things to scroll past. */
 .group {
-  display: none;
+  display: block;
+  padding: 0 12px 6px;
+  font-size: 11.5px;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.groupLater {
+  padding-top: 20px;
 }
 
 .tab {
   display: flex;
   align-items: center;
-  gap: 9px;
-  padding: 0 14px;
-  border-bottom: 2px solid transparent;
-  margin-bottom: -1px;
+  gap: 10px;
+  /* 42px tall: a thumb needs something to hit, and this is the list it hits most. */
+  padding: 10px 12px;
+  border-radius: var(--radius-control);
   font-size: 14.5px;
   font-weight: 550;
   color: var(--ink-2);
   text-decoration: none;
   white-space: nowrap;
-  transition: color 150ms ease, border-color 150ms ease, background 150ms ease;
+  transition: color 150ms ease, background 150ms ease;
 }
 
 .tab svg {
@@ -73,155 +90,40 @@
 }
 
 .tab:hover {
+  background: var(--panel-2);
   color: var(--ink);
   text-decoration: none;
 }
 
 .tabOn {
+  background: color-mix(in oklch, var(--accent) 12%, transparent);
   color: var(--accent);
   font-weight: 650;
-  border-bottom-color: var(--accent);
 }
 
 .tabOn svg {
   opacity: 1;
 }
 
-.right {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 0;
-}
-
-/* Language and theme travel together: two small controls, one row, never wrapping
-   apart from each other. */
-.controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.user {
-  font-size: 13px;
-  color: var(--ink-2);
-  font-weight: 550;
-  padding: 8px 12px;
-  border-radius: var(--radius-pill);
-  background: var(--panel-2);
-}
-
-.signout {
-  border: 1px solid var(--line);
-  background: transparent;
-  color: var(--ink-2);
-  border-radius: var(--radius-control);
-  height: var(--control-h-sm);
-  padding: 0 14px;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.signout:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-/* A printed Process Guide is the document and nothing else: no rail, no buttons.
-   The document's own half of this lives in GuideDocument.module.css. */
-@media print {
-  .bar {
-    display: none;
-  }
-}
-
 /* ------------------------------------------------------------- the left rail */
 
 @media (min-width: 900px) {
   .bar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0;
-    flex-wrap: nowrap;
+    position: sticky;
+    top: 0;
     height: 100vh;
-    padding: 20px 14px;
-    border-bottom: none;
-    border-right: 1px solid var(--line);
+    width: auto;
+    max-width: none;
+    transform: none;
+    box-shadow: none;
+    transition: none;
+    z-index: 10;
   }
+}
 
-  .brand {
-    padding: 4px 10px 20px;
-  }
-
-  .tabs {
-    flex-direction: column;
-    gap: 2px;
-    align-self: auto;
-    overflow-x: visible;
-    /* A rail with more rows than fit is the rail's problem, not the page's. */
-    overflow-y: auto;
-    min-height: 0;
-  }
-
-  .group {
-    display: block;
-    padding: 0 12px 6px;
-    font-size: 11.5px;
-    font-weight: 650;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--ink-3);
-  }
-
-  .groupLater {
-    padding-top: 20px;
-  }
-
-  /* Vertical, so the marker moves from an underline to a filled row. */
-  .tab {
-    padding: 9px 12px;
-    border-bottom: none;
-    margin-bottom: 0;
-    border-radius: var(--radius-control);
-  }
-
-  .tab:hover {
-    background: var(--panel-2);
-  }
-
-  .tabOn {
-    background: color-mix(in oklch, var(--accent) 12%, transparent);
-    border-bottom-color: transparent;
-  }
-
-  .right {
-    margin-left: 0;
-    margin-top: auto;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-    padding: 16px 0 0;
-    border-top: 1px solid var(--line-soft);
-  }
-
-  .user {
-    text-align: center;
-  }
-
-  /* Stacked, not side by side: three flags and a labelled button do not both fit
-     across a 240px rail without one of them shrinking to unreadable. */
-  .controls {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-  }
-
-  .controls > * {
-    justify-content: center;
-  }
-
-  .signout {
-    width: 100%;
+/* A printed page has no navigation on it. */
+@media print {
+  .bar {
+    display: none;
   }
 }

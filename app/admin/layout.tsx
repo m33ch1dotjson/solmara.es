@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { AdminTabs } from "@/components/staff/AdminTabs";
+import { AdminShell } from "@/components/staff/AdminShell";
 import { StaffLogin } from "@/components/staff/StaffLogin";
 import { currentActor } from "@/lib/auth/session";
 import { brand } from "@/lib/brand";
 import { copy } from "@/lib/i18n";
 import { currentLocale } from "@/lib/locale";
+import { initialsFor, myStaffProfile } from "@/lib/queries";
+import { BUCKET_WORKSPACE, signedUrl } from "@/lib/storage";
 import s from "./staff.module.css";
 
 export const metadata: Metadata = {
@@ -65,10 +67,28 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     );
   }
 
+  /*
+   * The face in the header comes from the same row as the one in the team table and
+   * the one on the profile screen: staff_user.avatar_key, signed here. One source,
+   * so a colleague who changes their photograph changes it everywhere.
+   */
+  const [locale, me] = await Promise.all([currentLocale(), myStaffProfile(actor)]);
+  const avatarUrl = me?.avatarKey ? await signedUrl(BUCKET_WORKSPACE, me.avatarKey) : null;
+
   return (
     <div className={`themeStaff ${s.shell}`}>
-      <AdminTabs brandName={brand.staffName} user={actor.name} isAdmin={actor.role === "ADMIN"} />
-      <main className={s.main}>{children}</main>
+      <AdminShell
+        brandName={brand.staffName}
+        isAdmin={actor.role === "ADMIN"}
+        locale={locale}
+        user={{
+          name: me?.name ?? actor.name,
+          initials: me?.initials ?? initialsFor(actor.name),
+          avatarUrl,
+        }}
+      >
+        {children}
+      </AdminShell>
     </div>
   );
 }
