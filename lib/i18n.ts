@@ -84,6 +84,11 @@ export const DICT = {
     close: T("Close", "Sluiten", "Cerrar"),
     showMore: T("Show more", "Meer tonen", "Ver más"),
     showLess: T("Show less", "Minder tonen", "Ver menos"),
+    /* The theme button says which theme you are in; the tooltip says what it does. */
+    themeLight: T("Light", "Licht", "Claro"),
+    themeDark: T("Dark", "Donker", "Oscuro"),
+    switchToLight: T("Switch to light", "Zet op licht", "Cambiar a claro"),
+    switchToDark: T("Switch to dark", "Zet op donker", "Cambiar a oscuro"),
     /* The photo overlay: shared by property photographs and passport scans. */
     enlarge: T("View larger", "Groter bekijken", "Ver más grande"),
     previousPhoto: T("Previous photo", "Vorige foto", "Fotografía anterior"),
@@ -104,9 +109,81 @@ export const DICT = {
   /* ------------------------------------------------------------------- admin nav */
 
   nav: {
+    /* The two group headings above the rows. */
+    portal: T("Portal", "Portal", "Portal"),
+    account: T("Account", "Account", "Cuenta"),
+
+    overview: T("Overview", "Overzicht", "Resumen"),
     clients: T("Clients", "Klanten", "Clientes"),
     procedures: T("Service Procedures", "Service Procedures", "Procedimientos"),
     properties: T("Properties", "Properties", "Propiedades"),
+    documents: T("Documents", "Documenten", "Documentos"),
+    tasks: T("Tasks", "Taken", "Tareas"),
+    settings: T("Settings", "Instellingen", "Ajustes"),
+  },
+
+  /* ---------------------------------------------------------------- overview */
+
+  overview: {
+    title: T("Overview", "Overzicht", "Resumen"),
+    lead: T(
+      "Where everything stands. The only thing here that is a job rather than a number is the documents waiting for a decision.",
+      "Hoe alles ervoor staat. Het enige wat hier werk is in plaats van een getal, zijn de documenten die op een beslissing wachten.",
+      "Cómo está todo. Lo único que aquí es trabajo y no una cifra son los documentos que esperan una decisión.",
+    ),
+    waitingOne: T(
+      "document waiting for review",
+      "document wacht op beoordeling",
+      "documento esperando revisión",
+    ),
+    waitingMany: T(
+      "documents waiting for review",
+      "documenten wachten op beoordeling",
+      "documentos esperando revisión",
+    ),
+    withoutAccount: T("{n} without an account", "{n} zonder account", "{n} sin cuenta"),
+    photoCount: T("{n} photographs", "{n} foto’s", "{n} fotografías"),
+    proceduresNote: T("Internal working instructions", "Interne werkinstructies", "Instrucciones internas"),
+    documentsNote: T("Sent by clients", "Door klanten gestuurd", "Enviados por clientes"),
+  },
+
+  /* ------------------------------------------------------- documents (all clients) */
+
+  documentsPage: {
+    title: T("Documents", "Documenten", "Documentos"),
+    lead: T(
+      "Everything clients have sent, across all of them, with whatever still needs a decision at the top.",
+      "Alles wat klanten hebben gestuurd, over alle klanten heen, met bovenaan wat nog een beslissing nodig heeft.",
+      "Todo lo que han enviado los clientes, de todos ellos, con lo que aún necesita una decisión arriba del todo.",
+    ),
+    waitingOne: T("{n} waiting for review", "{n} wacht op beoordeling", "{n} esperando revisión"),
+    waitingMany: T(
+      "{n} waiting for review",
+      "{n} wachten op beoordeling",
+      "{n} esperando revisión",
+    ),
+    empty: T(
+      "Nothing has been sent yet.",
+      "Er is nog niets gestuurd.",
+      "Todavía no se ha enviado nada.",
+    ),
+  },
+
+  /* ----------------------------------------------------------------------- tasks */
+
+  tasksPage: {
+    title: T("Tasks", "Taken", "Tareas"),
+    lead: T(
+      "What still has to happen, and who is doing it.",
+      "Wat er nog moet gebeuren, en wie het doet.",
+      "Lo que todavía tiene que pasar, y quién lo hace.",
+    ),
+    notYet: T("Not built yet", "Nog niet gebouwd", "Todavía sin construir"),
+    notYetBody: T(
+      "This tab is here, the feature behind it is not: there is no task list in the database yet. Say what a task should hold — a deadline, an owner, a client it belongs to — and it can be built.",
+      "Dit tabblad staat er, wat erachter hoort nog niet: er is nog geen takenlijst in de database. Zeg wat er in een taak moet staan — een deadline, wie hem doet, bij welke klant hij hoort — dan kan het gebouwd worden.",
+      "Esta pestaña ya está; lo que va detrás, todavía no: aún no hay lista de tareas en la base de datos. Diga qué debe contener una tarea — un plazo, quién la hace, a qué cliente pertenece — y se puede construir.",
+    ),
   },
 
   /* -------------------------------------------------------------- clients (list) */

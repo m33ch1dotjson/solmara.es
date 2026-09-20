@@ -64,7 +64,7 @@ export default async function AdminClientPage({
 
   return (
     <div className={shell.screen}>
-      <Link href="/admin" className={s.back}>
+      <Link href="/admin/clients" className={s.back}>
         {t.clientDetail.back}
       </Link>
 

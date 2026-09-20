@@ -68,7 +68,8 @@ export async function createClientAction(form: FormData): Promise<ActionResult> 
       locale,
       internalNotes: text(form, "internalNotes") || undefined,
     });
-    revalidatePath("/admin");
+    // The list moved to /admin/clients and the overview counts it too, so both.
+    revalidatePath("/admin", "layout");
     return {
       ok: true,
       message: fill(t.saved.clientCreated, { name: created.name, code: created.code }),
@@ -93,7 +94,7 @@ export async function createInviteAction(form: FormData): Promise<ActionResult> 
 
   try {
     const invite = await createInvite(actor, clientId);
-    revalidatePath("/admin");
+    revalidatePath("/admin/clients");
     return { ok: true, message: invite.url };
   } catch {
     return { ok: false, error: t.errors.inviteFailed };

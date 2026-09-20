@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useCopy } from "./LocaleProvider";
 import s from "./ThemeToggle.module.css";
 
 type Theme = "light" | "dark";
@@ -11,8 +12,13 @@ const STORAGE_KEY = "solmara-theme";
  * Flips `data-theme` on the document element and persists the choice per user.
  * The initial value is read from the DOM, which the inline script in the root
  * layout has already set — so there is no flash and no hydration mismatch.
+ *
+ * The label says which theme you are *in*, not which one the button would give you.
+ * Both readings are defensible; this one matches how the rest of the interface
+ * states the current state and leaves the action to the tooltip.
  */
 export function ThemeToggle({ variant = "labelled" }: { variant?: "labelled" | "compact" }) {
+  const { t } = useCopy();
   const [theme, setTheme] = useState<Theme>("light");
 
   useEffect(() => {
@@ -31,20 +37,21 @@ export function ThemeToggle({ variant = "labelled" }: { variant?: "labelled" | "
     }
   }
 
-  const glyph = theme === "dark" ? "☾" : "☀";
-  const label = theme === "dark" ? "Dark theme" : "Light theme";
+  const dark = theme === "dark";
+  const action = dark ? t.common.switchToLight : t.common.switchToDark;
 
   return (
     <button
       type="button"
       onClick={toggle}
       className={variant === "compact" ? s.compact : s.labelled}
-      aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
+      aria-label={action}
+      title={action}
     >
       <span className={s.glyph} aria-hidden="true">
-        {glyph}
+        {dark ? "☾" : "☀"}
       </span>
-      {variant === "labelled" && <span>{label}</span>}
+      {variant === "labelled" && <span>{dark ? t.common.themeDark : t.common.themeLight}</span>}
     </button>
   );
 }

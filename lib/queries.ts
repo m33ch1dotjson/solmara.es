@@ -193,6 +193,39 @@ export async function reviewDocument(
   });
 }
 
+/**
+ * Every document a client has actually sent, newest first, with the client it
+ * belongs to. Staff only.
+ *
+ * The join is on app.client, which has no client policy at all — a client running
+ * this would get their own document rows back with no client attached, which is why
+ * the actor check is here as well as in the policies. Documents still at REQUIRED
+ * are left out: they are a promise, not a thing to look at.
+ */
+export async function listSentDocuments(actor: Actor) {
+  if (actor.kind !== "staff") throw new Error("UNAUTHORISED");
+
+  return asActor(actor, (tx) =>
+    tx
+      .select({
+        id: clientDocument.id,
+        kind: clientDocument.kind,
+        status: clientDocument.status,
+        storageKey: clientDocument.storageKey,
+        mimeType: clientDocument.mimeType,
+        uploadedAt: clientDocument.uploadedAt,
+        rejectionNote: clientDocument.rejectionNote,
+        clientId: client.id,
+        clientName: client.name,
+        clientCode: client.code,
+      })
+      .from(clientDocument)
+      .innerJoin(client, eq(client.id, clientDocument.clientId))
+      .where(sql`${clientDocument.status} <> 'REQUIRED'`)
+      .orderBy(desc(clientDocument.uploadedAt)),
+  );
+}
+
 /* --------------------------------------------------------------------- SOPs */
 
 export async function listSops(actor: Actor) {

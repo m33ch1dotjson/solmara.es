@@ -25,6 +25,8 @@ export async function reviewDocumentAction(form: FormData): Promise<ActionResult
   if (!approve && !note) return { ok: false, error: t.errors.reasonRequired };
 
   await reviewDocument(actor, { documentId, approve, note });
-  revalidatePath("/admin");
+  // "layout" rather than the single path: one decision shows up on the client's own
+  // page, on the documents screen and in the overview's waiting count at once.
+  revalidatePath("/admin", "layout");
   return { ok: true, message: approve ? t.saved.approved : t.saved.rejected };
 }

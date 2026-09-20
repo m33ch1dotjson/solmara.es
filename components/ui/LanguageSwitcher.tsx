@@ -1,10 +1,11 @@
 import { setLocaleAction } from "@/app/locale-actions";
 import type { Locale } from "@/lib/brand";
-import { LOCALES, LOCALE_NAME, LOCALE_SHORT } from "@/lib/i18n";
+import { LOCALES, LOCALE_NAME } from "@/lib/i18n";
+import { FLAG } from "./Flags";
 import s from "./LanguageSwitcher.module.css";
 
 /*
- * Three buttons in a row: NL · EN · ES.
+ * Three flags in a row: Dutch · English · Spanish.
  *
  * A form rather than a dropdown, and no client-side state. Three options fit on a
  * phone, and a plain form POST means the switcher works before any JavaScript has
@@ -33,6 +34,7 @@ export function LanguageSwitcher({
     >
       {LOCALES.map((option) => {
         const current = option === locale;
+        const Flag = FLAG[option];
         return (
           <button
             key={option}
@@ -44,7 +46,10 @@ export function LanguageSwitcher({
             lang={option}
             aria-current={current ? "true" : undefined}
           >
-            {LOCALE_SHORT[option]}
+            <Flag />
+            {/* The name is what a screen reader reads out; the flag is only the
+                picture. Without this the button would announce as empty. */}
+            <span className={s.srOnly}>{LOCALE_NAME[option]}</span>
           </button>
         );
       })}

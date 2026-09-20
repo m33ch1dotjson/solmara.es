@@ -1,80 +1,111 @@
 import Link from "next/link";
-import { NewClientForm } from "@/components/staff/NewClientForm";
-import { InviteButton } from "@/components/staff/InviteButton";
-import { Mono, StatusPill } from "@/components/ui";
+import {
+  IconClients,
+  IconDocuments,
+  IconProcedures,
+  IconProperties,
+} from "@/components/ui/Icons";
 import { staffOrRedirect } from "@/lib/auth/session";
-import { brand } from "@/lib/brand";
 import { copy, fill } from "@/lib/i18n";
 import { currentLocale } from "@/lib/locale";
-import { listClients } from "@/lib/queries";
+import { listClients, listProperties, listSentDocuments, listSops } from "@/lib/queries";
 import shell from "./staff.module.css";
-import s from "./admin.module.css";
+import s from "./overview.module.css";
+
+/*
+ * The landing screen: how much of everything there is, and the one number that is
+ * actually a to-do — documents waiting to be reviewed.
+ *
+ * It counts by reading the lists rather than by asking the database for counts. At
+ * this size that is a handful of rows and one round trip each; when a list grows
+ * past a few hundred, swap these for select count(*) and nothing above changes.
+ */
 
 export async function generateMetadata() {
-  return { title: copy(await currentLocale()).clients.title };
+  return { title: copy(await currentLocale()).overview.title };
 }
 
-/** The pill's tone comes from the status vocabulary; the word comes from the dictionary. */
-const PILL_STATUS = {
-  INVITED: "required",
-  ACTIVE: "approved",
-  CLOSED: "waived",
-} as const;
-
-export default async function ClientsPage() {
+export default async function OverviewPage() {
   const [actor, locale] = await Promise.all([staffOrRedirect(), currentLocale()]);
-  const clients = await listClients(actor);
   const t = copy(locale);
 
-  const pillLabel = {
-    INVITED: t.clients.statusInvited,
-    ACTIVE: t.clients.statusActive,
-    CLOSED: t.clients.statusClosed,
-  };
+  const [clients, properties, sops, documents] = await Promise.all([
+    listClients(actor),
+    listProperties(actor),
+    listSops(actor),
+    listSentDocuments(actor),
+  ]);
+
+  const waiting = documents.filter((doc) => doc.status === "RECEIVED");
+  const withoutAccount = clients.filter((row) => !row.hasAccount);
 
   return (
     <div className={shell.screen}>
       <div className={shell.pageHead}>
-        <h1 className={shell.pageTitle}>{t.clients.title}</h1>
+        <h1 className={shell.pageTitle}>{t.overview.title}</h1>
       </div>
-      <p className={shell.pageLead}>{t.clients.lead}</p>
+      <p className={shell.pageLead}>{t.overview.lead}</p>
 
-      <NewClientForm defaultLocale={brand.defaultLocale} />
+      {/* The only tile that is a job rather than a number, so it leads and it is the
+          one that turns accent when it is not zero. */}
+      <Link
+        href="/admin/documents"
+        className={waiting.length > 0 ? `${s.todo} ${s.todoOn}` : s.todo}
+      >
+        <span className={s.todoIcon}>
+          <IconDocuments />
+        </span>
+        <span>
+          <span className={s.todoCount}>{waiting.length}</span>
+          <span className={s.todoLabel}>
+            {waiting.length === 1 ? t.overview.waitingOne : t.overview.waitingMany}
+          </span>
+        </span>
+      </Link>
 
-      <h2 className={s.sectionTitle}>
-        {fill(clients.length === 1 ? t.clients.countOne : t.clients.countMany, {
-          n: clients.length,
-        })}
-      </h2>
+      <div className={s.tiles}>
+        <Link href="/admin/clients" className={s.tile}>
+          <span className={s.tileIcon}>
+            <IconClients />
+          </span>
+          <span className={s.tileCount}>{clients.length}</span>
+          <span className={s.tileLabel}>{t.nav.clients}</span>
+          <span className={s.tileNote}>
+            {fill(t.overview.withoutAccount, { n: withoutAccount.length })}
+          </span>
+        </Link>
 
-      {clients.length === 0 ? (
-        <p className={s.empty}>{t.clients.empty}</p>
-      ) : (
-        <div className={s.rows}>
-          {clients.map((row) => (
-            <div key={row.id} className={s.row}>
-              <Mono size={12.5} color="var(--ink-3)">
-                {row.code}
-              </Mono>
-              <Link href={`/admin/clients/${row.id}`} className={s.rowText}>
-                <div className={s.rowName}>{row.name}</div>
-                <div className={s.rowMeta}>{row.email}</div>
-              </Link>
-              <StatusPill
-                status={PILL_STATUS[row.status]}
-                audience="staff"
-                locale={locale}
-                labelOverride={pillLabel[row.status]}
-              />
-              {row.hasAccount ? (
-                <span className={s.rowQuiet}>{t.clients.hasAccount}</span>
-              ) : (
-                <InviteButton clientId={row.id} clientName={row.name} />
-              )}
-            </div>
-          ))}
-        </div>
-      )}
+        <Link href="/admin/properties" className={s.tile}>
+          <span className={s.tileIcon}>
+            <IconProperties />
+          </span>
+          <span className={s.tileCount}>{properties.length}</span>
+          <span className={s.tileLabel}>{t.nav.properties}</span>
+          <span className={s.tileNote}>
+            {fill(t.overview.photoCount, {
+              n: properties.reduce((total, item) => total + item.photos.length, 0),
+            })}
+          </span>
+        </Link>
+
+        <Link href="/admin/sop" className={s.tile}>
+          <span className={s.tileIcon}>
+            <IconProcedures />
+          </span>
+          <span className={s.tileCount}>{sops.length}</span>
+          <span className={s.tileLabel}>{t.nav.procedures}</span>
+          <span className={s.tileNote}>{t.overview.proceduresNote}</span>
+        </Link>
+
+        <Link href="/admin/documents" className={s.tile}>
+          <span className={s.tileIcon}>
+            <IconDocuments />
+          </span>
+          <span className={s.tileCount}>{documents.length}</span>
+          <span className={s.tileLabel}>{t.nav.documents}</span>
+          <span className={s.tileNote}>{t.overview.documentsNote}</span>
+        </Link>
+      </div>
     </div>
   );
 }

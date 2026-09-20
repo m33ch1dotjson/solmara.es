@@ -1,0 +1,117 @@
+/* The one job on the screen, then the counts. */
+
+.todo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 22px;
+  padding: 20px 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--panel);
+  box-shadow: var(--shadow-soft);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.todo:hover {
+  text-decoration: none;
+  box-shadow: var(--shadow);
+  border-color: var(--accent);
+}
+
+/* Nothing waiting is the quiet state; something waiting is the loud one. */
+.todoOn {
+  border-color: color-mix(in oklch, var(--accent) 45%, var(--line));
+  background: color-mix(in oklch, var(--accent) 7%, var(--panel));
+}
+
+.todoIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: var(--radius-control);
+  background: var(--panel-2);
+  color: var(--ink-2);
+}
+
+.todoOn .todoIcon {
+  background: color-mix(in oklch, var(--accent) 16%, transparent);
+  color: var(--accent);
+}
+
+.todoCount {
+  font-family: var(--font-mono);
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-right: 10px;
+}
+
+.todoOn .todoCount {
+  color: var(--accent);
+}
+
+.todoLabel {
+  font-size: 14.5px;
+  color: var(--ink-2);
+}
+
+.tiles {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 14px;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 18px 20px 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--panel);
+  box-shadow: var(--shadow-soft);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.tile:hover {
+  text-decoration: none;
+  box-shadow: var(--shadow);
+  border-color: var(--accent);
+}
+
+.tileIcon {
+  color: var(--ink-3);
+  margin-bottom: 8px;
+}
+
+.tile:hover .tileIcon {
+  color: var(--accent);
+}
+
+.tileCount {
+  font-family: var(--font-mono);
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.tileLabel {
+  font-size: 14.5px;
+  font-weight: 600;
+}
+
+.tileNote {
+  font-size: 12.5px;
+  color: var(--ink-3);
+  margin-top: 2px;
+}
