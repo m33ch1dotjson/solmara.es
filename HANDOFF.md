@@ -145,6 +145,13 @@ decoration; without it a definer function is a privilege-escalation hole.
 profile is served by `app.client_self()`, which lists the columns it returns. Adding a
 policy back would re-open that leak.
 
+**`app.is_staff()` is what every policy is written in terms of, so a new role has to
+be decided there first.** `EXTERNAL` is excluded from it deliberately: per-client
+assignment does not exist yet, so an external user signs in and sees nothing at all
+rather than seeing everything. Adding the role without touching that function would
+have handed an outside bookkeeper the whole client list on the day it was created.
+`app.is_admin()` is the same shape and guards the two administration screens.
+
 **`app.resolve_actor(email, uid)` exists to break a chicken-and-egg.** `currentActor()`
 used to query `staff_user` directly, which its own policy blocked — you had to be
 staff to discover that you were staff, so login looked broken. Do not "simplify" it
@@ -232,6 +239,20 @@ The i18n layer (added last):
   audiences.
 - **Long Bash heredocs get truncated in this agent harness** — the shell fails with
   `unexpected EOF while looking for matching`. Use the Write tool for anything sizeable.
+- **A migration file is not applied until it is in `drizzle/meta/_journal.json`.** The
+  file alone does nothing: `drizzle-kit migrate` reads the journal, not the directory.
+  Add an entry with a `when` higher than the previous one.
+- **`drizzle-kit migrate` prints "migrations applied successfully" and exits 1 when a
+  statement failed.** It swallows the error entirely. If a migration seems not to have
+  happened, check `echo $?` and then apply the file yourself, statement by statement,
+  to find out which one broke — splitting on `--> statement-breakpoint`.
+- **Never `ALTER TYPE ... ADD VALUE` in a migration.** PostgreSQL refuses it from a
+  multi-command string, which is exactly how a migration arrives, and the whole file
+  rolls back. Rename the type, create a new one with the extra value, alter the column
+  with a `USING` cast, drop the old type — see `0006_account_and_team.sql`.
+- **A policy that calls a function must come after the function exists**, in the same
+  file. `CREATE POLICY ... USING (app.is_admin())` fails on an undefined function like
+  any other missing reference, and takes the whole migration with it.
 - When testing Supabase Storage with `curl`, send **both** `Authorization` and `apikey`.
   Omitting `apikey` gives `400 Invalid Compact JWS`, which looks like an app bug and is not.
 
