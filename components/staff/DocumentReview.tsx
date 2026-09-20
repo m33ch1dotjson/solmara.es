@@ -4,10 +4,18 @@ import { useState, useTransition } from "react";
 import { reviewDocumentAction } from "@/app/admin/client-actions";
 import { useCopy } from "@/components/ui/LocaleProvider";
 import { fill, formatDate, type Copy } from "@/lib/i18n";
+import { Lightbox } from "./Lightbox";
 import s from "./forms.module.css";
 import d from "./DocumentReview.module.css";
 
 type Status = "REQUIRED" | "RECEIVED" | "APPROVED" | "REJECTED";
+
+/*
+ * There is one document per card, so the overlay has nowhere to step to. Defined once
+ * at module level rather than inline: a fresh function on every render would make the
+ * overlay's key handler unsubscribe and resubscribe each time.
+ */
+const STAY = () => {};
 
 const TONE: Record<Status, string> = {
   REQUIRED: "mute",
@@ -61,6 +69,7 @@ export function DocumentReview({
   rejectionNote: string | null;
 }) {
   const { t, locale } = useCopy();
+  const [zoomed, setZoomed] = useState(false);
   const [rejecting, setRejecting] = useState(false);
   const [note, setNote] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -94,8 +103,23 @@ export function DocumentReview({
       {url ? (
         <div className={d.preview}>
           {isImage ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={url} alt={title} className={d.image} />
+            // A passport page is exactly the thing you need to read rather than
+            // glance at, and the preview caps out at 320px tall.
+            <a
+              href={url}
+              target="_blank"
+              rel="noreferrer"
+              className={d.zoom}
+              title={t.common.enlarge}
+              onClick={(event) => {
+                if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                event.preventDefault();
+                setZoomed(true);
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={url} alt={title} className={d.image} />
+            </a>
           ) : (
             <a href={url} target="_blank" rel="noreferrer" className={d.fileLink}>
               {t.review.openFile}
@@ -160,6 +184,16 @@ export function DocumentReview({
       )}
 
       {error && <p className={s.error}>{error}</p>}
+
+      {zoomed && url && (
+        <Lightbox
+          urls={[url]}
+          alts={[title]}
+          at={0}
+          onMove={STAY}
+          onClose={() => setZoomed(false)}
+        />
+      )}
     </div>
   );
 }

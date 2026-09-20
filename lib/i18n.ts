@@ -84,6 +84,10 @@ export const DICT = {
     close: T("Close", "Sluiten", "Cerrar"),
     showMore: T("Show more", "Meer tonen", "Ver más"),
     showLess: T("Show less", "Minder tonen", "Ver menos"),
+    /* The photo overlay: shared by property photographs and passport scans. */
+    enlarge: T("View larger", "Groter bekijken", "Ver más grande"),
+    previousPhoto: T("Previous photo", "Vorige foto", "Fotografía anterior"),
+    nextPhoto: T("Next photo", "Volgende foto", "Fotografía siguiente"),
   },
 
   /* --------------------------------------------------------------- staff sign-in */
@@ -272,9 +276,6 @@ export const DICT = {
     photoOne: T("photo", "foto", "fotografía"),
     photoMany: T("photos", "foto’s", "fotografías"),
     photoAlt: T("{title}, photo {n}", "{title}, foto {n}", "{title}, fotografía {n}"),
-    enlarge: T("View larger", "Groter bekijken", "Ver más grande"),
-    previousPhoto: T("Previous photo", "Vorige foto", "Fotografía anterior"),
-    nextPhoto: T("Next photo", "Volgende foto", "Fotografía siguiente"),
     formTitle: T("Title", "Titel", "Título"),
     formAddress: T("Address", "Adres", "Dirección"),
     formNotes: T("Note", "Notitie", "Nota"),
