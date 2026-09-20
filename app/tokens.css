@@ -35,6 +35,60 @@
   /* Control heights: roomy enough to read at a glance, not chunky. */
   --control-h: 44px;
   --control-h-sm: 36px;
+
+  /*
+   * The neutral scale also lives here, not only on .themeStaff and .themeClient.
+   *
+   * globals.css sets `color: var(--ink)` on <body>, which sits *above* both theme
+   * classes. With --ink defined only inside them, that declaration was invalid at
+   * computed-value time and the text colour fell back to the browser's black. In
+   * light mode that is invisible — black on white is what we wanted anyway. In dark
+   * mode it meant black text on a dark card: the staff sign-in title was unreadable,
+   * and so was anything typed into an input, since `input { color: inherit }`.
+   *
+   * The values are the staff-light set; each theme class still overrides them.
+   */
+  color-scheme: light;
+  --bg: oklch(0.962 0.002 250);
+  --panel: oklch(1 0 0);
+  --panel-2: oklch(0.975 0.002 250);
+  --ink: oklch(0.22 0.012 250);
+  --ink-2: oklch(0.47 0.01 250);
+  --ink-3: oklch(0.62 0.01 250);
+  --line: oklch(0.905 0.004 250);
+  --line-soft: oklch(0.945 0.003 250);
+  --accent: oklch(0.63 0.19 var(--accent-h));
+  --accent-ink: oklch(1 0 0);
+  --ok: oklch(0.58 0.15 150);
+  --warn: oklch(0.65 0.15 70);
+  --danger: oklch(0.58 0.2 27);
+  --info: oklch(0.63 0.19 250);
+  --mute: oklch(0.6 0.01 250);
+  --shadow: 0 1px 2px oklch(0.2 0.02 250 / 0.04), 0 8px 24px oklch(0.2 0.02 250 / 0.06);
+  --shadow-soft: 0 1px 3px oklch(0.2 0.02 250 / 0.05);
+}
+
+/* The same fallback in dark, plus the colour scheme, so the browser's own chrome —
+   scrollbars, autofill, the caret — is dark too rather than a white bar down the side. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: oklch(0.17 0.008 250);
+  --panel: oklch(0.215 0.008 250);
+  --panel-2: oklch(0.245 0.008 250);
+  --ink: oklch(0.96 0.004 250);
+  --ink-2: oklch(0.75 0.008 250);
+  --ink-3: oklch(0.6 0.008 250);
+  --line: oklch(0.31 0.008 250);
+  --line-soft: oklch(0.27 0.008 250);
+  --accent: oklch(0.7 0.16 var(--accent-h));
+  --accent-ink: oklch(0.16 0.02 250);
+  --ok: oklch(0.79 0.13 150);
+  --warn: oklch(0.83 0.12 80);
+  --danger: oklch(0.73 0.14 25);
+  --info: oklch(0.78 0.12 250);
+  --mute: oklch(0.7 0.008 250);
+  --shadow: 0 1px 2px oklch(0 0 0 / 0.4), 0 8px 24px oklch(0 0 0 / 0.3);
+  --shadow-soft: 0 1px 3px oklch(0 0 0 / 0.35);
 }
 
 /* ---------------------------------------------------------------- staff, light */

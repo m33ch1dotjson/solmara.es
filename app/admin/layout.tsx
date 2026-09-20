@@ -23,8 +23,15 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const actor = await currentActor();
 
   if (!actor) {
+    /*
+     * The theme class, but not the shell: above 900px the shell is a two-column grid
+     * whose first column is the 240px navigation. With only the sign-in card inside
+     * it, the card landed in that 240px column — squeezed against the left edge of a
+     * desktop screen instead of centred. The card brings its own full-height, centred
+     * screen.
+     */
     return (
-      <div className={`themeStaff ${s.shell}`}>
+      <div className="themeStaff">
         <StaffLogin brandName={brand.staffName} />
       </div>
     );

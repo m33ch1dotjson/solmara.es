@@ -19,16 +19,18 @@ export const viewport: Viewport = {
 };
 
 /*
- * Theme is resolved before first paint so the page never flashes light before
- * switching to dark. It reads the stored preference, falls back to the system
- * setting, and writes `data-theme` on the document element.
+ * Theme is resolved before first paint so the page never flashes the wrong one.
+ *
+ * Light unless somebody asked for dark. It used to follow the operating system,
+ * which meant a colleague with a dark laptop was handed a dark portal they had never
+ * chosen — the owner saw it on a strange machine and did not recognise his own
+ * product. The toggle still remembers a deliberate choice, per browser.
  */
 const themeScript = `
 (function(){
   try {
     var stored = localStorage.getItem('solmara-theme');
-    var system = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', stored || system);
+    document.documentElement.setAttribute('data-theme', stored === 'dark' ? 'dark' : 'light');
   } catch (e) {
     document.documentElement.setAttribute('data-theme', 'light');
   }
