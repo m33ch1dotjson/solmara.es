@@ -7,7 +7,7 @@
   padding: 10px;
   background: var(--panel);
   border: 1px solid var(--line);
-  border-radius: 18px;
+  border-radius: var(--radius-card);
   box-shadow: var(--shadow);
 }
 
@@ -21,7 +21,7 @@
   min-height: 54px;
   border: none;
   background: none;
-  border-radius: 13px;
+  border-radius: var(--radius-control);
   font-size: 13px;
   font-weight: 600;
   color: var(--ink-3);

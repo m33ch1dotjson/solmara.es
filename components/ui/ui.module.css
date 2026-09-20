@@ -16,16 +16,16 @@
 }
 
 .pillStaff {
-  height: 22px;
-  padding: 0 9px;
-  border-radius: 11px;
-  font-size: 12px;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: var(--radius-pill);
+  font-size: 12.5px;
 }
 
 .pillClient {
-  min-height: 24px;
-  padding: 2px 10px;
-  border-radius: 12px;
+  min-height: 28px;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
   font-size: 13px;
   line-height: 1.35;
   white-space: normal;
@@ -188,11 +188,12 @@
 }
 
 .cardStaff {
-  border-radius: 12px;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-soft);
 }
 
 .cardClient {
-  border-radius: 18px;
+  border-radius: var(--radius-card);
   box-shadow: var(--shadow);
   border-color: var(--line-soft);
 }

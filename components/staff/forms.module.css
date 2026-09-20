@@ -1,79 +1,101 @@
+/* Forms follow the reference: a label above every field, roomy inputs with a light
+   border and a generous radius, and a solid blue primary that sits to the right. */
+
 .form {
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius-card);
   background: var(--panel);
-  padding: 18px;
+  box-shadow: var(--shadow-soft);
+  padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 18px;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
 }
 
 .field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 7px;
   min-width: 0;
 }
 
 .label {
-  font-size: 12.5px;
+  font-size: 13.5px;
   font-weight: 600;
-  color: var(--ink-2);
+  color: var(--ink);
 }
 
 .input {
-  height: 36px;
+  height: var(--control-h);
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   background: var(--panel);
-  padding: 0 11px;
-  font-size: 13.5px;
+  padding: 0 14px;
+  font-size: 14px;
   width: 100%;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
 }
 
 .textarea {
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   background: var(--panel);
-  padding: 9px 11px;
-  font-size: 13.5px;
+  padding: 12px 14px;
+  font-size: 14px;
+  line-height: 1.5;
   resize: vertical;
   width: 100%;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
 }
 
 .input:focus,
 .textarea:focus {
   border-color: var(--accent);
   outline: none;
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent) 16%, transparent);
 }
 
 .hint {
-  font-size: 12px;
+  font-size: 12.5px;
+  line-height: 1.45;
   color: var(--ink-3);
 }
 
 .actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: flex-end;
+  gap: 14px;
   flex-wrap: wrap;
+}
+
+/* The message sits to the left of the button, so the eye lands on the outcome
+   before the control that produced it. */
+.actions .error,
+.actions .success {
+  margin-right: auto;
 }
 
 .primary {
   border: none;
   background: var(--accent);
   color: var(--accent-ink);
-  border-radius: 8px;
-  height: 34px;
-  padding: 0 16px;
-  font-size: 13px;
-  font-weight: 650;
+  border-radius: var(--radius-control);
+  height: var(--control-h);
+  padding: 0 22px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 150ms ease;
+}
+
+.primary:hover:not(:disabled) {
+  background: color-mix(in oklch, var(--accent) 88%, black);
 }
 
 .primary:disabled {
@@ -82,69 +104,54 @@
   cursor: not-allowed;
 }
 
+/* Secondary is outlined in the accent, as in the reference cards, rather than grey. */
 .secondary {
-  border: 1px solid var(--line);
-  background: var(--panel);
-  color: var(--ink-2);
-  border-radius: 8px;
-  height: 30px;
-  padding: 0 12px;
-  font-size: 12.5px;
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+  border-radius: var(--radius-control);
+  height: var(--control-h-sm);
+  padding: 0 16px;
+  font-size: 13px;
   font-weight: 600;
   white-space: nowrap;
+  transition: background 150ms ease;
 }
 
 .secondary:hover {
-  background: var(--panel-2);
-}
-
-.error {
-  font-size: 12.5px;
-  color: var(--danger);
-  font-weight: 550;
-}
-
-.success {
-  font-size: 12.5px;
-  color: var(--ok);
-  font-weight: 550;
-}
-
-.inviteResult {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  justify-self: end;
-}
-
-.inviteUrl {
-  width: 260px;
-  height: 30px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--panel-2);
-  padding: 0 10px;
-  font-family: var(--font-mono);
-  font-size: 11.5px;
-  color: var(--ink-2);
+  background: color-mix(in oklch, var(--accent) 8%, transparent);
 }
 
 .checkbox {
   display: flex;
   align-items: center;
-  gap: 9px;
-  font-size: 13.5px;
+  gap: 10px;
+  font-size: 14px;
   color: var(--ink-2);
 }
 
+.error {
+  font-size: 13px;
+  color: var(--danger);
+  font-weight: 550;
+}
+
+.success {
+  font-size: 13px;
+  color: var(--ok);
+  font-weight: 550;
+}
+
+/* ------------------------------------------------------------ destructive */
+
 .dangerGhost {
   border: 1px solid var(--line);
-  background: var(--panel);
+  background: transparent;
   color: var(--ink-3);
-  border-radius: 8px;
-  height: 30px;
-  padding: 0 12px;
-  font-size: 12.5px;
+  border-radius: var(--radius-control);
+  height: var(--control-h-sm);
+  padding: 0 14px;
+  font-size: 13px;
   font-weight: 600;
   white-space: nowrap;
 }
@@ -152,26 +159,49 @@
 .dangerGhost:hover {
   border-color: var(--danger);
   color: var(--danger);
+  background: color-mix(in oklch, var(--danger) 6%, transparent);
 }
 
 .dangerSolid {
   border: none;
   background: var(--danger);
-  color: var(--panel);
-  border-radius: 8px;
-  height: 30px;
-  padding: 0 12px;
-  font-size: 12.5px;
+  color: oklch(1 0 0);
+  border-radius: var(--radius-control);
+  height: var(--control-h-sm);
+  padding: 0 14px;
+  font-size: 13px;
   font-weight: 650;
   white-space: nowrap;
 }
 
 .confirmRow {
   display: inline-flex;
-  gap: 6px;
+  gap: 8px;
 }
 
 .fileInput {
-  font-size: 13px;
+  font-size: 13.5px;
+  color: var(--ink-2);
+  padding: 10px 0;
+}
+
+/* ------------------------------------------------------------ invite link */
+
+.inviteResult {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-self: end;
+}
+
+.inviteUrl {
+  width: 280px;
+  height: var(--control-h-sm);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--panel-2);
+  padding: 0 12px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
   color: var(--ink-2);
 }

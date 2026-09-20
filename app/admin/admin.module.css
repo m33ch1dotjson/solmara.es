@@ -1,32 +1,40 @@
+/* Content sits on white cards with generous radii and a soft shadow, on a grey page. */
+
 .sectionTitle {
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 650;
-  margin: 34px 0 12px;
+  letter-spacing: -0.01em;
+  margin: 40px 0 14px;
 }
 
 .empty {
   font-size: 14px;
   color: var(--ink-3);
-  padding: 24px;
+  padding: 32px;
   border: 1px dashed var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius-card);
+  background: var(--panel);
 }
+
+/* ---------------------------------------------------------------- client rows */
 
 .rows {
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius-card);
   overflow: hidden;
   background: var(--panel);
+  box-shadow: var(--shadow-soft);
 }
 
 .row {
   display: grid;
-  grid-template-columns: 96px minmax(0, 1fr) 120px auto;
-  gap: 16px;
+  grid-template-columns: 104px minmax(0, 1fr) 130px auto;
+  gap: 18px;
   align-items: center;
-  padding: 12px 18px;
-  min-height: 56px;
+  padding: 16px 22px;
+  min-height: 68px;
   border-top: 1px solid var(--line-soft);
+  transition: background 120ms ease;
 }
 
 .row:first-child {
@@ -42,38 +50,44 @@
 }
 
 .rowName {
-  font-size: 14px;
-  font-weight: 550;
+  font-size: 15px;
+  font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .rowMeta {
-  font-size: 12.5px;
+  font-size: 13px;
   color: var(--ink-3);
-  margin-top: 2px;
+  margin-top: 3px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-/* ------------------------------------------------------------------- cards */
+/* ---------------------------------------------------------------- item cards */
 
 .cardList {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 18px;
 }
 
 .card {
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius-card);
   background: var(--panel);
-  padding: 16px 18px;
+  box-shadow: var(--shadow-soft);
+  padding: 22px;
   display: flex;
+  flex-direction: column;
   gap: 16px;
-  align-items: flex-start;
+  transition: box-shadow 150ms ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow);
 }
 
 .cardBody {
@@ -82,57 +96,46 @@
 }
 
 .cardTitle {
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 17px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
 }
 
 .cardText {
-  margin: 6px 0 0;
-  font-size: 13.5px;
-  line-height: 1.5;
+  margin: 8px 0 0;
+  font-size: 14px;
+  line-height: 1.55;
   color: var(--ink-2);
   white-space: pre-wrap;
 }
 
+/* A hairline above the footer, as the reference puts under its card headers. */
 .cardMeta {
-  font-size: 12px;
+  font-size: 12.5px;
   color: var(--ink-3);
-  margin-top: 8px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line-soft);
 }
 
 .cardActions {
   display: flex;
-  gap: 8px;
-  flex: none;
-}
-
-.danger {
-  border: 1px solid var(--line);
-  background: var(--panel);
-  color: var(--ink-3);
-  border-radius: 8px;
-  height: 30px;
-  padding: 0 12px;
-  font-size: 12.5px;
-  font-weight: 600;
-}
-
-.danger:hover {
-  border-color: var(--danger);
-  color: var(--danger);
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .thumbs {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   flex-wrap: wrap;
-  margin-top: 10px;
+  margin-top: 14px;
 }
 
 .thumb {
-  width: 84px;
-  height: 64px;
-  border-radius: 8px;
+  width: 96px;
+  height: 72px;
+  border-radius: var(--radius-control);
   object-fit: cover;
   border: 1px solid var(--line);
   background: var(--panel-2);

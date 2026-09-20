@@ -1,12 +1,16 @@
 /*
- * Design tokens — the contract from the Claude Design handoff.
+ * Design tokens.
  *
  * Colours are authored in oklch and stay that way: the accent is generated from a
  * single hue, so a rebrand is one number. Dark is not a filter over light; the
  * status colours are separately picked for a dark ground and must not be derived.
  *
- * Two neutral hues are in play. The staff tool uses 95, the client portal 85 —
- * the client side is very slightly warmer. Both read as neutral, not tinted.
+ * The look: a light grey page carrying white cards with generous radii and soft
+ * shadows, a bright azure accent, labels above their fields, and tabs marked with an
+ * underline rather than a filled pill.
+ *
+ * Two neutral scales are in play. The staff tool and the client portal share the
+ * same family; the client side is a touch warmer.
  */
 
 :root {
@@ -18,90 +22,100 @@
 
   --font-sans: "Instrument Sans", Helvetica, Arial, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Radii. Cards are generous, controls a step tighter, pills fully round. */
+  --radius-card: 16px;
+  --radius-control: 10px;
+  --radius-small: 8px;
+  --radius-pill: 999px;
+
+  /* Control heights: roomy enough to read at a glance, not chunky. */
+  --control-h: 44px;
+  --control-h-sm: 36px;
 }
 
 /* ---------------------------------------------------------------- staff, light */
 
 .themeStaff {
-  --neutral-h: 95;
-
-  --bg: oklch(0.975 0.003 95);
+  --bg: oklch(0.962 0.002 250);
   --panel: oklch(1 0 0);
-  --panel-2: oklch(0.985 0.003 95);
-  --ink: oklch(0.24 0.008 95);
-  --ink-2: oklch(0.47 0.008 95);
-  --ink-3: oklch(0.62 0.008 95);
-  --line: oklch(0.905 0.004 95);
-  --line-soft: oklch(0.945 0.004 95);
-  --accent: oklch(0.5 0.12 var(--accent-h));
-  --accent-ink: oklch(0.99 0 0);
-  --ok: oklch(0.47 0.12 150);
-  --warn: oklch(0.5 0.12 70);
-  --danger: oklch(0.51 0.17 27);
-  --info: oklch(0.49 0.12 250);
-  --mute: oklch(0.5 0.008 95);
-  --shadow: 0 1px 2px oklch(0.2 0.01 95 / 0.06), 0 8px 24px oklch(0.2 0.01 95 / 0.05);
+  --panel-2: oklch(0.975 0.002 250);
+  --ink: oklch(0.22 0.012 250);
+  --ink-2: oklch(0.47 0.01 250);
+  --ink-3: oklch(0.62 0.01 250);
+  --line: oklch(0.905 0.004 250);
+  --line-soft: oklch(0.945 0.003 250);
+  --accent: oklch(0.63 0.19 var(--accent-h));
+  --accent-ink: oklch(1 0 0);
+  --ok: oklch(0.58 0.15 150);
+  --warn: oklch(0.65 0.15 70);
+  --danger: oklch(0.58 0.2 27);
+  --info: oklch(0.63 0.19 250);
+  --mute: oklch(0.6 0.01 250);
+  --shadow: 0 1px 2px oklch(0.2 0.02 250 / 0.04), 0 8px 24px oklch(0.2 0.02 250 / 0.06);
+  --shadow-soft: 0 1px 3px oklch(0.2 0.02 250 / 0.05);
 }
 
 [data-theme="dark"] .themeStaff,
 .themeStaff[data-theme="dark"] {
-  --bg: oklch(0.165 0.006 95);
-  --panel: oklch(0.205 0.006 95);
-  --panel-2: oklch(0.235 0.006 95);
-  --ink: oklch(0.95 0.004 95);
-  --ink-2: oklch(0.74 0.006 95);
-  --ink-3: oklch(0.58 0.006 95);
-  --line: oklch(0.3 0.006 95);
-  --line-soft: oklch(0.26 0.006 95);
-  --accent: oklch(0.72 0.11 var(--accent-h));
-  --accent-ink: oklch(0.16 0.01 95);
+  --bg: oklch(0.17 0.008 250);
+  --panel: oklch(0.215 0.008 250);
+  --panel-2: oklch(0.245 0.008 250);
+  --ink: oklch(0.96 0.004 250);
+  --ink-2: oklch(0.75 0.008 250);
+  --ink-3: oklch(0.6 0.008 250);
+  --line: oklch(0.31 0.008 250);
+  --line-soft: oklch(0.27 0.008 250);
+  --accent: oklch(0.7 0.16 var(--accent-h));
+  --accent-ink: oklch(0.16 0.02 250);
   --ok: oklch(0.79 0.13 150);
   --warn: oklch(0.83 0.12 80);
   --danger: oklch(0.73 0.14 25);
-  --info: oklch(0.77 0.1 250);
-  --mute: oklch(0.7 0.008 95);
+  --info: oklch(0.78 0.12 250);
+  --mute: oklch(0.7 0.008 250);
   --shadow: 0 1px 2px oklch(0 0 0 / 0.4), 0 8px 24px oklch(0 0 0 / 0.3);
+  --shadow-soft: 0 1px 3px oklch(0 0 0 / 0.35);
 }
 
 /* --------------------------------------------------------------- client, light */
 
 .themeClient {
-  --neutral-h: 85;
-
-  --bg: oklch(0.975 0.006 85);
+  --bg: oklch(0.965 0.004 85);
   --panel: oklch(1 0 0);
-  --panel-2: oklch(0.975 0.006 85);
-  --ink: oklch(0.24 0.008 85);
-  --ink-2: oklch(0.46 0.008 85);
-  --ink-3: oklch(0.6 0.008 85);
-  --line: oklch(0.905 0.005 85);
-  --line-soft: oklch(0.945 0.005 85);
-  --accent: oklch(0.5 0.12 var(--accent-h));
-  --accent-ink: oklch(0.99 0 0);
-  --ok: oklch(0.47 0.12 150);
-  --warn: oklch(0.5 0.12 70);
-  --danger: oklch(0.51 0.16 27);
-  --info: oklch(0.49 0.12 250);
-  --mute: oklch(0.5 0.008 85);
-  --shadow: 0 1px 2px oklch(0.2 0.01 85 / 0.05), 0 10px 30px oklch(0.2 0.01 85 / 0.06);
+  --panel-2: oklch(0.975 0.004 85);
+  --ink: oklch(0.22 0.012 250);
+  --ink-2: oklch(0.46 0.01 250);
+  --ink-3: oklch(0.61 0.01 250);
+  --line: oklch(0.9 0.005 85);
+  --line-soft: oklch(0.945 0.004 85);
+  --accent: oklch(0.63 0.19 var(--accent-h));
+  --accent-ink: oklch(1 0 0);
+  --ok: oklch(0.58 0.15 150);
+  --warn: oklch(0.65 0.15 70);
+  --danger: oklch(0.58 0.2 27);
+  --info: oklch(0.63 0.19 250);
+  --mute: oklch(0.6 0.01 85);
+  --shadow: 0 1px 2px oklch(0.2 0.02 250 / 0.04), 0 10px 30px oklch(0.2 0.02 250 / 0.07);
+  --shadow-soft: 0 1px 3px oklch(0.2 0.02 250 / 0.05);
 }
 
 [data-theme="dark"] .themeClient,
 .themeClient[data-theme="dark"] {
-  --bg: oklch(0.165 0.006 85);
-  --panel: oklch(0.215 0.006 85);
-  --panel-2: oklch(0.245 0.006 85);
-  --ink: oklch(0.95 0.004 85);
-  --ink-2: oklch(0.75 0.006 85);
-  --ink-3: oklch(0.6 0.006 85);
-  --line: oklch(0.31 0.006 85);
-  --line-soft: oklch(0.27 0.006 85);
-  --accent: oklch(0.74 0.11 var(--accent-h));
-  --accent-ink: oklch(0.16 0.01 85);
+  --bg: oklch(0.17 0.008 85);
+  --panel: oklch(0.22 0.008 85);
+  --panel-2: oklch(0.25 0.008 85);
+  --ink: oklch(0.96 0.004 85);
+  --ink-2: oklch(0.76 0.008 85);
+  --ink-3: oklch(0.61 0.008 85);
+  --line: oklch(0.32 0.008 85);
+  --line-soft: oklch(0.28 0.008 85);
+  --accent: oklch(0.7 0.16 var(--accent-h));
+  --accent-ink: oklch(0.16 0.02 250);
   --ok: oklch(0.79 0.13 150);
   --warn: oklch(0.83 0.12 80);
   --danger: oklch(0.73 0.14 25);
-  --info: oklch(0.78 0.1 250);
+  --info: oklch(0.78 0.12 250);
   --mute: oklch(0.7 0.008 85);
   --shadow: 0 1px 2px oklch(0 0 0 / 0.4), 0 10px 30px oklch(0 0 0 / 0.3);
+  --shadow-soft: 0 1px 3px oklch(0 0 0 / 0.35);
 }

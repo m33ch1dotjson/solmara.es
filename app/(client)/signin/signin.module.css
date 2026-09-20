@@ -7,7 +7,7 @@
 .tile {
   width: 52px;
   height: 52px;
-  border-radius: 15px;
+  border-radius: var(--radius-card);
   background: color-mix(in oklch, var(--accent) 14%, transparent);
   color: var(--accent);
   display: flex;
@@ -30,7 +30,7 @@
 .input {
   min-height: 56px;
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: var(--radius-control);
   background: var(--panel);
   padding: 0 16px;
   font-size: 16.5px;
@@ -72,7 +72,7 @@
   min-width: 0;
   height: 62px;
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: var(--radius-control);
   background: var(--panel);
   text-align: center;
   font-family: var(--font-mono);
@@ -106,7 +106,7 @@
   border: none;
   background: var(--accent);
   color: var(--accent-ink);
-  border-radius: 14px;
+  border-radius: var(--radius-control);
   min-height: 56px;
   padding: 14px 18px;
   font-size: 16.5px;
