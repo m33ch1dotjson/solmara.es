@@ -21,11 +21,15 @@
   overflow-y: auto;
   overscroll-behavior: contain;
   transform: translateX(-100%);
-  transition: transform 180ms ease;
+  /* Hidden as well as moved: a drawer that is only translated off-screen still
+     takes keyboard focus, so tabbing walks through a menu nobody can see. */
+  visibility: hidden;
+  transition: transform 180ms ease, visibility 180ms ease;
 }
 
 .barOpen {
   transform: translateX(0);
+  visibility: visible;
   box-shadow: var(--shadow);
 }
 
@@ -115,6 +119,7 @@
     width: auto;
     max-width: none;
     transform: none;
+    visibility: visible;
     box-shadow: none;
     transition: none;
     z-index: 10;
