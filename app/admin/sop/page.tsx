@@ -1,8 +1,6 @@
 import { DeleteButton } from "@/components/staff/DeleteButton";
 import { SopForm } from "@/components/staff/SopForm";
-import { StatusPill } from "@/components/ui";
-import { requireStaff } from "@/lib/auth/session";
-import { brand } from "@/lib/brand";
+import { staffOrRedirect } from "@/lib/auth/session";
 import { listSops } from "@/lib/queries";
 import { deleteSopAction } from "../actions";
 import shell from "../staff.module.css";
@@ -11,7 +9,7 @@ import s from "../admin.module.css";
 export const metadata = { title: "SOP" };
 
 export default async function SopPage() {
-  const actor = await requireStaff();
+  const actor = await staffOrRedirect();
   const sops = await listSops(actor);
 
   return (
@@ -20,8 +18,8 @@ export default async function SopPage() {
         <h1 className={shell.pageTitle}>SOP</h1>
       </div>
       <p className={shell.pageLead}>
-        Uitleg die klanten lezen zodra ze inloggen. Een concept blijft intern tot je hem
-        publiceert.
+Werkinstructies voor het team. Klanten zien deze nooit — er is geen enkele route
+        waarlangs ze erbij kunnen.
       </p>
 
       <SopForm />
@@ -48,12 +46,6 @@ export default async function SopPage() {
                 </div>
               </div>
               <div className={s.cardActions}>
-                <StatusPill
-                  status={item.published ? "approved" : "required"}
-                  audience="staff"
-                  locale={brand.defaultLocale}
-                  labelOverride={item.published ? "Zichtbaar" : "Concept"}
-                />
                 <DeleteButton id={item.id} action={deleteSopAction} label="Verwijderen" />
               </div>
             </div>

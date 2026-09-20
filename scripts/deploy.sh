@@ -19,7 +19,12 @@ tar czf - \
     tar xzf - -C /opt/solmara
     chown -R solmara:solmara /opt/solmara
     cd /opt/solmara
-    npm run build 2>&1 | tail -5
+    # Build first, restart only on success: a failed build must never take the
+    # running site down.
+    if ! npm run build 2>&1 | tail -8; then
+      echo "BUILD MISLUKT — niet herstart, oude versie draait door"
+      exit 1
+    fi
     systemctl restart solmara
     sleep 3
     systemctl is-active solmara

@@ -1,21 +1,34 @@
 /*
  * Who is asking.
  *
- * One auth system, two audiences. After Supabase verifies the magic link we look the
- * email up in staff_user and client_contact: being in staff_user is what makes
- * someone staff, not a claim in a token. Access is invite-only in both directions —
- * an address that matches neither table gets a session with no actor, and therefore
- * sees nothing at all, because every policy requires an actor.
+ * One auth system, two audiences. After Supabase verifies the sign-in we look the
+ * email up: being in staff_user is what makes somebody staff, not a claim in a
+ * token. An address in neither table gets no actor and therefore sees nothing,
+ * because every policy requires one.
+ *
+ * The lookup goes through app.resolve_actor(), a SECURITY DEFINER function, and it
+ * has to. Reading staff_user through an ordinary query is blocked by the very policy
+ * we are trying to satisfy — you would need to already be staff to discover that you
+ * are staff, and a valid sign-in would bounce back to the login screen.
  */
 
-import { eq } from "drizzle-orm";
+import { sql } from "drizzle-orm";
+import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
-import { clientContact, staffUser } from "@/lib/db/schema";
 import { serverClient } from "./supabase";
 
 export type Actor =
   | { kind: "staff"; id: string; role: "ADMIN" | "STAFF"; name: string; email: string }
-  | { kind: "client"; id: string; clientId: string; email: string };
+  | { kind: "client"; id: string; clientId: string; name: string; email: string };
+
+// db.execute wants a row shape it can index; the named fields stay for clarity.
+interface ResolvedRow extends Record<string, unknown> {
+  kind: string;
+  actor_id: string;
+  role: string | null;
+  name: string;
+  client_id: string | null;
+}
 
 /** The current actor, or null when nobody is signed in or the address is unknown. */
 export async function currentActor(): Promise<Actor | null> {
@@ -27,36 +40,48 @@ export async function currentActor(): Promise<Actor | null> {
   if (!user?.email) return null;
   const email = user.email.toLowerCase();
 
-  const staff = await db.query.staffUser.findFirst({
-    where: eq(staffUser.email, email),
-  });
-  if (staff?.active) {
-    // Link the auth user on first sign-in so the row and the account stay tied.
-    if (!staff.authUserId) {
-      await db.update(staffUser).set({ authUserId: user.id }).where(eq(staffUser.id, staff.id));
-    }
-    return { kind: "staff", id: staff.id, role: staff.role, name: staff.name, email };
+  const rows = await db.execute<ResolvedRow>(
+    sql`select * from app.resolve_actor(${email}, ${user.id}::uuid)`,
+  );
+  const row = rows[0];
+  if (!row) return null;
+
+  if (row.kind === "staff") {
+    return {
+      kind: "staff",
+      id: row.actor_id,
+      role: row.role === "ADMIN" ? "ADMIN" : "STAFF",
+      name: row.name,
+      email,
+    };
   }
 
-  const contact = await db.query.clientContact.findFirst({
-    where: eq(clientContact.email, email),
-  });
-  if (contact) {
-    if (!contact.authUserId) {
-      await db
-        .update(clientContact)
-        .set({ authUserId: user.id })
-        .where(eq(clientContact.id, contact.id));
-    }
-    return { kind: "client", id: contact.id, clientId: contact.clientId, email };
+  if (row.kind === "client" && row.client_id) {
+    return { kind: "client", id: row.actor_id, clientId: row.client_id, name: row.name, email };
   }
 
   return null;
 }
 
+/**
+ * For server actions. Throws, because an action has no page to send anybody to and
+ * the caller should see a failure rather than a redirect.
+ */
 export async function requireStaff(): Promise<Extract<Actor, { kind: "staff" }>> {
   const actor = await currentActor();
   if (actor?.kind !== "staff") throw new Error("UNAUTHORISED");
+  return actor;
+}
+
+/**
+ * For pages. Redirects rather than throwing: the layout already renders the sign-in
+ * screen for a signed-out visitor, and a thrown error there would log a stack trace
+ * on every anonymous visit — noise that buries the failures worth reading.
+ */
+export async function staffOrRedirect(): Promise<Extract<Actor, { kind: "staff" }>> {
+  const actor = await currentActor();
+  if (!actor) redirect("/admin");
+  if (actor.kind !== "staff") redirect("/");
   return actor;
 }
 

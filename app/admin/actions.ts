@@ -91,11 +91,7 @@ export async function createSopAction(form: FormData): Promise<ActionResult> {
   if (!title) return { ok: false, error: "Vul een titel in." };
   if (!description) return { ok: false, error: "Vul een beschrijving in." };
 
-  await createSop(actor, {
-    title,
-    description,
-    published: form.get("published") !== null,
-  });
+  await createSop(actor, { title, description });
   revalidatePath("/admin/sop");
   return { ok: true, message: "SOP opgeslagen." };
 }

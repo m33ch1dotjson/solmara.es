@@ -1,7 +1,7 @@
 import { NewClientForm } from "@/components/staff/NewClientForm";
 import { InviteButton } from "@/components/staff/InviteButton";
 import { Mono, StatusPill } from "@/components/ui";
-import { requireStaff } from "@/lib/auth/session";
+import { staffOrRedirect } from "@/lib/auth/session";
 import { brand } from "@/lib/brand";
 import { listClients } from "@/lib/queries";
 import shell from "./staff.module.css";
@@ -16,7 +16,7 @@ const STATUS_PILL = {
 };
 
 export default async function ClientsPage() {
-  const actor = await requireStaff();
+  const actor = await staffOrRedirect();
   const clients = await listClients(actor);
 
   return (

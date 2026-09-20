@@ -158,7 +158,7 @@ export async function listSops(actor: Actor) {
 
 export async function createSop(
   actor: Actor,
-  input: { title: string; description: string; published: boolean },
+  input: { title: string; description: string },
 ) {
   if (actor.kind !== "staff") throw new Error("UNAUTHORISED");
   return asActor(actor, (tx) =>
@@ -167,7 +167,6 @@ export async function createSop(
       .values({
         title: input.title.trim(),
         description: input.description.trim(),
-        published: input.published,
         createdBy: actor.id,
       })
       .returning(),
@@ -263,16 +262,6 @@ export async function clientDocuments(actor: Actor) {
   if (actor.kind !== "client") throw new Error("UNAUTHORISED");
   return asActor(actor, (tx) =>
     tx.select().from(clientDocument).where(eq(clientDocument.clientId, actor.clientId)),
-  );
-}
-
-export async function publishedSops(actor: Actor) {
-  return asActor(actor, (tx) =>
-    tx
-      .select({ id: sop.id, title: sop.title, description: sop.description })
-      .from(sop)
-      .where(eq(sop.published, true))
-      .orderBy(asc(sop.sortOrder), desc(sop.createdAt)),
   );
 }
 

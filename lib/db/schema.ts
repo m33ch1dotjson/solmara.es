@@ -11,7 +11,7 @@
  *
  * Three things exist here and nothing else:
  *   - clients, the people, with their details and their two documents
- *   - SOPs, which staff write and clients read
+ *   - SOPs, the team's own working instructions
  *   - properties, which staff keep for themselves
  */
 
@@ -187,21 +187,19 @@ export const clientDocument = app.table(
 
 /* -------------------------------------------------------------------- SOPs */
 
-/** Written by staff, read by clients. Title and description, nothing more. */
+/** Internal working instructions. Staff only — no client policy exists for this table. */
 export const sop = app.table(
   "sop",
   {
     id: uuid("id").primaryKey().defaultRandom(),
     title: text("title").notNull(),
     description: text("description").notNull(),
-    /** Unpublished SOPs are drafts: staff see them, clients do not. */
-    published: boolean("published").notNull().default(true),
     sortOrder: integer("sort_order").notNull().default(0),
     createdBy: uuid("created_by").references(() => staffUser.id, { onDelete: "set null" }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },
-  (t) => [index("sop_published_idx").on(t.published, t.sortOrder)],
+  (t) => [index("sop_order_idx").on(t.sortOrder, t.createdAt)],
 );
 
 /* -------------------------------------------------------------- properties */

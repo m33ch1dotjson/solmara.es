@@ -7,7 +7,6 @@ import s from "./ClientNav.module.css";
 
 const ITEMS: Array<{ href: Route; label: string; glyph: string }> = [
   { href: "/", label: "Mijn gegevens", glyph: "◉" },
-  { href: "/uitleg", label: "Uitleg", glyph: "▤" },
 ];
 
 /** Sits at the bottom, where a thumb is. Nothing here depends on hover. */

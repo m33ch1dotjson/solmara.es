@@ -27,13 +27,8 @@ export function SopForm() {
         <span className={s.label}>Beschrijving</span>
         <textarea name="description" className={s.textarea} rows={5} required />
         <span className={s.hint}>
-          Schrijf het zoals je het aan een klant zou uitleggen. Regelafbrekingen blijven staan.
+          Voor intern gebruik. Regelafbrekingen blijven staan.
         </span>
-      </label>
-
-      <label className={s.checkbox}>
-        <input type="checkbox" name="published" defaultChecked />
-        <span>Meteen zichtbaar voor klanten</span>
       </label>
 
       <div className={s.actions}>

@@ -41,7 +41,9 @@ export function AdminTabs({ brandName, user }: { brandName: string; user: string
       </nav>
 
       <div className={s.right}>
-        <span className={s.user}>{user}</span>
+        <Link href="/admin/account" className={s.user}>
+          {user}
+        </Link>
         <ThemeToggle variant="compact" />
         <form action="/auth/signout" method="post">
           <button type="submit" className={s.signout}>

@@ -34,9 +34,15 @@ export default function SignInPage() {
 
     setPending(false);
 
-    // A send failure is shown, but never phrased as "we do not know that address".
-    if (sendError) setError("Versturen lukte niet. Probeer het over een minuut opnieuw.");
-    else setSent(true);
+    if (sendError) {
+      // 429 is the built-in mailer's hourly cap, not a transient hiccup. Saying
+      // "try again in a minute" there sends someone into a loop that cannot succeed.
+      setError(
+        sendError.status === 429
+          ? "Er zijn te veel mails verstuurd vanaf dit project. Probeer het over een uur opnieuw, of laat ons eigen mailadres instellen."
+          : "Versturen lukte niet. Probeer het zo opnieuw.",
+      );
+    } else setSent(true);
   }
 
   if (sent) {

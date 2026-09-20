@@ -1,7 +1,7 @@
 import { DeleteButton } from "@/components/staff/DeleteButton";
 import { PropertyForm } from "@/components/staff/PropertyForm";
 import { Mono } from "@/components/ui";
-import { requireStaff } from "@/lib/auth/session";
+import { staffOrRedirect } from "@/lib/auth/session";
 import { listProperties } from "@/lib/queries";
 import { BUCKET_PROPERTY_PHOTOS, signedUrl } from "@/lib/storage";
 import { deletePropertyAction } from "../actions";
@@ -11,7 +11,7 @@ import s from "../admin.module.css";
 export const metadata = { title: "Properties" };
 
 export default async function PropertiesPage() {
-  const actor = await requireStaff();
+  const actor = await staffOrRedirect();
   const properties = await listProperties(actor);
 
   // Signed URLs are minted per render and expire in ten minutes. Nothing here is
