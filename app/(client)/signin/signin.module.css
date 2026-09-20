@@ -101,3 +101,29 @@
 .textLink:hover {
   text-decoration: underline;
 }
+
+.primary {
+  border: none;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: 14px;
+  min-height: 56px;
+  padding: 14px 18px;
+  font-size: 16.5px;
+  font-weight: 600;
+  width: 100%;
+  text-wrap: balance;
+}
+
+.primary:disabled {
+  background: var(--line);
+  color: var(--ink-3);
+  cursor: not-allowed;
+}
+
+.error {
+  margin: 0;
+  font-size: 14.5px;
+  color: var(--danger);
+  font-weight: 550;
+}

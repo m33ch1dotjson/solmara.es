@@ -1,142 +1,96 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
-import { LanguageSwitcher, useLocale } from "@/components/client/LocaleProvider";
-import { Button, Card } from "@/components/ui";
-import { CLIENT_TERMS } from "@/lib/client-terms";
-import { brand } from "@/lib/brand";
+import { browserClient } from "@/lib/auth/supabase-browser";
 import shell from "../portal.module.css";
 import s from "./signin.module.css";
 
 /*
- * Sign in — three states: the form, "check your email", and code entry.
+ * One sign-in for both audiences.
  *
- * The security rule shapes the copy: the response must never reveal whether an
- * address is known to us. Both paths produce identical wording and identical timing
- * for known and unknown addresses, and the copy does not branch.
+ * Which portal you land in is decided afterwards, by whether the address is in
+ * staff_user or client_contact — never by a choice made on this screen. That keeps
+ * the question "am I staff?" answerable only by the database.
+ *
+ * The response never reveals whether an address is known to us. Same wording, same
+ * behaviour, known or not: this form is otherwise a way to enumerate the client list.
  */
-
-type State = "form" | "sent" | "code";
-
 export default function SignInPage() {
-  const { copy, locale } = useLocale();
-  const terms = CLIENT_TERMS[locale];
-  const [state, setState] = useState<State>("form");
   const [email, setEmail] = useState("");
-  const [digits, setDigits] = useState<string[]>(Array.from({ length: 6 }, () => ""));
+  const [sent, setSent] = useState(false);
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  function setDigit(index: number, value: string) {
-    const clean = value.replace(/\D/g, "").slice(-1);
-    setDigits((prev) => prev.map((d, i) => (i === index ? clean : d)));
+  async function submit(formEvent: React.FormEvent) {
+    formEvent.preventDefault();
+    setPending(true);
+    setError(null);
+
+    const supabase = browserClient();
+    const { error: sendError } = await supabase.auth.signInWithOtp({
+      email: email.trim().toLowerCase(),
+      options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+    });
+
+    setPending(false);
+
+    // A send failure is shown, but never phrased as "we do not know that address".
+    if (sendError) setError("Versturen lukte niet. Probeer het over een minuut opnieuw.");
+    else setSent(true);
+  }
+
+  if (sent) {
+    return (
+      <div className={s.block}>
+        <div className={s.tile} aria-hidden="true">
+          ✉
+        </div>
+        <h1 className={shell.h1}>Kijk in uw e-mail</h1>
+        <p className={shell.body}>
+          Als wij een account hebben voor dat adres, is er een inloglink onderweg. Open die link op
+          dit apparaat en u bent binnen.
+        </p>
+        <p className={shell.note}>
+          Niets ontvangen? Kijk eerst in uw map met ongewenste e-mail.
+        </p>
+        <button type="button" className={s.textLink} onClick={() => setSent(false)}>
+          Ander e-mailadres gebruiken
+        </button>
+      </div>
+    );
   }
 
   return (
-    <>
-      <div className={shell.brandRow}>
-        <div className={shell.logo} aria-hidden="true" />
-        <div className={shell.wordmark}>{brand.clientName}</div>
-      </div>
+    <form className={s.block} onSubmit={submit}>
+      <h1 className={shell.h1}>Inloggen</h1>
+      <p className={shell.body}>
+        Vul het e-mailadres in dat u aan ons hebt doorgegeven. U ontvangt een link waarmee u meteen
+        bent ingelogd. Geen wachtwoord om te onthouden.
+      </p>
 
-      {state === "form" && (
-        <form
-          className={s.block}
-          onSubmit={(e) => {
-            e.preventDefault();
-            setState("sent");
-          }}
-        >
-          <h1 className={shell.h1}>{copy.signin.title}</h1>
-          <p className={shell.body}>{copy.signin.body}</p>
+      <label className={s.field}>
+        <span className={s.label}>E-mailadres</span>
+        <input
+          type="email"
+          required
+          autoComplete="email"
+          inputMode="email"
+          className={s.input}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </label>
 
-          <label className={s.field}>
-            <span className={s.label}>{copy.signin.label}</span>
-            <input
-              type="email"
-              required
-              autoComplete="email"
-              inputMode="email"
-              className={s.input}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </label>
+      <button type="submit" className={s.primary} disabled={pending}>
+        {pending ? "Bezig…" : "Stuur mij een inloglink"}
+      </button>
 
-          <Button type="submit" variant="primary" size="client">
-            {copy.signin.cta}
-          </Button>
+      {error && <p className={s.error}>{error}</p>}
 
-          <p className={shell.note}>{copy.signin.privacy}</p>
-        </form>
-      )}
-
-      {state === "sent" && (
-        <div className={s.block}>
-          <div className={s.tile} aria-hidden="true">
-            ✉
-          </div>
-          <h1 className={shell.h1}>{copy.sent.title}</h1>
-          <p className={shell.body}>{copy.sent.body}</p>
-
-          <Card audience="client" className={s.helpCard}>
-            <div className={s.helpTitle}>{copy.sent.noEmailTitle}</div>
-            <p className={s.helpBody}>{copy.sent.noEmailBody}</p>
-            <Button variant="secondary" size="clientCompact" onClick={() => setState("code")}>
-              {copy.sent.codeCta}
-            </Button>
-          </Card>
-
-          <button type="button" className={s.textLink} onClick={() => setState("form")}>
-            {copy.sent.change}
-          </button>
-        </div>
-      )}
-
-      {state === "code" && (
-        <form
-          className={s.block}
-          onSubmit={(e) => {
-            e.preventDefault();
-          }}
-        >
-          <h1 className={shell.h1}>{copy.code.title}</h1>
-          <p className={shell.body}>{copy.code.body}</p>
-
-          <div className={s.codeRow}>
-            {digits.map((digit, i) => (
-              <input
-                key={i}
-                type="text"
-                inputMode="numeric"
-                autoComplete={i === 0 ? "one-time-code" : "off"}
-                maxLength={1}
-                className={s.codeBox}
-                value={digit}
-                onChange={(e) => setDigit(i, e.target.value)}
-                aria-label={`Digit ${i + 1} of 6`}
-              />
-            ))}
-          </div>
-
-          <Button type="submit" variant="primary" size="client">
-            {copy.code.cta}
-          </Button>
-
-          <p className={shell.note}>{copy.code.resend}</p>
-
-          <button type="button" className={s.textLink} onClick={() => setState("form")}>
-            {copy.code.back}
-          </button>
-        </form>
-      )}
-
-      <div className={shell.footer}>
-        <LanguageSwitcher />
-        {/* Present so the demo is navigable; a real session lands here after the link. */}
-        <Link href="/" className={s.textLink}>
-          {terms.backToServices}
-        </Link>
-      </div>
-    </>
+      <p className={shell.note}>
+        Als wij een account hebben voor dit adres, komt de link binnen een minuut binnen. De link
+        werkt één keer en vervalt na 30 minuten.
+      </p>
+    </form>
   );
 }

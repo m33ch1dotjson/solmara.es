@@ -3,13 +3,8 @@ import type { NextConfig } from "next";
 const config: NextConfig = {
   reactStrictMode: true,
   typedRoutes: true,
-  // The client home lists the services, so a bare /services has nothing to show.
-  async redirects() {
-    return [
-      { source: "/services", destination: "/", permanent: false },
-      { source: "/admin/settings", destination: "/admin/settings/branding", permanent: false },
-    ];
-  },
+  // Photo uploads arrive through server actions, whose default body limit is 1MB.
+  experimental: { serverActions: { bodySizeLimit: "12mb" } },
 };
 
 export default config;

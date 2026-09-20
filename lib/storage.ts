@@ -1,0 +1,71 @@
+/*
+ * File storage.
+ *
+ * Uploads go through the server with the secret key rather than straight from the
+ * browser. That costs a hop and buys something worth more: the buckets stay entirely
+ * private with no storage policies at all, so nothing in a browser can address them
+ * even if a session leaks. Passport scans are the reason.
+ *
+ * Every read is a signed URL with a short life. There are no public objects here.
+ */
+
+import { createClient } from "@supabase/supabase-js";
+
+export const BUCKET_CLIENT_DOCUMENTS = "client-documents";
+export const BUCKET_PROPERTY_PHOTOS = "property-photos";
+
+/** Ten minutes: long enough to open a file, short enough that a shared link dies. */
+const SIGNED_URL_SECONDS = 600;
+
+function admin() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const secret = process.env.SUPABASE_SECRET_KEY;
+  if (!url || !secret) {
+    throw new Error("SUPABASE_SECRET_KEY ontbreekt. Zonder die sleutel werkt uploaden niet.");
+  }
+  return createClient(url, secret, { auth: { persistSession: false } });
+}
+
+/** Random path. Never derived from a name — a guessable path is an invitation. */
+export function storageKey(prefix: string, filename: string): string {
+  const extension = filename.includes(".") ? filename.split(".").pop()!.toLowerCase() : "bin";
+  return `${prefix}/${crypto.randomUUID()}.${extension}`;
+}
+
+export async function upload(bucket: string, key: string, file: File) {
+  const { error } = await admin()
+    .storage.from(bucket)
+    .upload(key, file, { contentType: file.type, upsert: false });
+
+  if (error) throw new Error(`upload mislukt: ${error.message}`);
+  return { key, size: file.size, mimeType: file.type };
+}
+
+export async function signedUrl(bucket: string, key: string): Promise<string | null> {
+  const { data, error } = await admin()
+    .storage.from(bucket)
+    .createSignedUrl(key, SIGNED_URL_SECONDS);
+  return error ? null : data.signedUrl;
+}
+
+export async function remove(bucket: string, keys: string[]): Promise<void> {
+  if (keys.length === 0) return;
+  await admin().storage.from(bucket).remove(keys);
+}
+
+/** Only these reach storage. A file extension is not a content type. */
+export const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic"];
+export const ALLOWED_DOCUMENT_TYPES = [...ALLOWED_IMAGE_TYPES, "application/pdf"];
+export const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
+
+export function validateUpload(
+  file: File,
+  allowed: string[],
+): { ok: true } | { ok: false; error: string } {
+  if (file.size === 0) return { ok: false, error: "Het bestand is leeg." };
+  if (file.size > MAX_UPLOAD_BYTES) return { ok: false, error: "Het bestand is groter dan 10 MB." };
+  if (!allowed.includes(file.type)) {
+    return { ok: false, error: "Dit bestandstype accepteren we niet." };
+  }
+  return { ok: true };
+}

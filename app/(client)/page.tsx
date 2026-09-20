@@ -1,74 +1,99 @@
-"use client";
-
-import Link from "next/link";
-import { LanguageSwitcher, useLocale } from "@/components/client/LocaleProvider";
-import { Card, StatusPill, StepSegments } from "@/components/ui";
+import { redirect } from "next/navigation";
+import { DetailsForm } from "@/components/client/DetailsForm";
+import { DocumentUpload } from "@/components/client/DocumentUpload";
+import { Mono } from "@/components/ui";
+import { currentActor } from "@/lib/auth/session";
 import { brand } from "@/lib/brand";
-import { CLIENT_TERMS } from "@/lib/client-terms";
-import { featuredCaseCode } from "@/lib/mock";
+import { clientDocuments, clientSelf } from "@/lib/queries";
 import shell from "./portal.module.css";
 import s from "./home.module.css";
 
 /*
- * My services — the client's home screen.
- *
- * One card per service. Status is a full sentence, never a code. The chip says either
- * what is needed or, explicitly, that nothing is — an absent chip would leave the
- * reader guessing, which is the same as making them phone.
- *
- * The word is "service", not "case": a client did not open a file with us, they asked
- * us to arrange something. Internally the entity is still a case.
+ * What a client sees after signing in: their own details and the two files we ask
+ * for. Everything on this page comes through app.client_self(), which chooses the
+ * columns — internal notes and status never leave the database.
  */
-export default function MyServicesPage() {
-  const { copy, locale } = useLocale();
-  const terms = CLIENT_TERMS[locale];
+export default async function ClientHomePage() {
+  const actor = await currentActor();
+
+  if (!actor) redirect("/signin");
+  if (actor.kind === "staff") redirect("/admin");
+
+  const [self, documents] = await Promise.all([clientSelf(actor), clientDocuments(actor)]);
+  if (!self) redirect("/signin");
+
+  const passport = documents.find((d) => d.kind === "PASSPORT");
+  const photo = documents.find((d) => d.kind === "PHOTO");
+  const outstanding = documents.filter(
+    (d) => d.status === "REQUIRED" || d.status === "REJECTED",
+  ).length;
 
   return (
     <>
+      <div className={shell.brandRow}>
+        <span className={shell.logo} aria-hidden="true" />
+        <span className={shell.wordmark}>{brand.clientName}</span>
+      </div>
+
       <div>
-        <h1 className={shell.h1}>{copy.cases.hi}</h1>
-        <p className={s.summary}>{copy.cases.summary}</p>
-      </div>
-
-      <div className={s.sectionLabel}>{terms.services}</div>
-
-      <div className={s.cards}>
-        {copy.caseCards.map((card, i) => {
-          const needsSomething = card.tone === "warn";
-          return (
-            <Link
-              key={card.service}
-              href={`/services/${i === 0 ? featuredCaseCode : `ES-249${i}`}`}
-              className={s.cardLink}
-            >
-              <Card audience="client" className={s.card}>
-                <div className={s.service}>{card.service}</div>
-                <p className={s.status}>{card.status}</p>
-                <StepSegments total={5} filled={card.si + 1} />
-                <div className={s.stepRow}>
-                  <span className={s.step}>{card.step}</span>
-                </div>
-                {/* The wording is the client's own copy from the design, so the count
-                    survives; the tone and glyph come from the status vocabulary. */}
-                <StatusPill
-                  status={needsSomething ? "dueToday" : "required"}
-                  audience="client"
-                  locale={locale}
-                  labelOverride={card.todo}
-                />
-              </Card>
-            </Link>
-          );
-        })}
-      </div>
-
-      <div className={shell.footer}>
-        <p className={shell.note}>{copy.cases.help}</p>
-        <p className={shell.note}>
-          {brand.supportPhone} · {brand.supportHours[locale]}
+        <h1 className={shell.h1}>Hallo {self.name.split(" ")[0]}</h1>
+        <p className={s.summary}>
+          {outstanding === 0
+            ? "Alles is binnen. Wij hebben op dit moment niets van u nodig."
+            : outstanding === 1
+              ? "Er ontbreekt nog één bestand. Daarna hebben wij alles."
+              : `Er ontbreken nog ${outstanding} bestanden. Daarna hebben wij alles.`}
         </p>
-        <LanguageSwitcher />
+        <Mono size={12.5} color="var(--ink-3)">
+          {self.code}
+        </Mono>
       </div>
+
+      <section className={s.section}>
+        <h2 className={shell.sectionTitle}>Wat wij nodig hebben</h2>
+        <p className={shell.sectionSub}>
+          Een foto met uw telefoon is prima, een scanner hoeft niet. Wij controleren elk bestand met
+          de hand, meestal binnen één werkdag.
+        </p>
+
+        <div className={s.uploads}>
+          <DocumentUpload
+            kind="PASSPORT"
+            title="Paspoort"
+            help="De pagina met uw foto erop. Zorg dat alle vier de hoeken op de foto staan."
+            status={passport?.status ?? "REQUIRED"}
+            rejectionNote={passport?.rejectionNote ?? null}
+            uploadedAt={passport?.uploadedAt?.toISOString() ?? null}
+          />
+          <DocumentUpload
+            kind="PHOTO"
+            title="Pasfoto"
+            help="Effen witte achtergrond, gezicht volledig zichtbaar, geen bril."
+            status={photo?.status ?? "REQUIRED"}
+            rejectionNote={photo?.rejectionNote ?? null}
+            uploadedAt={photo?.uploadedAt?.toISOString() ?? null}
+          />
+        </div>
+      </section>
+
+      <section className={s.section}>
+        <h2 className={shell.sectionTitle}>Uw gegevens</h2>
+        <p className={shell.sectionSub}>
+          Vul aan wat u weet. U kunt dit later altijd aanpassen.
+        </p>
+        <DetailsForm
+          initial={{
+            name: self.name,
+            phone: self.phone,
+            dateOfBirth: self.date_of_birth,
+            nationality: self.nationality,
+            passportNumber: self.passport_number,
+            passportExpiry: self.passport_expiry,
+            addressHomeCountry: self.address_home_country,
+            addressSpain: self.address_spain,
+          }}
+        />
+      </section>
     </>
   );
 }

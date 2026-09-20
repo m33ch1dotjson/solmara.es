@@ -1,63 +1,18 @@
 .summary {
-  margin: 10px 0 0;
+  margin: 10px 0 8px;
   font-size: 16.5px;
   line-height: 1.55;
   color: var(--ink-2);
 }
 
-.cards {
+.section {
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 
-.cardLink,
-.cardLink:hover {
-  text-decoration: none;
-  color: var(--ink);
-}
-
-/* Full-width tappable. Nothing here depends on hover. */
-.card {
-  padding: 20px;
+.uploads {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-}
-
-.cardLink:hover .card {
-  border-color: var(--ink-3);
-}
-
-.service {
-  font-size: 19px;
-  font-weight: 650;
-  letter-spacing: -0.01em;
-}
-
-.status {
-  margin: 0;
-  font-size: 16px;
-  line-height: 1.5;
-  color: var(--ink-2);
-}
-
-.stepRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.step {
-  font-size: 14.5px;
-  color: var(--ink-3);
-}
-
-.sectionLabel {
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 600;
-  color: var(--ink-3);
-  margin-top: 4px;
+  gap: 14px;
 }

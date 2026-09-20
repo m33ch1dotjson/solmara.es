@@ -1,20 +1,17 @@
 .shell {
-  display: grid;
-  grid-template-columns: 232px minmax(0, 1fr);
   min-height: 100vh;
   background: var(--bg);
-}
-
-.main {
-  min-width: 0;
   display: flex;
   flex-direction: column;
 }
 
-/* Screen padding is 34px top / 40px sides, capped so long tables stay readable. */
+.main {
+  min-width: 0;
+}
+
 .screen {
-  padding: 34px 40px 60px;
-  max-width: 1320px;
+  padding: 32px 32px 64px;
+  max-width: 1180px;
 }
 
 .pageHead {
@@ -27,15 +24,9 @@
 }
 
 .pageTitle {
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 650;
   letter-spacing: -0.02em;
-}
-
-.pageStamp {
-  font-size: 13px;
-  color: var(--ink-3);
-  font-family: var(--font-mono);
 }
 
 .pageLead {
