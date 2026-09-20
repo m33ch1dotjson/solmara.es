@@ -21,7 +21,14 @@ tar czf - \
     cd /opt/solmara
     # Build first, restart only on success: a failed build must never take the
     # running site down.
-    if ! npm run build 2>&1 | tail -8; then
+    #
+    # The remote shell needs its own pipefail. Without it the status of
+    # "npm run build | tail" is tail'"'"'s, which is always 0, so a build that failed
+    # its type check restarted the service anyway and took the site down — which is
+    # exactly what this guard was written to prevent. It did that once, on
+    # 2026-09-20, before anyone noticed the pipe was swallowing the exit code.
+    set -o pipefail
+    if ! npm run build 2>&1 | tail -12; then
       echo "BUILD MISLUKT — niet herstart, oude versie draait door"
       exit 1
     fi
