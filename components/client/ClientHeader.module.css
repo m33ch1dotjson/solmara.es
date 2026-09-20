@@ -1,0 +1,63 @@
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-small);
+  background: var(--accent);
+  flex: none;
+}
+
+.wordmark {
+  font-size: 17px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* The name is quiet on a phone, where the row is tight. */
+.name {
+  font-size: 14px;
+  color: var(--ink-3);
+  display: none;
+}
+
+@media (min-width: 560px) {
+  .name {
+    display: inline;
+  }
+}
+
+.signout {
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink-2);
+  border-radius: var(--radius-control);
+  min-height: 44px;
+  padding: 0 16px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.signout:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}

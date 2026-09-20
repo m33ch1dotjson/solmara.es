@@ -3,7 +3,6 @@ import { DetailsForm } from "@/components/client/DetailsForm";
 import { DocumentUpload } from "@/components/client/DocumentUpload";
 import { Mono } from "@/components/ui";
 import { currentActor } from "@/lib/auth/session";
-import { brand } from "@/lib/brand";
 import { clientDocuments, clientSelf } from "@/lib/queries";
 import shell from "./portal.module.css";
 import s from "./home.module.css";
@@ -30,11 +29,6 @@ export default async function ClientHomePage() {
 
   return (
     <>
-      <div className={shell.brandRow}>
-        <span className={shell.logo} aria-hidden="true" />
-        <span className={shell.wordmark}>{brand.clientName}</span>
-      </div>
-
       <div>
         <h1 className={shell.h1}>Hallo {self.name.split(" ")[0]}</h1>
         <p className={s.summary}>
