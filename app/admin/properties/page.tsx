@@ -1,4 +1,6 @@
 import { DeleteButton } from "@/components/staff/DeleteButton";
+import { LongText } from "@/components/staff/LongText";
+import { PhotoGrid } from "@/components/staff/PhotoGrid";
 import { PropertyForm } from "@/components/staff/PropertyForm";
 import { Mono } from "@/components/ui";
 import { staffOrRedirect } from "@/lib/auth/session";
@@ -56,20 +58,17 @@ export default async function PropertiesPage() {
               <div className={s.cardBody}>
                 <div className={s.cardTitle}>{item.title}</div>
                 <p className={s.cardText}>{item.address}</p>
-                {item.notes && <p className={s.cardText}>{item.notes}</p>}
+                {item.notes && (
+                  <LongText
+                    text={item.notes}
+                    className={s.cardText}
+                    more={t.common.showMore}
+                    less={t.common.showLess}
+                  />
+                )}
 
                 {item.photoUrls.length > 0 && (
-                  <div className={s.thumbs}>
-                    {item.photoUrls.map((url, i) => (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        key={url}
-                        src={url}
-                        alt={fill(t.properties.photoAlt, { title: item.title, n: i + 1 })}
-                        className={s.thumb}
-                      />
-                    ))}
-                  </div>
+                  <PhotoGrid title={item.title} urls={item.photoUrls} />
                 )}
 
                 <div className={s.cardMeta}>

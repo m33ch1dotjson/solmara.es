@@ -1,0 +1,50 @@
+.fold {
+  margin: 0;
+}
+
+.summary {
+  display: block;
+  cursor: pointer;
+  /* Both spellings: the triangle is a ::marker in Firefox and a
+     ::-webkit-details-marker in older WebKit. */
+  list-style: none;
+}
+
+.summary::-webkit-details-marker {
+  display: none;
+}
+
+.summary::marker {
+  content: "";
+}
+
+.clamped {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  line-clamp: 5;
+  overflow: hidden;
+}
+
+.fold[open] .clamped {
+  display: block;
+  -webkit-line-clamp: none;
+  line-clamp: none;
+}
+
+.toggle {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 550;
+  color: var(--accent);
+}
+
+.summary:hover .toggle {
+  text-decoration: underline;
+}
+
+.fold[open] .more,
+.fold:not([open]) .less {
+  display: none;
+}

@@ -1,4 +1,5 @@
 import { DeleteButton } from "@/components/staff/DeleteButton";
+import { LongText } from "@/components/staff/LongText";
 import { SopForm } from "@/components/staff/SopForm";
 import { staffOrRedirect } from "@/lib/auth/session";
 import { copy, fill, formatDate } from "@/lib/i18n";
@@ -40,7 +41,12 @@ export default async function SopPage() {
             <div key={item.id} className={s.card}>
               <div className={s.cardBody}>
                 <div className={s.cardTitle}>{item.title}</div>
-                <p className={s.cardText}>{item.description}</p>
+                <LongText
+                  text={item.description}
+                  className={s.cardText}
+                  more={t.common.showMore}
+                  less={t.common.showLess}
+                />
                 <div className={s.cardMeta}>{formatDate(item.createdAt, locale)}</div>
               </div>
               <div className={s.cardActions}>
