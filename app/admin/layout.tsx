@@ -81,6 +81,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         brandName={brand.staffName}
         isAdmin={actor.role === "ADMIN"}
         locale={locale}
+        supportEmail={brand.supportEmail}
         user={{
           name: me?.name ?? actor.name,
           initials: me?.initials ?? initialsFor(actor.name),

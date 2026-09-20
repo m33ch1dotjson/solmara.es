@@ -175,6 +175,7 @@ export const DICT = {
 
     administration: T("Administration", "Beheer", "Administración"),
     menu: T("Menu", "Menu", "Menú"),
+    help: T("Help & Support", "Help & ondersteuning", "Ayuda y soporte"),
 
     overview: T("Overview", "Overzicht", "Resumen"),
     clients: T("Clients", "Klanten", "Clientes"),
@@ -377,6 +378,37 @@ export const DICT = {
       "El cliente lee este texto literalmente.",
     ),
     rejectAndSend: T("Reject and send", "Afkeuren en versturen", "Rechazar y enviar"),
+  },
+
+  /* ---------------------------------------------- the foot of the navigation */
+
+  footer: {
+    copyright: T("© {year} Solmavera", "© {year} Solmavera", "© {year} Solmavera"),
+    privacy: T("Privacy", "Privacy", "Privacidad"),
+    terms: T("Terms", "Voorwaarden", "Términos"),
+
+    helpLead: T(
+      "Need a hand with the Solmavera Portal?",
+      "Hulp nodig met het Solmavera Portaal?",
+      "¿Necesitas ayuda con el portal de Solmavera?",
+    ),
+    helpEmail: T("Email", "E-mail", "Correo"),
+    helpHint: T(
+      "Say which screen you were on and what you expected to happen — it saves a round of questions.",
+      "Zeg op welk scherm je was en wat je verwachtte — dat scheelt een ronde vragen.",
+      "Di en qué pantalla estabas y qué esperabas que ocurriera: ahorra una ronda de preguntas.",
+    ),
+  },
+
+  legal: {
+    privacyTitle: T("Privacy", "Privacy", "Privacidad"),
+    termsTitle: T("Terms", "Voorwaarden", "Términos"),
+    comingSoon: T(
+      "This page is reserved for the text that belongs here. It has not been written yet, and nothing invented would be worth reading — a privacy statement or a set of terms says what a company actually does, and that is for Solmavera to write, not for the portal to guess.",
+      "Deze pagina is gereserveerd voor de tekst die hier hoort. Die is nog niet geschreven, en iets verzonnens zou niets waard zijn — een privacyverklaring of een set voorwaarden zegt wat een bedrijf écht doet, en dat schrijft Solmavera zelf, niet het portaal.",
+      "Esta página está reservada para el texto que le corresponde. Todavía no se ha escrito, y algo inventado no valdría nada: una política de privacidad o unas condiciones dicen lo que la empresa hace de verdad, y eso lo escribe Solmavera, no el portal.",
+    ),
+    back: T("‹ Back to the portal", "‹ Terug naar het portaal", "‹ Volver al portal"),
   },
 
   /* ------------------------------------------------------- workspace and team */

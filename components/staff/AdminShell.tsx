@@ -25,12 +25,14 @@ export function AdminShell({
   isAdmin,
   locale,
   user,
+  supportEmail,
   children,
 }: {
   brandName: string;
   isAdmin: boolean;
   locale: Locale;
   user: { name: string; initials: string; avatarUrl: string | null };
+  supportEmail: string;
   children: React.ReactNode;
 }) {
   const { t } = useCopy();
@@ -71,7 +73,12 @@ export function AdminShell({
 
   return (
     <>
-      <AdminTabs brandName={brandName} isAdmin={isAdmin} open={navOpen} />
+      <AdminTabs
+        brandName={brandName}
+        isAdmin={isAdmin}
+        open={navOpen}
+        supportEmail={supportEmail}
+      />
 
       {navOpen && (
         <button

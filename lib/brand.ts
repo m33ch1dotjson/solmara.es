@@ -27,6 +27,13 @@ export interface Brand {
   emailFrom: string;
   /** Where client replies land — a human mailbox. */
   emailReplyTo: string;
+  /**
+   * Where a colleague is sent when the portal itself is the problem. Its own field
+   * rather than reusing emailReplyTo: client mail and "the portal is broken" mail
+   * may well want different mailboxes, and the day they do should not be a code
+   * change.
+   */
+  supportEmail: string;
   /** Prefix for newly minted case and client codes. */
   caseCodePrefix: string;
   /** Hue only; every accent surface derives from it. */
@@ -56,6 +63,7 @@ export const brand: Brand = {
   publicWebsite: env("BRAND_PUBLIC_WEBSITE", "solmavera.es"),
   emailFrom: env("BRAND_EMAIL_FROM", "noreply@solmavera.es"),
   emailReplyTo: env("BRAND_EMAIL_REPLY_TO", "info@solmavera.es"),
+  supportEmail: env("BRAND_SUPPORT_EMAIL", "info@solmavera.com"),
   caseCodePrefix: env("BRAND_CASE_CODE_PREFIX", "SM"),
   accentHue: envInt("BRAND_ACCENT_HUE", 250),
   defaultLocale: env("BRAND_DEFAULT_LOCALE", "en") as Locale,

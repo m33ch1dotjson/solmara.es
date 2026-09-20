@@ -93,6 +93,17 @@ export function IconTasks() {
   );
 }
 
+/** Help: a question in a circle, drawn in the same weight as the rest. */
+export function IconHelp({ size = 18 }: { size?: number }) {
+  return (
+    <Glyph size={size}>
+      <circle cx="12" cy="12" r="8.6" />
+      <path d="M9.6 9.6a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2-2.4 3.5" />
+      <path d="M12 17.2h.01" />
+    </Glyph>
+  );
+}
+
 /** Workspace: the office the portal belongs to. */
 export function IconWorkspace() {
   return (

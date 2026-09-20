@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/Icons";
 import { useCopy } from "@/components/ui/LocaleProvider";
 import { Logo } from "@/components/ui/Logo";
+import { SidebarFooter } from "./SidebarFooter";
 import s from "./AdminTabs.module.css";
 
 /*
@@ -31,10 +32,12 @@ export function AdminTabs({
   brandName,
   isAdmin,
   open,
+  supportEmail,
 }: {
   brandName: string;
   isAdmin: boolean;
   open: boolean;
+  supportEmail: string;
 }) {
   const { t } = useCopy();
   const pathname = usePathname();
@@ -149,6 +152,13 @@ export function AdminTabs({
           </>
         )}
       </div>
+
+      {/*
+       * The year is a constant rather than new Date().getFullYear(): a copyright
+       * line that changes on its own at midnight on New Year is a line nobody ever
+       * checks against what the footer of the real site says.
+       */}
+      <SidebarFooter supportEmail={supportEmail} year={2026} />
     </nav>
   );
 }
