@@ -57,7 +57,11 @@ export default async function ClientsPage() {
                   locale={brand.defaultLocale}
                   labelOverride={pill.label}
                 />
-                <InviteButton clientId={row.id} clientName={row.name} />
+                {row.hasAccount ? (
+                  <span className={s.rowQuiet}>Heeft een account</span>
+                ) : (
+                  <InviteButton clientId={row.id} clientName={row.name} />
+                )}
               </div>
             );
           })}

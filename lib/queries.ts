@@ -14,6 +14,7 @@ import { asActor } from "@/lib/db/act";
 import { db } from "@/lib/db";
 import {
   client,
+  clientContact,
   clientDocument,
   clientInvite,
   event,
@@ -38,6 +39,11 @@ export async function listClients(actor: Actor) {
         status: client.status,
         detailsCompletedAt: client.detailsCompletedAt,
         createdAt: client.createdAt,
+        // An invite is only useful before there is an account to sign in with.
+        hasAccount: sql<boolean>`exists (
+          select 1 from app.client_contact cc
+          where cc.client_id = ${client.id} and cc.auth_user_id is not null
+        )`,
       })
       .from(client)
       .orderBy(desc(client.createdAt)),
@@ -61,7 +67,14 @@ export async function getClient(actor: Actor, id: string) {
       .where(eq(clientInvite.clientId, id))
       .orderBy(desc(clientInvite.createdAt));
 
-    return { record, documents, invites };
+    const contacts = await tx
+      .select()
+      .from(clientContact)
+      .where(eq(clientContact.clientId, id));
+
+    const hasAccount = contacts.some((c) => c.authUserId !== null);
+
+    return { record, documents, invites, contacts, hasAccount };
   });
 }
 

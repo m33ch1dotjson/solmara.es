@@ -41,7 +41,7 @@ export default async function AdminClientPage({
   const found = await getClient(actor, id);
   if (!found) notFound();
 
-  const { record, documents, invites } = found;
+  const { record, documents, invites, hasAccount } = found;
   const pill = STATUS_PILL[record.status];
 
   // Signed per render, ten minutes. Downloads are logged by the storage layer.
@@ -93,7 +93,11 @@ export default async function AdminClientPage({
             </span>
           </div>
         </div>
-        <InviteButton clientId={record.id} clientName={record.name} />
+        {hasAccount ? (
+          <span className={s.quiet}>Heeft een account</span>
+        ) : (
+          <InviteButton clientId={record.id} clientName={record.name} />
+        )}
       </div>
 
       <h2 className={s.sectionTitle}>Gegevens</h2>
@@ -129,7 +133,7 @@ export default async function AdminClientPage({
         ))}
       </div>
 
-      {lastInvite && (
+      {lastInvite && !hasAccount && (
         <p className={s.inviteMeta}>
           Laatste link aangemaakt op {show(lastInvite.createdAt)},{" "}
           {lastInvite.usedAt ? "inmiddels gebruikt" : `geldig tot ${show(lastInvite.expiresAt)}`}.

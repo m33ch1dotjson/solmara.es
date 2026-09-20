@@ -150,3 +150,11 @@
   text-decoration: none;
   color: inherit;
 }
+
+/* Shown where the invite button used to sit, once there is nothing to invite. */
+.rowQuiet {
+  font-size: 13px;
+  color: var(--ink-3);
+  justify-self: end;
+  white-space: nowrap;
+}

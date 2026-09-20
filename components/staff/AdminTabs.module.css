@@ -1,12 +1,11 @@
-/* The top bar carries the brand, the tabs and the account. Tabs are marked with an
-   underline rather than a filled pill, as in the reference. */
+/* One component, two shapes: a top bar on a phone, a left rail from 900px. */
 
 .bar {
   display: flex;
   align-items: center;
-  gap: 32px;
+  gap: 24px;
   flex-wrap: wrap;
-  padding: 0 32px;
+  padding: 0 20px;
   background: var(--panel);
   border-bottom: 1px solid var(--line);
   position: sticky;
@@ -26,6 +25,7 @@
   height: 30px;
   border-radius: var(--radius-small);
   background: var(--accent);
+  flex: none;
 }
 
 .brandName {
@@ -43,15 +43,14 @@
 .tab {
   display: flex;
   align-items: center;
-  padding: 0 16px;
-  /* The underline sits on the bar's own bottom border, so it must not add height. */
+  padding: 0 14px;
   border-bottom: 2px solid transparent;
   margin-bottom: -1px;
   font-size: 14.5px;
   font-weight: 550;
   color: var(--ink-2);
   text-decoration: none;
-  transition: color 150ms ease, border-color 150ms ease;
+  transition: color 150ms ease, border-color 150ms ease, background 150ms ease;
 }
 
 .tab:hover {
@@ -69,7 +68,7 @@
   margin-left: auto;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   padding: 12px 0;
 }
 
@@ -102,4 +101,64 @@
 .signout:hover {
   border-color: var(--accent);
   color: var(--accent);
+}
+
+/* ------------------------------------------------------------- the left rail */
+
+@media (min-width: 900px) {
+  .bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    flex-wrap: nowrap;
+    height: 100vh;
+    padding: 20px 14px;
+    border-bottom: none;
+    border-right: 1px solid var(--line);
+  }
+
+  .brand {
+    padding: 4px 10px 22px;
+  }
+
+  .tabs {
+    flex-direction: column;
+    gap: 2px;
+    align-self: auto;
+  }
+
+  /* Vertical, so the marker moves from an underline to a filled row. */
+  .tab {
+    padding: 10px 12px;
+    border-bottom: none;
+    margin-bottom: 0;
+    border-radius: var(--radius-control);
+  }
+
+  .tab:hover {
+    background: var(--panel-2);
+  }
+
+  .tabOn {
+    background: color-mix(in oklch, var(--accent) 12%, transparent);
+    border-bottom-color: transparent;
+  }
+
+  .right {
+    margin-left: 0;
+    margin-top: auto;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 16px 0 0;
+    border-top: 1px solid var(--line-soft);
+  }
+
+  .user {
+    text-align: center;
+  }
+
+  .signout {
+    width: 100%;
+  }
 }

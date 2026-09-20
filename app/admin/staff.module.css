@@ -1,8 +1,20 @@
+/*
+ * Phone: the bar sits on top, because a sidebar on a narrow screen eats the width
+ * the content needs. From 900px it becomes a left rail, which is where a tool with
+ * a handful of sections belongs — the eye starts there and stays there.
+ */
 .shell {
   min-height: 100vh;
   background: var(--bg);
   display: flex;
   flex-direction: column;
+}
+
+@media (min-width: 900px) {
+  .shell {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+  }
 }
 
 .main {
@@ -23,7 +35,6 @@
   margin-bottom: 8px;
 }
 
-/* Large and black, as the reference sets its page titles. */
 .pageTitle {
   font-size: 30px;
   font-weight: 700;
