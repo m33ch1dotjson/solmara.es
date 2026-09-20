@@ -127,3 +127,39 @@
   color: var(--danger);
   font-weight: 550;
 }
+
+.secondary {
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+  border-radius: var(--radius-control);
+  min-height: 54px;
+  padding: 14px 18px;
+  font-size: 16px;
+  font-weight: 600;
+  width: 100%;
+}
+
+.secondary:disabled {
+  border-color: var(--line);
+  color: var(--ink-3);
+  cursor: not-allowed;
+}
+
+/* A rule with the word sitting in the gap, so the two routes read as alternatives
+   rather than as steps. */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--ink-3);
+  font-size: 14px;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}

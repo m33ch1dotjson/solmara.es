@@ -3,13 +3,14 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { STAFF_TERMS } from "@/lib/staff-terms";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import s from "./AdminTabs.module.css";
 
 const TABS: Array<{ href: Route; label: string }> = [
-  { href: "/admin", label: "Klanten" },
-  { href: "/admin/sop", label: "SOP" },
-  { href: "/admin/properties", label: "Properties" },
+  { href: "/admin", label: STAFF_TERMS.clients },
+  { href: "/admin/sop", label: STAFF_TERMS.procedures },
+  { href: "/admin/properties", label: STAFF_TERMS.properties },
 ];
 
 export function AdminTabs({ brandName, user }: { brandName: string; user: string }) {

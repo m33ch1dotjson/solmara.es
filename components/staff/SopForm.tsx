@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useRef } from "react";
+import { STAFF_TERMS } from "@/lib/staff-terms";
 import { createSopAction, type ActionResult } from "@/app/admin/actions";
 import s from "./forms.module.css";
 
@@ -33,7 +34,7 @@ export function SopForm() {
 
       <div className={s.actions}>
         <button type="submit" className={s.primary} disabled={pending}>
-          {pending ? "Bezig…" : "SOP opslaan"}
+          {pending ? "Bezig…" : `${STAFF_TERMS.procedure} opslaan`}
         </button>
         {state?.ok === false && <span className={s.error}>{state.error}</span>}
         {state?.ok === true && state.message && <span className={s.success}>{state.message}</span>}

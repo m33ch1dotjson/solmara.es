@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { STAFF_TERMS } from "@/lib/staff-terms";
 import { requireStaff } from "@/lib/auth/session";
 import {
   addPropertyPhoto,
@@ -93,13 +94,13 @@ export async function createSopAction(form: FormData): Promise<ActionResult> {
 
   await createSop(actor, { title, description });
   revalidatePath("/admin/sop");
-  return { ok: true, message: "SOP opgeslagen." };
+  return { ok: true, message: `${STAFF_TERMS.procedure} opgeslagen.` };
 }
 
 export async function deleteSopAction(form: FormData): Promise<ActionResult> {
   const actor = await requireStaff();
   const id = text(form, "id");
-  if (!id) return { ok: false, error: "Geen SOP opgegeven." };
+  if (!id) return { ok: false, error: "Niets opgegeven om te verwijderen." };
   await deleteSop(actor, id);
   revalidatePath("/admin/sop");
   return { ok: true };

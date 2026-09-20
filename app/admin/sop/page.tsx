@@ -1,12 +1,13 @@
 import { DeleteButton } from "@/components/staff/DeleteButton";
 import { SopForm } from "@/components/staff/SopForm";
+import { STAFF_TERMS } from "@/lib/staff-terms";
 import { staffOrRedirect } from "@/lib/auth/session";
 import { listSops } from "@/lib/queries";
 import { deleteSopAction } from "../actions";
 import shell from "../staff.module.css";
 import s from "../admin.module.css";
 
-export const metadata = { title: "SOP" };
+export const metadata = { title: STAFF_TERMS.procedures };
 
 export default async function SopPage() {
   const actor = await staffOrRedirect();
@@ -15,7 +16,7 @@ export default async function SopPage() {
   return (
     <div className={shell.screen}>
       <div className={shell.pageHead}>
-        <h1 className={shell.pageTitle}>SOP</h1>
+        <h1 className={shell.pageTitle}>{STAFF_TERMS.procedures}</h1>
       </div>
       <p className={shell.pageLead}>
 Werkinstructies voor het team. Klanten zien deze nooit — er is geen enkele route
@@ -25,7 +26,7 @@ Werkinstructies voor het team. Klanten zien deze nooit — er is geen enkele rou
       <SopForm />
 
       <h2 className={s.sectionTitle}>
-        {sops.length} {sops.length === 1 ? "SOP" : "SOPs"}
+        {sops.length} {sops.length === 1 ? STAFF_TERMS.procedure : STAFF_TERMS.procedures}
       </h2>
 
       {sops.length === 0 ? (
