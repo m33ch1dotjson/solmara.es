@@ -81,6 +81,9 @@ export const DICT = {
     blank: T("—", "—", "—"),
     language: T("Language", "Taal", "Idioma"),
     changeLanguage: T("Change language", "Taal wijzigen", "Cambiar de idioma"),
+    close: T("Close", "Sluiten", "Cerrar"),
+    showMore: T("Show more", "Meer tonen", "Ver más"),
+    showLess: T("Show less", "Minder tonen", "Ver menos"),
   },
 
   /* --------------------------------------------------------------- staff sign-in */
@@ -269,6 +272,9 @@ export const DICT = {
     photoOne: T("photo", "foto", "fotografía"),
     photoMany: T("photos", "foto’s", "fotografías"),
     photoAlt: T("{title}, photo {n}", "{title}, foto {n}", "{title}, fotografía {n}"),
+    enlarge: T("View larger", "Groter bekijken", "Ver más grande"),
+    previousPhoto: T("Previous photo", "Vorige foto", "Fotografía anterior"),
+    nextPhoto: T("Next photo", "Volgende foto", "Fotografía siguiente"),
     formTitle: T("Title", "Titel", "Título"),
     formAddress: T("Address", "Adres", "Dirección"),
     formNotes: T("Note", "Notitie", "Nota"),

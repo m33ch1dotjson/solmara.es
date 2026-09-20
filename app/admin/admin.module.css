@@ -125,21 +125,8 @@
   flex-wrap: wrap;
 }
 
-.thumbs {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-top: 14px;
-}
-
-.thumb {
-  width: 96px;
-  height: 72px;
-  border-radius: var(--radius-control);
-  object-fit: cover;
-  border: 1px solid var(--line);
-  background: var(--panel-2);
-}
+/* The property thumbnails moved to components/staff/PhotoGrid.module.css, where the
+   overlay that opens them lives too. */
 
 /* The name is the way into a client's file, so it reads as a link. */
 .rowText:hover .rowName {
