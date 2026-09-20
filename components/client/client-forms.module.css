@@ -143,3 +143,29 @@
   font-size: 15px;
   color: var(--ink-2);
 }
+
+/* Two columns once there is room. The submit button spans both, so it does not end
+   up floating beside a field. */
+@media (min-width: 720px) {
+  .form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 24px;
+    align-items: start;
+  }
+
+  .form > .primary,
+  .form > .error,
+  .form > .success {
+    grid-column: 1 / -1;
+    justify-self: start;
+    min-width: 220px;
+    width: auto;
+  }
+
+  /* The upload card keeps its own single-column flow inside the grid. */
+  .card {
+    display: flex;
+    grid-column: auto;
+  }
+}

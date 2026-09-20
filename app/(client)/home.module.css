@@ -11,8 +11,16 @@
   gap: 14px;
 }
 
+/* The two uploads sit side by side once there is room for them. */
 .uploads {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 14px;
+}
+
+@media (min-width: 720px) {
+  .uploads {
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
 }

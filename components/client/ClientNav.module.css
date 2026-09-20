@@ -49,3 +49,27 @@
   flex: 1;
   display: flex;
 }
+
+/* On a phone the bar sits at the bottom, under the thumb. On a desktop a bar pinned
+   to the bottom of the window reads as a mistake, so it becomes an ordinary row. */
+@media (min-width: 720px) {
+  .nav {
+    position: static;
+    align-self: flex-start;
+    width: auto;
+    gap: 8px;
+  }
+
+  .item {
+    flex: none;
+    flex-direction: row;
+    gap: 9px;
+    min-height: 44px;
+    padding: 0 16px;
+    width: auto;
+  }
+
+  .signoutForm {
+    flex: none;
+  }
+}
