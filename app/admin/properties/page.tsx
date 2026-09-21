@@ -4,7 +4,9 @@ import { Mono } from "@/components/ui";
 import { staffOrRedirect } from "@/lib/auth/session";
 import { copy, fill, formatDateFor } from "@/lib/i18n";
 import { currentDatePrefs, currentLocale } from "@/lib/locale";
+import { formatMoney } from "@/lib/money";
 import { listProperties } from "@/lib/queries";
+import { guidePreview } from "@/lib/sanitize";
 import { BUCKET_PROPERTY_PHOTOS, signedUrl } from "@/lib/storage";
 import shell from "../staff.module.css";
 import s from "./properties.module.css";
@@ -40,6 +42,8 @@ export default async function PropertiesPage() {
       coverUrl: item.photos[0]
         ? await signedUrl(BUCKET_PROPERTY_PHOTOS, item.photos[0].storageKey)
         : null,
+      // The first lines of the listing text, with the markup taken out.
+      preview: guidePreview(item.description, 150),
     })),
   );
 
@@ -82,7 +86,24 @@ export default async function PropertiesPage() {
               <span className={s.body}>
                 <span className={s.title}>{item.title}</span>
                 <span className={s.address}>{item.address}</span>
-                {item.notes && <span className={s.note}>{item.notes}</span>}
+                {item.priceCents !== null && (
+                  <span className={s.price}>{formatMoney(item.priceCents, locale)}</span>
+                )}
+                {/* Only what a listing leads with; the empty ones stay out. */}
+                {(item.bedrooms !== null || item.bathrooms !== null || item.areaM2 !== null) && (
+                  <span className={s.specs}>
+                    {[
+                      item.bedrooms !== null ? `${item.bedrooms} ${t.properties.bedrooms}` : null,
+                      item.bathrooms !== null
+                        ? `${item.bathrooms} ${t.properties.bathrooms}`
+                        : null,
+                      item.areaM2 !== null ? `${item.areaM2} m²` : null,
+                    ]
+                      .filter(Boolean)
+                      .join(" · ")}
+                  </span>
+                )}
+                {item.preview && <span className={s.note}>{item.preview}</span>}
               </span>
 
               <span className={s.foot}>{formatDateFor(item.createdAt, locale, dates)}</span>

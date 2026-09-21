@@ -26,10 +26,17 @@ export function RichTextEditor({
   guideId,
   value,
   onChange,
+  allowImages = true,
 }: {
+  /** Where an inserted image is stored. Ignored when allowImages is false. */
   guideId: string;
   value: string;
   onChange: (html: string) => void;
+  /**
+   * A property's listing has a photo gallery of its own; an image inside the text
+   * would be a second, weaker place for the same thing.
+   */
+  allowImages?: boolean;
 }) {
   const { t } = useCopy();
   const area = useRef<HTMLDivElement>(null);
@@ -150,15 +157,17 @@ export function RichTextEditor({
         >
           {t.guides.toolTable}
         </button>
-        <button
-          type="button"
-          className={`${s.tool} ${s.toolWide}`}
-          onMouseDown={(event) => event.preventDefault()}
-          onClick={() => imageInput.current?.click()}
-          disabled={uploading}
-        >
-          {uploading ? t.common.busy : t.guides.toolImage}
-        </button>
+        {allowImages && (
+          <button
+            type="button"
+            className={`${s.tool} ${s.toolWide}`}
+            onMouseDown={(event) => event.preventDefault()}
+            onClick={() => imageInput.current?.click()}
+            disabled={uploading}
+          >
+            {uploading ? t.common.busy : t.guides.toolImage}
+          </button>
+        )}
       </div>
 
       <input

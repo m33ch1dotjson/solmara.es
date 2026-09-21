@@ -3,13 +3,14 @@ import { PropertyDetail } from "@/components/staff/PropertyDetail";
 import { staffOrRedirect } from "@/lib/auth/session";
 import { copy, formatDateFor } from "@/lib/i18n";
 import { currentDatePrefs, currentLocale } from "@/lib/locale";
+import { formatMoney } from "@/lib/money";
 import { getProperty } from "@/lib/queries";
 import { BUCKET_PROPERTY_PHOTOS, signedUrl } from "@/lib/storage";
 
 /*
- * One property: its photographs full size, its details editable in place, and the
- * delete that used to sit on the list — where a misplaced click on a dense grid is
- * easy — behind two steps here instead.
+ * One property, as a listing rather than a form: photographs, the asking price, the
+ * facts, and the text somebody wrote about it. Read-only until Edit is pressed —
+ * the same shape as a Process Guide, which is what was asked for.
  */
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
@@ -44,7 +45,14 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
       id={record.id}
       title={record.title}
       address={record.address}
-      notes={record.notes ?? ""}
+      description={record.description}
+      price={record.priceCents === null ? "" : formatMoney(record.priceCents, locale)}
+      // The field wants the number, not the formatted string: typing into a box that
+      // already says "€ 320.000,00" is how a price gains a stray character.
+      priceInput={record.priceCents === null ? "" : (record.priceCents / 100).toFixed(0)}
+      bedrooms={record.bedrooms === null ? "" : String(record.bedrooms)}
+      bathrooms={record.bathrooms === null ? "" : String(record.bathrooms)}
+      areaM2={record.areaM2 === null ? "" : String(record.areaM2)}
       added={formatDateFor(record.createdAt, locale, dates)}
       photos={withUrls.filter((photo): photo is { id: string; url: string } => photo.url !== null)}
     />

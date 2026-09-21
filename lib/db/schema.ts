@@ -469,7 +469,20 @@ export const property = app.table(
     id: uuid("id").primaryKey().defaultRandom(),
     title: text("title").notNull(),
     address: text("address").notNull(),
-    notes: text("notes"),
+
+    /**
+     * The listing text, as HTML, written with the same editor as a Process Guide
+     * and sanitised by lib/sanitize.ts on the way in.
+     */
+    description: text("description").notNull().default(""),
+
+    /* The three or four facts a listing leads with. All optional: a property with
+       only a title and an address shows a title and an address. */
+    priceCents: bigint("price_cents", { mode: "number" }),
+    bedrooms: integer("bedrooms"),
+    bathrooms: integer("bathrooms"),
+    areaM2: integer("area_m2"),
+
     createdBy: uuid("created_by").references(() => staffUser.id, { onDelete: "set null" }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },

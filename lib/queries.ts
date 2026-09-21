@@ -700,7 +700,7 @@ export async function listProperties(actor: Actor) {
 
 export async function createProperty(
   actor: Actor,
-  input: { title: string; address: string; notes?: string },
+  input: { title: string; address: string; description?: string },
 ) {
   if (actor.kind !== "staff") throw new Error("UNAUTHORISED");
   return asActor(actor, async (tx) => {
@@ -709,7 +709,7 @@ export async function createProperty(
       .values({
         title: input.title.trim(),
         address: input.address.trim(),
-        notes: input.notes?.trim() || null,
+        description: input.description ?? "",
         createdBy: actor.id,
       })
       .returning();
@@ -752,7 +752,16 @@ export async function getProperty(actor: Actor, id: string) {
 export async function updateProperty(
   actor: Actor,
   id: string,
-  input: { title: string; address: string; notes: string | null },
+  input: {
+    title: string;
+    address: string;
+    /** HTML, already sanitised by the caller. */
+    description: string;
+    priceCents: number | null;
+    bedrooms: number | null;
+    bathrooms: number | null;
+    areaM2: number | null;
+  },
 ) {
   if (actor.kind !== "staff") throw new Error("UNAUTHORISED");
   return asActor(actor, async (tx) => {
@@ -761,7 +770,11 @@ export async function updateProperty(
       .set({
         title: input.title.trim(),
         address: input.address.trim(),
-        notes: input.notes?.trim() || null,
+        description: input.description,
+        priceCents: input.priceCents,
+        bedrooms: input.bedrooms,
+        bathrooms: input.bathrooms,
+        areaM2: input.areaM2,
       })
       .where(eq(property.id, id))
       .returning();

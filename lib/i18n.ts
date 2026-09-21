@@ -1015,6 +1015,21 @@ export const DICT = {
     formTitle: T("Title", "Titel", "Título"),
     formAddress: T("Address", "Adres", "Dirección"),
     formNotes: T("Note", "Notitie", "Nota"),
+    price: T("Asking price", "Vraagprijs", "Precio"),
+    askingPrice: T("Asking price", "Vraagprijs", "Precio de venta"),
+    bedrooms: T("Bedrooms", "Slaapkamers", "Dormitorios"),
+    bathrooms: T("Bathrooms", "Badkamers", "Baños"),
+    area: T("Surface", "Oppervlakte", "Superficie"),
+    descriptionLabel: T(
+      "The listing text",
+      "De advertentietekst",
+      "El texto del anuncio",
+    ),
+    noDescription: T(
+      "No text yet. Press Edit and write what makes this one worth a look.",
+      "Nog geen tekst. Klik op Bewerken en schrijf waarom deze het bekijken waard is.",
+      "Todavía sin texto. Pulsa Editar y escribe por qué merece la pena verla.",
+    ),
     formPhotos: T("Photographs", "Foto’s", "Fotografías"),
     formPhotosHint: T(
       "JPEG, PNG, WebP or HEIC. At most 10 MB per photograph.",

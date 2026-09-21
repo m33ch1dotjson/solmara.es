@@ -116,11 +116,9 @@ export async function createPropertyAction(form: FormData): Promise<ActionResult
     if (!check.ok) return { ok: false, error: `${photo.name}: ${refusal(check.reason, t)}` };
   }
 
-  const created = await createProperty(actor, {
-    title,
-    address,
-    notes: text(form, "notes") || undefined,
-  });
+  // A new property starts with its address and its photographs; the listing text
+  // is written on the property's own page, where there is room for it.
+  const created = await createProperty(actor, { title, address });
   if (!created) return { ok: false, error: t.errors.createFailed };
 
   let uploaded = 0;

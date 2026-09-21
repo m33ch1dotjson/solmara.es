@@ -5,12 +5,14 @@ import { redirect } from "next/navigation";
 import { requireStaff } from "@/lib/auth/session";
 import { copy, fill } from "@/lib/i18n";
 import { currentLocale } from "@/lib/locale";
+import { parseAmountToCents } from "@/lib/money";
 import {
   addPropertyPhoto,
   deleteProperty,
   deletePropertyPhoto,
   updateProperty,
 } from "@/lib/queries";
+import { sanitizeGuideHtml } from "@/lib/sanitize";
 import {
   ALLOWED_IMAGE_TYPES,
   BUCKET_PROPERTY_PHOTOS,
@@ -38,10 +40,24 @@ export async function updatePropertyAction(form: FormData): Promise<ActionResult
   if (!title) return { ok: false, error: t.errors.titleRequired };
   if (!address) return { ok: false, error: t.errors.addressRequired };
 
+  /** A whole number or nothing: "three and a half bedrooms" is a typo. */
+  const count = (key: string): number | null => {
+    const raw = text(form, key);
+    if (raw === "") return null;
+    const value = Number.parseInt(raw, 10);
+    return Number.isFinite(value) && value >= 0 && value < 1000 ? value : null;
+  };
+
   const updated = await updateProperty(actor, id, {
     title,
     address,
-    notes: text(form, "notes") || null,
+    // The same sanitiser as a Process Guide: this text is written in a
+    // contentEditable and rendered back with dangerouslySetInnerHTML.
+    description: sanitizeGuideHtml(String(form.get("description") ?? "")),
+    priceCents: parseAmountToCents(text(form, "price")),
+    bedrooms: count("bedrooms"),
+    bathrooms: count("bathrooms"),
+    areaM2: count("areaM2"),
   });
   if (!updated) return { ok: false, error: t.errors.noProperty };
 

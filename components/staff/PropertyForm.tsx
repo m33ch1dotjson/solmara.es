@@ -40,11 +40,6 @@ export function PropertyForm({ onSaved }: { onSaved?: () => void } = {}) {
       </div>
 
       <label className={s.field}>
-        <span className={s.label}>{t.properties.formNotes}</span>
-        <textarea name="notes" className={s.textarea} rows={2} />
-      </label>
-
-      <label className={s.field}>
         <span className={s.label}>{t.properties.formPhotos}</span>
         <input
           type="file"
