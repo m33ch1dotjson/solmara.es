@@ -177,7 +177,10 @@
   margin-bottom: 4px;
 }
 
+/* The mark keeps its own orange, exactly as on the staff login: it inherits
+   currentColor otherwise, which painted it the same near-black as the text. */
 .brandLogo {
+  color: var(--brand-mark);
   flex: none;
 }
 
