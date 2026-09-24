@@ -79,6 +79,14 @@
   outline: none;
 }
 
+/* A note, not a document: tall enough for a few lines and no more. */
+.areaShort {
+  padding: 16px 18px 20px;
+  min-height: 130px;
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+
 .area h1 {
   font-size: 25px;
   margin: 28px 0 10px;

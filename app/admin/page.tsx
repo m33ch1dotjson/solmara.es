@@ -5,11 +5,13 @@ import {
   IconInvoices,
   IconProcedures,
   IconProperties,
+  IconTasks,
 } from "@/components/ui/Icons";
 import { staffOrRedirect } from "@/lib/auth/session";
 import { copy, fill } from "@/lib/i18n";
 import { currentLocale } from "@/lib/locale";
 import { outstandingTotal } from "@/lib/invoices";
+import { openTaskCount } from "@/lib/tasks";
 import { formatMoney } from "@/lib/money";
 import { listClients, listGuides, listProperties, listSentDocuments } from "@/lib/queries";
 import shell from "./staff.module.css";
@@ -32,12 +34,13 @@ export default async function OverviewPage() {
   const [actor, locale] = await Promise.all([staffOrRedirect(), currentLocale()]);
   const t = copy(locale);
 
-  const [clients, properties, guides, documents, outstanding] = await Promise.all([
+  const [clients, properties, guides, documents, outstanding, openTasks] = await Promise.all([
     listClients(actor),
     listProperties(actor),
     listGuides(actor),
     listSentDocuments(actor),
     outstandingTotal(actor),
+    openTaskCount(actor),
   ]);
 
   const waiting = documents.filter((doc) => doc.status === "RECEIVED");
@@ -108,6 +111,15 @@ export default async function OverviewPage() {
           <span className={s.tileCount}>{documents.length}</span>
           <span className={s.tileLabel}>{t.nav.documents}</span>
           <span className={s.tileNote}>{t.overview.documentsNote}</span>
+        </Link>
+
+        <Link href="/admin/tasks" className={s.tile}>
+          <span className={s.tileIcon}>
+            <IconTasks />
+          </span>
+          <span className={s.tileCount}>{openTasks}</span>
+          <span className={s.tileLabel}>{t.nav.tasks}</span>
+          <span className={s.tileNote}>{t.overview.tasksNote}</span>
         </Link>
 
         {/* Money owed, in money rather than a count: "three invoices" and

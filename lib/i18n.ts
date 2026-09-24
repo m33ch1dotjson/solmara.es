@@ -218,6 +218,7 @@ export const DICT = {
       "Cómo hacemos el trabajo",
     ),
     documentsNote: T("Sent by clients", "Door klanten gestuurd", "Enviados por clientes"),
+    tasksNote: T("Still to do", "Nog te doen", "Todavía por hacer"),
   },
 
   /* ------------------------------------------------------- documents (all clients) */
@@ -247,16 +248,55 @@ export const DICT = {
   tasksPage: {
     title: T("Tasks", "Taken", "Tareas"),
     lead: T(
-      "What still has to happen, and who is doing it.",
-      "Wat er nog moet gebeuren, en wie het doet.",
-      "Lo que todavía tiene que pasar, y quién lo hace.",
+      "What still has to happen, and who is doing it. Ticking something off keeps it in the list.",
+      "Wat er nog moet gebeuren, en wie het doet. Afvinken laat het in de lijst staan.",
+      "Lo que todavía tiene que pasar, y quién lo hace. Marcarla no la quita de la lista.",
     ),
-    notYet: T("Not built yet", "Nog niet gebouwd", "Todavía sin construir"),
-    notYetBody: T(
-      "This tab is here, the feature behind it is not: there is no task list in the database yet. Say what a task should hold — a deadline, an owner, a client it belongs to — and it can be built.",
-      "Dit tabblad staat er, wat erachter hoort nog niet: er is nog geen takenlijst in de database. Zeg wat er in een taak moet staan — een deadline, wie hem doet, bij welke klant hij hoort — dan kan het gebouwd worden.",
-      "Esta pestaña ya está; lo que va detrás, todavía no: aún no hay lista de tareas en la base de datos. Diga qué debe contener una tarea — un plazo, quién la hace, a qué cliente pertenece — y se puede construir.",
+
+    add: T("Add", "Toevoegen", "Añadir"),
+    addPlaceholder: T(
+      "What needs doing?",
+      "Wat moet er gebeuren?",
+      "¿Qué hay que hacer?",
     ),
+    titleRequired: T(
+      "Give the task a line of text first.",
+      "Geef de taak eerst een regel tekst.",
+      "Escribe primero una línea para la tarea.",
+    ),
+    notFound: T("That task is gone.", "Die taak bestaat niet meer.", "Esa tarea ya no existe."),
+    saved: T("Saved.", "Opgeslagen.", "Guardada."),
+
+    filterLabel: T("Which tasks to show", "Welke taken je ziet", "Qué tareas se muestran"),
+    filter: {
+      OPEN: T("Open", "Open", "Abiertas"),
+      DONE: T("Done", "Afgevinkt", "Hechas"),
+      ALL: T("All", "Alles", "Todas"),
+    },
+    openOne: T("{n} still open", "{n} staat nog open", "{n} pendiente"),
+    openMany: T("{n} still open", "{n} staan nog open", "{n} pendientes"),
+
+    empty: T(
+      "Nothing on the list. Type the first one above.",
+      "Niets op de lijst. Typ hierboven de eerste.",
+      "Nada en la lista. Escribe la primera arriba.",
+    ),
+    noneHere: T(
+      "Nothing here. Try another filter.",
+      "Hier staat niets. Probeer een ander filter.",
+      "Aquí no hay nada. Prueba otro filtro.",
+    ),
+
+    expand: T("Open the task", "Taak openklappen", "Abrir la tarea"),
+    collapse: T("Close the task", "Taak dichtklappen", "Cerrar la tarea"),
+    taskTitle: T("Task", "Taak", "Tarea"),
+    due: T("Deadline", "Deadline", "Fecha límite"),
+    assignee: T("Who is doing it", "Wie doet het", "Quién la hace"),
+    nobody: T("Nobody yet", "Nog niemand", "Nadie todavía"),
+    client: T("About which client", "Over welke klant", "Sobre qué cliente"),
+    noClient: T("Not about a client", "Niet over een klant", "No es sobre un cliente"),
+    details: T("Details", "Toelichting", "Detalles"),
+    openClient: T("Open the client", "Klant openen", "Abrir el cliente"),
   },
 
   /* -------------------------------------------------------------- clients (list) */

@@ -1,0 +1,289 @@
+.wrap {
+  margin-top: 20px;
+}
+
+/* ------------------------------------------------------------- adding one */
+
+.adder {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.addInput {
+  flex: 1 1 260px;
+  min-width: 0;
+  height: var(--control-h);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--panel);
+  color: var(--ink);
+  padding: 0 14px;
+  font-size: 14.5px;
+}
+
+.addInput:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent) 16%, transparent);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 18px 0 12px;
+}
+
+.filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--ink-2);
+  border-radius: var(--radius-pill);
+  height: 32px;
+  padding: 0 14px;
+  font-size: 13px;
+  font-weight: 550;
+  white-space: nowrap;
+}
+
+.chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.chipOn {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.count {
+  margin-left: auto;
+  font-size: 13px;
+  color: var(--ink-3);
+}
+
+/* --------------------------------------------------------------- the list */
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--panel);
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+}
+
+.item {
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.item:last-child {
+  border-bottom: none;
+}
+
+/* Done stays visible: greyed and struck through, not gone. */
+.itemDone .title {
+  text-decoration: line-through;
+  color: var(--ink-3);
+}
+
+.itemDone .row {
+  background: color-mix(in oklch, var(--panel-2) 60%, transparent);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+}
+
+.box {
+  width: 24px;
+  height: 24px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-small);
+  background: var(--panel);
+  color: transparent;
+  transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.box:hover {
+  border-color: var(--accent);
+}
+
+.boxOn {
+  background: var(--ok);
+  border-color: var(--ok);
+  color: oklch(1 0 0);
+}
+
+.titleButton {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  padding: 2px 0;
+}
+
+.title {
+  font-size: 14.5px;
+  font-weight: 550;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.due,
+.dueLate,
+.tag,
+.doneOn {
+  font-size: 12px;
+  border-radius: var(--radius-pill);
+  padding: 2px 9px;
+  white-space: nowrap;
+}
+
+.due {
+  background: var(--panel-2);
+  color: var(--ink-2);
+}
+
+/* Past its date and still open: the one thing on this row worth a colour. */
+.dueLate {
+  background: color-mix(in oklch, var(--danger) 12%, transparent);
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.tag {
+  background: color-mix(in oklch, var(--accent) 10%, transparent);
+  color: var(--accent);
+}
+
+.doneOn {
+  color: var(--ink-3);
+}
+
+.chevron {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: var(--radius-small);
+  background: transparent;
+  color: var(--ink-3);
+  transition: transform 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.chevron:hover {
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+  color: var(--accent);
+}
+
+/* ------------------------------------------------------------- the detail */
+
+.panel {
+  padding: 4px 14px 18px 50px;
+  border-top: 1px dashed var(--line-soft);
+  background: color-mix(in oklch, var(--panel-2) 45%, transparent);
+}
+
+@media (max-width: 560px) {
+  .panel {
+    padding-left: 14px;
+  }
+}
+
+.fields {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  margin: 16px 0 6px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.bodyLabel {
+  margin: 16px 0 8px;
+  font-size: 12.5px;
+  font-weight: 650;
+  color: var(--ink-2);
+}
+
+.panelActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.panelActions a {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.delete {
+  margin-left: auto;
+  border: none;
+  background: none;
+  color: var(--danger);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 8px;
+  border-radius: var(--radius-small);
+}
+
+.delete:hover {
+  background: color-mix(in oklch, var(--danger) 10%, transparent);
+}
+
+.empty {
+  margin: 0;
+  padding: 36px 24px;
+  text-align: center;
+  font-size: 13.5px;
+  color: var(--ink-3);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-card);
+}

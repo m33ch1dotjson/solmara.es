@@ -27,6 +27,7 @@ export function RichTextEditor({
   value,
   onChange,
   allowImages = true,
+  compact = false,
 }: {
   /** Where an inserted image is stored. Ignored when allowImages is false. */
   guideId: string;
@@ -37,6 +38,12 @@ export function RichTextEditor({
    * would be a second, weaker place for the same thing.
    */
   allowImages?: boolean;
+  /**
+   * A shorter toolbar and a shorter box, for places where the text is a note rather
+   * than a document — a task, for instance. Headings and tables are a handbook's
+   * furniture; three sentences do not need them.
+   */
+  compact?: boolean;
 }) {
   const { t } = useCopy();
   const area = useRef<HTMLDivElement>(null);
@@ -111,16 +118,20 @@ export function RichTextEditor({
   }
 
   const commands: Command[] = [
-    { key: "h1", label: t.guides.toolHeading1, run: () => block("h1"), wide: true },
-    { key: "h2", label: t.guides.toolHeading2, run: () => block("h2"), wide: true },
-    { key: "h3", label: t.guides.toolHeading3, run: () => block("h3"), wide: true },
-    { key: "p", label: t.guides.toolParagraph, run: () => block("p"), wide: true },
+    ...(compact
+      ? []
+      : [
+          { key: "h1", label: t.guides.toolHeading1, run: () => block("h1"), wide: true },
+          { key: "h2", label: t.guides.toolHeading2, run: () => block("h2"), wide: true },
+          { key: "h3", label: t.guides.toolHeading3, run: () => block("h3"), wide: true },
+          { key: "p", label: t.guides.toolParagraph, run: () => block("p"), wide: true },
+        ]),
     { key: "bold", label: "B", run: () => exec("bold") },
     { key: "italic", label: "I", run: () => exec("italic") },
     { key: "underline", label: "U", run: () => exec("underline") },
     { key: "ul", label: "• —", run: () => exec("insertUnorderedList") },
     { key: "ol", label: "1.", run: () => exec("insertOrderedList") },
-    { key: "hr", label: "—", run: () => exec("insertHorizontalRule") },
+    ...(compact ? [] : [{ key: "hr", label: "—", run: () => exec("insertHorizontalRule") }]),
   ];
 
   return (
@@ -149,14 +160,16 @@ export function RichTextEditor({
         >
           {t.guides.toolLink}
         </button>
-        <button
-          type="button"
-          className={`${s.tool} ${s.toolWide}`}
-          onMouseDown={(event) => event.preventDefault()}
-          onClick={table}
-        >
-          {t.guides.toolTable}
-        </button>
+        {!compact && (
+          <button
+            type="button"
+            className={`${s.tool} ${s.toolWide}`}
+            onMouseDown={(event) => event.preventDefault()}
+            onClick={table}
+          >
+            {t.guides.toolTable}
+          </button>
+        )}
         {allowImages && (
           <button
             type="button"
@@ -186,7 +199,7 @@ export function RichTextEditor({
 
       <div
         ref={area}
-        className={s.area}
+        className={compact ? `${s.area} ${s.areaShort}` : s.area}
         contentEditable
         suppressContentEditableWarning
         role="textbox"

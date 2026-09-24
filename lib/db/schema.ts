@@ -134,6 +134,41 @@ export const workspaceSetting = app.table("workspace_setting", {
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+/* ------------------------------------------------------------------- tasks */
+
+/**
+ * The office's own to-do list.
+ *
+ * `done` is a flag, not a deletion: a ticked task stays in the list, struck
+ * through, because "what did we already do here" is a question people ask.
+ */
+export const task = app.table(
+  "task",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+
+    title: text("title").notNull(),
+    /** The detail behind the one line. HTML, sanitised by lib/sanitize.ts. */
+    body: text("body").notNull().default(""),
+
+    done: boolean("done").notNull().default(false),
+    doneAt: timestamp("done_at", { withTimezone: true }),
+    doneBy: uuid("done_by").references(() => staffUser.id, { onDelete: "set null" }),
+
+    dueDate: date("due_date"),
+    assignedTo: uuid("assigned_to").references(() => staffUser.id, { onDelete: "set null" }),
+    clientId: uuid("client_id").references(() => client.id, { onDelete: "set null" }),
+
+    createdBy: uuid("created_by").references(() => staffUser.id, { onDelete: "set null" }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("task_open_idx").on(t.done, t.dueDate, t.createdAt),
+    index("task_client_idx").on(t.clientId),
+  ],
+);
+
 /* --------------------------------------------------------------- invoicing */
 
 export const invoiceStatus = app.enum("invoice_status", [
