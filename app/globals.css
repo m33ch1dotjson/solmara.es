@@ -16,6 +16,22 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/*
+ * Launched from a home screen there is no browser chrome to absorb the notch and the
+ * home indicator, so the page has to do it itself. viewport-fit=cover in the root
+ * layout lets the background reach the edges; these four lines keep the content off
+ * them. On anything without insets every value is 0 and nothing moves.
+ *
+ * overflow-x is here for the same reason: a standalone window has no address bar to
+ * pull back with, so one element a few pixels too wide is a page you can never quite
+ * line up again.
+ */
+body {
+  padding: env(safe-area-inset-top) env(safe-area-inset-right)
+    env(safe-area-inset-bottom) env(safe-area-inset-left);
+  overflow-x: hidden;
+}
+
 /* The handoff asks for `pretty` on all multi-line text. */
 p,
 li,

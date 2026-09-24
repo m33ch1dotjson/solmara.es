@@ -11,11 +11,52 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: { default: brand.clientName, template: `%s · ${brand.clientName}` },
   description: "Follow your case, send us what we need, and keep your documents.",
+  applicationName: brand.clientName,
+  manifest: "/manifest.webmanifest",
+
+  /*
+   * The tab and the home screen.
+   *
+   * app/icon.svg is picked up by the framework on its own; the rest is listed here
+   * because a browser that cannot read SVG still needs somewhere to go, and iOS only
+   * ever looks for an apple-touch-icon. All of them are generated from the same
+   * vector by scripts/make-icons.mjs — see the note there about why the wordmark is
+   * not in any of them.
+   */
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon.ico", sizes: "48x48" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+  },
+
+  /*
+   * Added to a home screen this opens without browser chrome, under the short name.
+   * "Solmavera" rather than "Solmavera Portal": iOS truncates a home-screen label at
+   * roughly twelve characters, and "Solmavera P…" is worse than no subtitle at all.
+   */
+  appleWebApp: {
+    capable: true,
+    title: brand.clientName,
+    // The status bar keeps its own background and the page starts below it. Not
+    // "black-translucent", which slides the layout under the clock.
+    statusBarStyle: "default",
+  },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  // Lets the page reach into the notch area, which the safe-area padding in
+  // globals.css then keeps content out of.
+  viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f5f6f7" },
+    { media: "(prefers-color-scheme: dark)", color: "#1b1d21" },
+  ],
 };
 
 /*
@@ -65,6 +106,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
           rel="stylesheet"
         />
+        {/*
+          The framework emits the modern `mobile-web-app-capable`, which Safari only
+          learned to read in 16.4. An iPhone a year or two older still looks for the
+          Apple-prefixed one, and without it "Add to Home Screen" opens the portal in
+          a browser tab rather than as an app. Two bytes of legacy, several years of
+          phones.
+        */}
+        <meta name="apple-mobile-web-app-capable" content="yes" />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body style={{ ["--accent-h" as string]: String(brand.accentHue) }}>

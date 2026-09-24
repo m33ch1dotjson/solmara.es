@@ -1,8 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 976 976">
-  <!-- The favicon carries its own colour: a tab has no stylesheet to inherit from. -->
-  <g fill="none" stroke="#F16B3C" stroke-width="85">
-    <path d="M 394.5 148 A 176.5 176.5 0 0 0 747.5 148" />
-    <path d="M 219 148 A 350 350 0 0 0 488 488 A 350 350 0 0 1 757 828" />
-    <path d="M 218.5 828 A 173.5 173.5 0 0 1 565.5 828" />
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="102.4" ry="102.4" fill="#F16B3C"/>
+  <svg x="80.82381201044387" y="40.96" width="350.35237597911225" height="430.08"
+       viewBox="176 105 624 766" preserveAspectRatio="xMidYMid meet">
+    <g fill="none" stroke="#FFFFFF" stroke-width="85">
+      <path d="M 394.5 148 A 176.5 176.5 0 0 0 747.5 148"/>
+      <path d="M 219 148 A 350 350 0 0 0 488 488 A 350 350 0 0 1 757 828"/>
+      <path d="M 218.5 828 A 173.5 173.5 0 0 1 565.5 828"/>
+    </g>
+  </svg>
 </svg>
