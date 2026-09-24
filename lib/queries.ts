@@ -47,17 +47,27 @@ export async function listClients(actor: Actor) {
         status: client.status,
         detailsCompletedAt: client.detailsCompletedAt,
         createdAt: client.createdAt,
-        // An invite is only useful before there is an account to sign in with.
+        /*
+         * The three questions the directory asks about a login, as correlated
+         * subqueries.
+         *
+         * `app.client.id` is written out in full rather than interpolated as
+         * ${client.id}. With no join in the query, drizzle renders a column as a
+         * bare "id" — which inside these subqueries binds to the inner table, so
+         * `cc.client_id = "id"` quietly compared a contact to its own primary key,
+         * matched nothing, and told the whole office that none of their clients had
+         * an account. Qualified, it correlates with the row being selected.
+         */
         hasAccount: sql<boolean>`exists (
           select 1 from app.client_contact cc
-          where cc.client_id = ${client.id} and cc.auth_user_id is not null
+          where cc.client_id = app.client.id and cc.auth_user_id is not null
         )`,
         /* Switched off by an admin. Reported per client rather than per contact:
            the directory asks "can this client get in", not "which of their
            addresses". */
         disabledAt: sql<Date | null>`(
           select cc.disabled_at from app.client_contact cc
-          where cc.client_id = ${client.id}
+          where cc.client_id = app.client.id
           order by (cc.auth_user_id is null), cc.created_at
           limit 1
         )`,
@@ -65,12 +75,12 @@ export async function listClients(actor: Actor) {
            there, has run out, or was never made. See lib/access.ts. */
         inviteExpiresAt: sql<Date | null>`(
           select i.expires_at from app.client_invite i
-          where i.client_id = ${client.id}
+          where i.client_id = app.client.id
           order by i.created_at desc limit 1
         )`,
         inviteUsedAt: sql<Date | null>`(
           select i.used_at from app.client_invite i
-          where i.client_id = ${client.id}
+          where i.client_id = app.client.id
           order by i.created_at desc limit 1
         )`,
       })

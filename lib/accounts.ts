@@ -106,14 +106,16 @@ export async function listClientAccounts(actor: Actor): Promise<AccountRow[]> {
         authUserId: clientContact.authUserId,
         disabledAt: clientContact.disabledAt,
         accountCreatedAt: clientContact.createdAt,
+        /* Written out in full, like the ones in lib/queries.ts: a bare "id" inside
+           a correlated subquery binds to the inner table, not to this one. */
         inviteExpiresAt: sql<Date | null>`(
           select i.expires_at from app.client_invite i
-          where i.client_id = ${client.id}
+          where i.client_id = app.client.id
           order by i.created_at desc limit 1
         )`,
         inviteUsedAt: sql<Date | null>`(
           select i.used_at from app.client_invite i
-          where i.client_id = ${client.id}
+          where i.client_id = app.client.id
           order by i.created_at desc limit 1
         )`,
       })
@@ -124,7 +126,7 @@ export async function listClientAccounts(actor: Actor): Promise<AccountRow[]> {
         clientContact,
         sql`${clientContact.id} = (
           select cc.id from app.client_contact cc
-          where cc.client_id = ${client.id}
+          where cc.client_id = app.client.id
           order by (cc.auth_user_id is null), cc.created_at
           limit 1
         )`,
