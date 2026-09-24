@@ -189,6 +189,7 @@ export const DICT = {
     myAccount: T("My Account", "Mijn account", "Mi cuenta"),
     workspace: T("Workspace Settings", "Werkruimte", "Espacio de trabajo"),
     team: T("Team & Permissions", "Team & rechten", "Equipo y permisos"),
+    clientAccounts: T("Client Accounts", "Klantaccounts", "Cuentas de cliente"),
   },
 
   /* ---------------------------------------------------------------- overview */
@@ -414,20 +415,23 @@ export const DICT = {
   /* ------------------------------------------------------------------- access */
 
   /*
-   * Whether a client can actually sign in — a different question from the status
-   * of their file, which is what the pill next to their name answers. Shared by the
-   * directory and the client page, so both call the same state by the same name.
+   * Whether a client can actually sign in — a different question from the status of
+   * their file, which is what the pill next to their name answers. Shared by the
+   * directory, the client page and the Client Accounts screen, so all three call the
+   * same state by the same name.
    */
   access: {
-    title: T("Access to the portal", "Toegang tot het portaal", "Acceso al portal"),
-    label: T("Access", "Toegang", "Acceso"),
-    filterLabel: T("Filter by access", "Filter op toegang", "Filtrar por acceso"),
+    title: T("Portal access", "Toegang tot het portaal", "Acceso al portal"),
+    label: T("Portal", "Portaal", "Portal"),
+    filterLabel: T("Filter by portal access", "Filter op portaaltoegang", "Filtrar por acceso al portal"),
     filterAll: T("Any access", "Elke toegang", "Cualquier acceso"),
 
-    ACTIVE: T("Can sign in", "Kan inloggen", "Puede entrar"),
-    PENDING: T("Invited", "Uitgenodigd", "Invitado"),
+    NO_ACCOUNT: T("No account", "Geen account", "Sin cuenta"),
+    INVITED: T("Invited", "Uitgenodigd", "Invitado"),
     EXPIRED: T("Link expired", "Link verlopen", "Enlace caducado"),
-    NONE: T("No access", "Geen toegang", "Sin acceso"),
+    UNVERIFIED: T("Email not verified", "E-mail niet bevestigd", "Correo sin verificar"),
+    ACTIVE: T("Active portal", "Portaal actief", "Portal activo"),
+    DISABLED: T("Disabled", "Geblokkeerd", "Bloqueado"),
 
     activeSince: T(
       "Signed in for the first time on {date}, and can sign in whenever they like.",
@@ -439,32 +443,140 @@ export const DICT = {
       "Er is een login voor deze klant.",
       "Existe un acceso para este cliente.",
     ),
+    unverifiedExplain: T(
+      "They signed up, but have not opened the confirmation email yet.",
+      "Hij heeft zich aangemeld, maar de bevestigingsmail nog niet geopend.",
+      "Se registró, pero todavía no ha abierto el correo de confirmación.",
+    ),
+    disabledExplain: T(
+      "An administrator switched this account off. Signing in is refused until it is switched back on.",
+      "Een beheerder heeft dit account uitgezet. Inloggen wordt geweigerd tot het weer aan staat.",
+      "Un administrador desactivó esta cuenta. No podrá entrar hasta que se reactive.",
+    ),
     pendingUntil: T(
       "A link was sent and is still valid until {until}. Nobody has used it yet, so there is no login.",
       "Er is een link verstuurd die nog geldig is tot {until}. Niemand heeft hem gebruikt, dus er is nog geen login.",
       "Se envió un enlace válido hasta el {until}. Nadie lo ha usado todavía, así que aún no hay acceso.",
     ),
     expiredExplain: T(
-      "The last link was never used and has run out. Generate a new one to give them access.",
-      "De laatste link is nooit gebruikt en is verlopen. Maak een nieuwe aan om toegang te geven.",
-      "El último enlace nunca se usó y ha caducado. Genera uno nuevo para darle acceso.",
+      "The last link was never used and has run out. Generate a new one, or create an account here.",
+      "De laatste link is nooit gebruikt en is verlopen. Maak een nieuwe aan, of maak hier een account.",
+      "El último enlace nunca se usó y ha caducado. Genera uno nuevo o crea una cuenta aquí.",
     ),
     noneExplain: T(
-      "This client only exists in our own records. No link has been sent, so they cannot reach the portal.",
-      "Deze klant staat alleen in onze eigen administratie. Er is geen link verstuurd, dus hij kan niet bij het portaal.",
-      "Este cliente solo existe en nuestra administración. No se ha enviado ningún enlace, así que no puede acceder al portal.",
+      "This client only exists in our own records. No account and no link, so they cannot reach the portal.",
+      "Deze klant staat alleen in onze eigen administratie. Geen account en geen link, dus hij kan niet bij het portaal.",
+      "Este cliente solo existe en nuestra administración. Sin cuenta ni enlace, así que no puede acceder al portal.",
     ),
-    invitedOnly: T(
-      "Clients cannot sign up themselves. A login only exists once somebody here has sent a link and the client has used it.",
-      "Klanten kunnen zich niet zelf aanmelden. Een login bestaat pas als iemand hier een link heeft gestuurd en de klant die heeft gebruikt.",
-      "Los clientes no pueden registrarse por su cuenta. Solo existe un acceso cuando alguien de aquí envía un enlace y el cliente lo usa.",
+    howLoginsHappen: T(
+      "A login exists once we send an invitation and the client uses it, once an administrator creates an account here, or once the client registers with this email address themselves.",
+      "Een login bestaat zodra wij een uitnodiging sturen en de klant die gebruikt, zodra een beheerder hier een account aanmaakt, of zodra de klant zich zelf met dit e-mailadres aanmeldt.",
+      "Existe un acceso cuando enviamos una invitación y el cliente la usa, cuando un administrador crea aquí una cuenta, o cuando el propio cliente se registra con este correo.",
     ),
     newLink: T("New link", "Nieuwe link", "Nuevo enlace"),
     statusIsFile: T(
-      "“{status}” above is about their file, not about signing in.",
-      "“{status}” hierboven gaat over hun dossier, niet over inloggen.",
-      "«{status}» arriba se refiere a su expediente, no a entrar.",
+      "\u201C{status}\u201D above is about their file, not about signing in.",
+      "\u201C{status}\u201D hierboven gaat over hun dossier, niet over inloggen.",
+      "\u00AB{status}\u00BB arriba se refiere a su expediente, no a entrar.",
     ),
+  },
+
+  /* --------------------------------------------------------- client accounts */
+
+  accounts: {
+    title: T("Client Accounts", "Klantaccounts", "Cuentas de cliente"),
+    navLabel: T("Client Accounts", "Klantaccounts", "Cuentas de cliente"),
+    lead: T(
+      "Who can sign in to the client portal, with what address, and what to do about it. Staff accounts are on Team & Permissions; these are the customers.",
+      "Wie er op het klantportaal kan inloggen, met welk adres, en wat je eraan kunt doen. Medewerkers staan bij Team & rechten; dit zijn de klanten.",
+      "Quién puede entrar en el portal de clientes, con qué dirección y qué hacer al respecto. El personal está en Equipo y permisos; aquí están los clientes.",
+    ),
+    searchPlaceholder: T("Search client or email…", "Zoek klant of e-mail…", "Buscar cliente o correo…"),
+    columnClient: T("Client", "Klant", "Cliente"),
+    columnLogin: T("Login", "Login", "Acceso"),
+    columnStatus: T("Account status", "Accountstatus", "Estado de la cuenta"),
+    columnActivity: T("Activity", "Activiteit", "Actividad"),
+    columnActions: T("Actions", "Acties", "Acciones"),
+    password: T("Password", "Wachtwoord", "Contraseña"),
+    passwordSet: T(
+      "A password exists. It is stored hashed and cannot be read by anyone, including administrators.",
+      "Er is een wachtwoord. Het staat versleuteld opgeslagen en is voor niemand leesbaar, ook niet voor beheerders.",
+      "Existe una contraseña. Se guarda cifrada y nadie puede leerla, tampoco los administradores.",
+    ),
+    noPassword: T("No password yet", "Nog geen wachtwoord", "Todavía sin contraseña"),
+    created: T("Account created", "Account aangemaakt", "Cuenta creada"),
+    lastLogin: T("Last login", "Laatste keer ingelogd", "Último acceso"),
+    never: T("Never", "Nooit", "Nunca"),
+    verified: T("Email verified", "E-mail bevestigd", "Correo verificado"),
+    yes: T("Yes", "Ja", "Sí"),
+    no: T("No", "Nee", "No"),
+    selfRegistered: T("Registered themselves", "Zelf aangemeld", "Se registró por su cuenta"),
+
+    /* Actions */
+    openClient: T("Open client", "Klant openen", "Abrir cliente"),
+    createAccount: T("Create portal account", "Portaalaccount aanmaken", "Crear cuenta del portal"),
+    createShort: T("Create account", "Account aanmaken", "Crear cuenta"),
+    copyLoginLink: T("Copy login link", "Loginlink kopiëren", "Copiar enlace de acceso"),
+    resendInvite: T("Send new invitation", "Nieuwe uitnodiging sturen", "Enviar nueva invitación"),
+    sendReset: T("Send password reset", "Wachtwoordherstel sturen", "Enviar restablecimiento"),
+    newPassword: T("Generate temporary password", "Tijdelijk wachtwoord maken", "Generar contraseña temporal"),
+    disable: T("Disable access", "Toegang blokkeren", "Bloquear acceso"),
+    enable: T("Enable access", "Toegang herstellen", "Restablecer acceso"),
+    generate: T("Generate secure password", "Veilig wachtwoord genereren", "Generar contraseña segura"),
+
+    /* The create form */
+    createTitle: T("Create portal account", "Portaalaccount aanmaken", "Crear cuenta del portal"),
+    createLead: T(
+      "The client can sign in immediately with this address and password. Ask them to change it after the first sign-in.",
+      "De klant kan meteen inloggen met dit adres en wachtwoord. Vraag hem het na de eerste keer inloggen te wijzigen.",
+      "El cliente podrá entrar de inmediato con esta dirección y contraseña. Pídele que la cambie tras el primer acceso.",
+    ),
+    clientLabel: T("Client", "Klant", "Cliente"),
+    emailLabel: T("Login email", "E-mailadres voor inloggen", "Correo de acceso"),
+    temporaryPassword: T("Temporary password", "Tijdelijk wachtwoord", "Contraseña temporal"),
+
+    /* The one-time modal */
+    createdTitle: T("Portal account created", "Portaalaccount aangemaakt", "Cuenta del portal creada"),
+    newPasswordTitle: T("New temporary password", "Nieuw tijdelijk wachtwoord", "Nueva contraseña temporal"),
+    onceWarning: T(
+      "This password is shown only once. After closing this window it cannot be retrieved — you can only generate a new one.",
+      "Dit wachtwoord is maar één keer te zien. Na het sluiten van dit venster is het niet meer op te vragen — je kunt alleen een nieuw wachtwoord maken.",
+      "Esta contraseña se muestra una sola vez. Al cerrar esta ventana no se podrá recuperar: solo podrás generar otra.",
+    ),
+    sendSecurely: T(
+      "Send it to the client over a channel you trust.",
+      "Stuur hem via een kanaal dat je vertrouwt naar de klant.",
+      "Envíasela al cliente por un canal de confianza.",
+    ),
+    copyEmail: T("Copy email", "E-mail kopiëren", "Copiar correo"),
+    copyPassword: T("Copy password", "Wachtwoord kopiëren", "Copiar contraseña"),
+
+    /* Messages */
+    passwordTooShort: T(
+      "A password needs at least 8 characters.",
+      "Een wachtwoord heeft minstens 8 tekens nodig.",
+      "La contraseña necesita al menos 8 caracteres.",
+    ),
+    resetSent: T(
+      "Password reset email sent.",
+      "Mail met wachtwoordherstel verstuurd.",
+      "Correo de restablecimiento enviado.",
+    ),
+    resetFailed: T(
+      "That email could not be sent.",
+      "Die mail kon niet verstuurd worden.",
+      "No se ha podido enviar ese correo.",
+    ),
+    disabledDone: T("Access blocked.", "Toegang geblokkeerd.", "Acceso bloqueado."),
+    enabledDone: T("Access restored.", "Toegang hersteld.", "Acceso restablecido."),
+    confirmDisable: T(
+      "Block this client from signing in?",
+      "Deze klant het inloggen blokkeren?",
+      "¿Bloquear el acceso de este cliente?",
+    ),
+    countOne: T("{n} client", "{n} klant", "{n} cliente"),
+    countMany: T("{n} clients", "{n} klanten", "{n} clientes"),
+    noMatch: T("Nothing matches that.", "Daar past niets bij.", "No hay nada que coincida."),
   },
 
   /* ------------------------------------------------------ the client's own fields */
@@ -1413,6 +1525,111 @@ export const DICT = {
       "Versturen lukte niet. Log in met uw wachtwoord of probeer het zo opnieuw.",
       "No se pudo enviar. Inicie sesión con su contraseña o inténtelo de nuevo en un momento.",
     ),
+
+    /* The branded header above the form. */
+    portalTitle: T("{brand} Portal", "{brand} Portal", "Portal de {brand}"),
+    signInToAccount: T(
+      "Sign in to your account",
+      "Log in op uw account",
+      "Inicie sesión en su cuenta",
+    ),
+    forgot: T("Forgotten your password?", "Wachtwoord vergeten?", "¿Ha olvidado su contraseña?"),
+    newHere: T("New to {brand}?", "Nieuw bij {brand}?", "¿Es nuevo en {brand}?"),
+    createAccount: T("Create account", "Account aanmaken", "Crear una cuenta"),
+    disabledAccount: T(
+      "This account has been switched off. Please contact us.",
+      "Dit account is uitgezet. Neem contact met ons op.",
+      "Esta cuenta ha sido desactivada. Póngase en contacto con nosotros.",
+    ),
+    noAccountHere: T(
+      "You are signed in, but there is nothing here for this address yet.",
+      "U bent ingelogd, maar voor dit adres staat hier nog niets klaar.",
+      "Ha iniciado sesión, pero todavía no hay nada aquí para esta dirección.",
+    ),
+  },
+
+  /* ------------------------------------------------- registering and resetting */
+
+  register: {
+    metaTitle: T("Create account", "Account aanmaken", "Crear una cuenta"),
+    title: T("Create your account", "Maak uw account", "Cree su cuenta"),
+    lead: T(
+      "Use the email address you have with us. If we already know you, your new login is attached to the file we have — no second file is created.",
+      "Gebruik het e-mailadres dat u bij ons hebt. Kennen wij u al, dan wordt uw login aan uw bestaande dossier gekoppeld — er komt geen tweede dossier bij.",
+      "Use el correo electrónico que tiene con nosotros. Si ya le conocemos, su acceso se vincula a su expediente actual: no se crea un segundo expediente.",
+    ),
+    nameLabel: T("Your name", "Uw naam", "Su nombre"),
+    nameHint: T(
+      "As it appears in your passport. You can change it later.",
+      "Zoals het in uw paspoort staat. U kunt dit later wijzigen.",
+      "Como aparece en su pasaporte. Puede cambiarlo más adelante.",
+    ),
+    terms: T(
+      "I agree to the terms and the privacy statement.",
+      "Ik ga akkoord met de voorwaarden en de privacyverklaring.",
+      "Acepto las condiciones y la declaración de privacidad.",
+    ),
+    termsRequired: T(
+      "Please agree to the terms first.",
+      "Ga eerst akkoord met de voorwaarden.",
+      "Acepte primero las condiciones.",
+    ),
+    submit: T("Create account", "Account aanmaken", "Crear cuenta"),
+    haveAccount: T("Already have an account?", "Hebt u al een account?", "¿Ya tiene una cuenta?"),
+    checkMailTitle: T("Confirm your email", "Bevestig uw e-mailadres", "Confirme su correo"),
+    checkMailLead: T(
+      "We have sent you a message. Open the link in it and your account is ready.",
+      "We hebben u een bericht gestuurd. Open de link erin en uw account staat klaar.",
+      "Le hemos enviado un mensaje. Abra el enlace y su cuenta estará lista.",
+    ),
+    exists: T(
+      "That address already has an account. Sign in instead, or use “forgotten your password”.",
+      "Dat adres heeft al een account. Log in, of gebruik “wachtwoord vergeten”.",
+      "Esa dirección ya tiene una cuenta. Inicie sesión o use «¿ha olvidado su contraseña?».",
+    ),
+    failed: T(
+      "Creating the account did not work. Please try again.",
+      "Het account aanmaken lukte niet. Probeer het opnieuw.",
+      "No se ha podido crear la cuenta. Inténtelo de nuevo.",
+    ),
+    staffAddress: T(
+      "That address belongs to our team. Use the staff portal to sign in.",
+      "Dat adres hoort bij ons team. Log in via het medewerkersportaal.",
+      "Esa dirección pertenece a nuestro equipo. Use el portal del personal.",
+    ),
+  },
+
+  reset: {
+    metaTitle: T("New password", "Nieuw wachtwoord", "Nueva contraseña"),
+    title: T("Choose a new password", "Kies een nieuw wachtwoord", "Elija una nueva contraseña"),
+    lead: T(
+      "Pick something only you know. The link you used stops working afterwards.",
+      "Kies iets dat alleen u kent. De link die u gebruikte werkt daarna niet meer.",
+      "Elija algo que solo usted conozca. El enlace que ha usado dejará de funcionar después.",
+    ),
+    submit: T("Save password", "Wachtwoord opslaan", "Guardar contraseña"),
+    done: T(
+      "Your password has been changed.",
+      "Uw wachtwoord is gewijzigd.",
+      "Su contraseña ha sido cambiada.",
+    ),
+    expired: T(
+      "This link is no longer valid. Ask for a new one on the sign-in screen.",
+      "Deze link is niet meer geldig. Vraag een nieuwe aan op het inlogscherm.",
+      "Este enlace ya no es válido. Solicite uno nuevo en la pantalla de acceso.",
+    ),
+    forgotTitle: T("Forgotten password", "Wachtwoord vergeten", "Contraseña olvidada"),
+    forgotLead: T(
+      "Fill in your email address and we will send you a link to choose a new password.",
+      "Vul uw e-mailadres in, dan sturen wij u een link om een nieuw wachtwoord te kiezen.",
+      "Introduzca su correo y le enviaremos un enlace para elegir una nueva contraseña.",
+    ),
+    forgotSent: T(
+      "If we have an account for that address, a link is on its way.",
+      "Als wij een account hebben voor dat adres, is er een link onderweg.",
+      "Si tenemos una cuenta para esa dirección, ya va en camino un enlace.",
+    ),
+    sendLink: T("Send the link", "Stuur de link", "Enviar el enlace"),
   },
 
   /* ------------------------------------------------------------------ the invite */

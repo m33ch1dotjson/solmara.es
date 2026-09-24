@@ -1,0 +1,111 @@
+/* The portal-access card on a client page: one state, one sentence, the facts, and
+   the buttons that change them. */
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  padding: 18px;
+  box-shadow: var(--shadow-soft);
+}
+
+.state {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 8px;
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--line);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--ink-3) 35%, transparent);
+}
+
+.dotACTIVE {
+  background: var(--ok);
+  box-shadow: none;
+}
+
+.dotINVITED {
+  background: var(--info);
+  box-shadow: none;
+}
+
+.dotUNVERIFIED,
+.dotEXPIRED {
+  background: var(--warn);
+  box-shadow: none;
+}
+
+.dotDISABLED {
+  background: var(--danger);
+  box-shadow: none;
+}
+
+.line {
+  margin: 0 0 14px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+.facts {
+  margin: 0 0 14px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px 20px;
+}
+
+.fact {
+  min-width: 0;
+}
+
+.factLabel {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.factValue {
+  margin: 3px 0 0;
+  font-size: 14.5px;
+  overflow-wrap: anywhere;
+}
+
+.quiet {
+  margin: 0 0 8px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--ink-3);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.danger {
+  border: 1px solid color-mix(in oklch, var(--danger) 45%, var(--line));
+  background: transparent;
+  color: var(--danger);
+  border-radius: var(--radius-control);
+  height: var(--control-h);
+  padding: 0 16px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.danger:hover {
+  background: color-mix(in oklch, var(--danger) 10%, transparent);
+}

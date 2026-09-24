@@ -4,6 +4,7 @@ import type { Route } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  IconClientAccounts,
   IconClients,
   IconDocuments,
   IconInvoices,
@@ -157,6 +158,14 @@ export function AdminTabs({
             >
               <IconTeam />
               {t.nav.team}
+            </Link>
+            <Link
+              href="/admin/client-accounts"
+              className={tabClass("/admin/client-accounts")}
+              aria-current={current("/admin/client-accounts")}
+            >
+              <IconClientAccounts />
+              {t.nav.clientAccounts}
             </Link>
           </>
         )}

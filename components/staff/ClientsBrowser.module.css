@@ -408,8 +408,18 @@
   box-shadow: none;
 }
 
-.dotPENDING {
+.dotINVITED {
   background: var(--info);
+  box-shadow: none;
+}
+
+.dotUNVERIFIED {
+  background: var(--warn);
+  box-shadow: none;
+}
+
+.dotDISABLED {
+  background: var(--danger);
   box-shadow: none;
 }
 

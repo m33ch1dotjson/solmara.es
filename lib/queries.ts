@@ -52,6 +52,15 @@ export async function listClients(actor: Actor) {
           select 1 from app.client_contact cc
           where cc.client_id = ${client.id} and cc.auth_user_id is not null
         )`,
+        /* Switched off by an admin. Reported per client rather than per contact:
+           the directory asks "can this client get in", not "which of their
+           addresses". */
+        disabledAt: sql<Date | null>`(
+          select cc.disabled_at from app.client_contact cc
+          where cc.client_id = ${client.id}
+          order by (cc.auth_user_id is null), cc.created_at
+          limit 1
+        )`,
         /* The most recent invite, so the list can say whether a link is still out
            there, has run out, or was never made. See lib/access.ts. */
         inviteExpiresAt: sql<Date | null>`(

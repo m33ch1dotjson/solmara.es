@@ -96,69 +96,6 @@
   white-space: nowrap;
 }
 
-/* ------------------------------------------------------------------ access
-
-   One card that answers "can they get in, and why not" in that order, with the
-   button to fix it underneath. */
-
-.access {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-card);
-  padding: 18px;
-}
-
-.accessState {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  margin: 0 0 8px;
-  font-size: 15px;
-  font-weight: 650;
-}
-
-.dot {
-  width: 10px;
-  height: 10px;
-  flex: none;
-  border-radius: 50%;
-  background: var(--line);
-  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--ink-3) 35%, transparent);
-}
-
-.dotACTIVE {
-  background: var(--ok);
-  box-shadow: none;
-}
-
-.dotPENDING {
-  background: var(--info);
-  box-shadow: none;
-}
-
-.dotEXPIRED {
-  background: var(--warn);
-  box-shadow: none;
-}
-
-.accessLine {
-  margin: 0 0 10px;
-  font-size: 14px;
-  line-height: 1.55;
-  color: var(--ink-2);
-}
-
-.accessQuiet {
-  margin: 0 0 6px;
-  font-size: 12.5px;
-  line-height: 1.5;
-  color: var(--ink-3);
-}
-
-.access form,
-.access > div:last-child {
-  margin-top: 12px;
-}
 
 /* The face next to the name, so the person is recognisable before the text is read. */
 .who {

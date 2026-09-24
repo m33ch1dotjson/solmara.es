@@ -139,6 +139,18 @@ export function IconTeam() {
   );
 }
 
+/** Client accounts: a person with a key, which is what an account is here. */
+export function IconClientAccounts() {
+  return (
+    <Glyph>
+      <circle cx="9" cy="8" r="3.2" />
+      <path d="M3 20c0-3.3 2.7-5.8 6-5.8 1 0 2 .2 2.8.7" />
+      <circle cx="17" cy="15.5" r="2.3" />
+      <path d="M19 17.2l2.5 2.5M20.2 18.4l-.9.9" />
+    </Glyph>
+  );
+}
+
 /** Settings: sliders, which read as settings faster than a cog at 18px. */
 export function IconSettings() {
   return (

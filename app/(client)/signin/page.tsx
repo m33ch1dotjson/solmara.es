@@ -1,8 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useCopy } from "@/components/ui/LocaleProvider";
+import { Logo } from "@/components/ui/Logo";
 import { browserClient } from "@/lib/auth/supabase-browser";
+import { brand } from "@/lib/brand";
+import { fill } from "@/lib/i18n";
 import shell from "../portal.module.css";
 import s from "./signin.module.css";
 
@@ -13,20 +17,23 @@ import s from "./signin.module.css";
  * staff_user or client_contact — never by a choice made on this screen. That keeps
  * "am I staff?" answerable only by the database.
  *
- * A password is the main route while outbound mail is still being set up. The link
- * stays available as a second option, and once mail works it can become the default
- * again by swapping which half of this screen is shown first.
+ * Email and password is the main route and is what the layout leads with. The
+ * sign-in link stays underneath for the people who never remember a password, and
+ * "forgotten" sits next to the field where the problem occurs.
  *
  * Neither route reveals whether an address is known to us. Same wording, same
  * behaviour, known or not: otherwise this form is a way to enumerate the client list.
  */
 export default function SignInPage() {
   const { t } = useCopy();
+  const brandName = brand.clientName;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [linkSent, setLinkSent] = useState(false);
+  const [forgot, setForgot] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
 
   async function signIn(formEvent: React.FormEvent) {
     formEvent.preventDefault();
@@ -41,7 +48,14 @@ export default function SignInPage() {
 
     if (failure) {
       setPending(false);
-      setError(t.signin.wrong);
+      // A banned user gets a different message from a wrong password: telling
+      // somebody their password is wrong when the account was switched off sends
+      // them round the reset loop forever.
+      setError(
+        failure.message.toLowerCase().includes("banned")
+          ? t.signin.disabledAccount
+          : t.signin.wrong,
+      );
       return;
     }
 
@@ -72,24 +86,99 @@ export default function SignInPage() {
     setLinkSent(true);
   }
 
-  if (linkSent) {
+  async function sendReset(formEvent: React.FormEvent) {
+    formEvent.preventDefault();
+    setPending(true);
+    setError(null);
+
+    const supabase = browserClient();
+    const { error: failure } = await supabase.auth.resetPasswordForEmail(
+      email.trim().toLowerCase(),
+      { redirectTo: `${window.location.origin}/auth/callback?next=/reset` },
+    );
+
+    setPending(false);
+
+    if (failure && failure.status === 429) {
+      setError(t.signin.rateLimited);
+      return;
+    }
+
+    // Anything else is swallowed on purpose: "no account for that address" is not
+    // something this form should confirm to whoever is typing into it.
+    setResetSent(true);
+  }
+
+  const header = (
+    <div className={s.brand}>
+      <Logo size={38} className={s.brandLogo} />
+      <span className={s.brandName}>{fill(t.signin.portalTitle, { brand: brandName })}</span>
+    </div>
+  );
+
+  if (linkSent || resetSent) {
     return (
       <div className={s.block}>
+        {header}
         <div className={s.tile} aria-hidden="true">
           ✉
         </div>
         <h1 className={shell.h1}>{t.signin.checkMail}</h1>
-        <p className={shell.body}>{t.signin.checkMailLead}</p>
-        <button type="button" className={s.textLink} onClick={() => setLinkSent(false)}>
+        <p className={shell.body}>
+          {linkSent ? t.signin.checkMailLead : t.reset.forgotSent}
+        </p>
+        <button
+          type="button"
+          className={s.textLink}
+          onClick={() => {
+            setLinkSent(false);
+            setResetSent(false);
+            setForgot(false);
+          }}
+        >
           {t.signin.backToSignIn}
         </button>
       </div>
     );
   }
 
+  if (forgot) {
+    return (
+      <form className={s.block} onSubmit={sendReset}>
+        {header}
+        <h1 className={shell.h1}>{t.reset.forgotTitle}</h1>
+        <p className={shell.body}>{t.reset.forgotLead}</p>
+
+        <label className={s.field}>
+          <span className={s.label}>{t.common.email}</span>
+          <input
+            type="email"
+            required
+            autoComplete="username"
+            inputMode="email"
+            className={s.input}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </label>
+
+        <button type="submit" className={s.primary} disabled={pending}>
+          {pending ? t.common.busy : t.reset.sendLink}
+        </button>
+
+        {error && <p className={s.error}>{error}</p>}
+
+        <button type="button" className={s.textLink} onClick={() => setForgot(false)}>
+          {t.signin.backToSignIn}
+        </button>
+      </form>
+    );
+  }
+
   return (
     <form className={s.block} onSubmit={signIn}>
-      <h1 className={shell.h1}>{t.signin.title}</h1>
+      {header}
+      <h1 className={shell.h1}>{t.signin.signInToAccount}</h1>
       <p className={shell.body}>{t.signin.lead}</p>
 
       <label className={s.field}>
@@ -123,14 +212,28 @@ export default function SignInPage() {
 
       {error && <p className={s.error}>{error}</p>}
 
+      <button type="button" className={s.textLink} onClick={() => setForgot(true)}>
+        {t.signin.forgot}
+      </button>
+
       <div className={s.divider}>
         <span>{t.common.or}</span>
       </div>
 
-      <button type="button" className={s.secondary} onClick={sendLink} disabled={pending || !email}>
+      <p className={s.newHere}>{fill(t.signin.newHere, { brand: brandName })}</p>
+      <Link href="/register" className={s.secondaryLink}>
+        {t.signin.createAccount}
+      </Link>
+
+      {/* The link route, kept but quiet: it is the fallback, not the main door. */}
+      <button
+        type="button"
+        className={s.textLink}
+        onClick={sendLink}
+        disabled={pending || !email}
+      >
         {t.signin.sendLink}
       </button>
-      <p className={shell.note}>{t.signin.linkHint}</p>
     </form>
   );
 }

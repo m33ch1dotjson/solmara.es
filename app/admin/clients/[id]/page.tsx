@@ -3,10 +3,11 @@ import { notFound } from "next/navigation";
 import { ClientBillingCard } from "@/components/staff/ClientBillingCard";
 import { ClientInvoices } from "@/components/staff/ClientInvoices";
 import { DocumentReview } from "@/components/staff/DocumentReview";
-import { InviteButton } from "@/components/staff/InviteButton";
 import { Avatar } from "@/components/ui/Avatar";
+import { PortalAccessCard } from "@/components/staff/PortalAccessCard";
 import { Mono, StatusPill } from "@/components/ui";
-import { clientAccess } from "@/lib/access";
+import { accountStatus } from "@/lib/access";
+import { clientAccount, loginLink } from "@/lib/accounts";
 import { staffOrRedirect } from "@/lib/auth/session";
 import { copy, fill, formatDateFor } from "@/lib/i18n";
 import { currentDatePrefs, currentLocale } from "@/lib/locale";
@@ -43,7 +44,7 @@ export default async function AdminClientPage({
   if (!found) notFound();
 
   const t = copy(locale);
-  const { record, documents, invites, contacts, hasAccount } = found;
+  const { record, documents, invites } = found;
   const invoices = await listClientInvoices(actor, id);
 
   function show(value: string | Date | null): string {
@@ -79,28 +80,27 @@ export default async function AdminClientPage({
    * Nothing on this page answered that before: the pill next to the name is the
    * status of the file, which turns ACTIVE when the client fills in their details
    * and says nothing about a login. A login is a client_contact with an auth user
-   * behind it, and one of those only appears when somebody redeems an invite —
-   * there is no sign-up screen anywhere in this portal.
+   * behind it, and one appears in three ways — a redeemed invite, an account an
+   * admin creates here, or the client registering with this address themselves.
    */
-  const access = clientAccess({
-    hasAccount,
+  const account = await clientAccount(actor, id);
+
+  const access = accountStatus({
+    hasAccount: Boolean(account?.authUserId),
+    disabledAt: account?.disabledAt ?? null,
+    emailVerified: account?.authUserId ? account.emailVerified : undefined,
     inviteExpiresAt: lastInvite?.expiresAt ?? null,
     inviteUsedAt: lastInvite?.usedAt ?? null,
   });
 
-  // The moment the invite was redeemed, which is the moment the account began.
-  const accountSince = contacts.find((c) => c.authUserId !== null)?.createdAt ?? null;
-
-  const accessExplained =
-    access === "ACTIVE"
-      ? accountSince
-        ? fill(t.access.activeSince, { date: show(accountSince) })
-        : t.access.activePlain
-      : access === "PENDING"
-        ? fill(t.access.pendingUntil, { until: show(lastInvite?.expiresAt ?? null) })
-        : access === "EXPIRED"
-          ? t.access.expiredExplain
-          : t.access.noneExplain;
+  const inviteLine = lastInvite
+    ? lastInvite.usedAt
+      ? fill(t.clientDetail.lastLinkUsed, { date: show(lastInvite.createdAt) })
+      : fill(t.clientDetail.lastLinkValid, {
+          date: show(lastInvite.createdAt),
+          until: show(lastInvite.expiresAt),
+        })
+    : null;
 
   return (
     <div className={shell.screen}>
@@ -145,50 +145,24 @@ export default async function AdminClientPage({
           </div>
         </div>
         </div>
-        {hasAccount ? (
-          <span className={s.quiet}>{t.clients.hasAccount}</span>
-        ) : (
-          <InviteButton clientId={record.id} clientName={record.name} />
-        )}
       </div>
 
-      {/* ------------------------------------------------------------ access */}
+      {/* ------------------------------------------------------ portal access */}
       <h2 className={s.sectionTitle}>{t.access.title}</h2>
-      <div className={s.access}>
-        <p className={s.accessState}>
-          <span className={`${s.dot} ${s[`dot${access}`] ?? ""}`} aria-hidden="true" />
-          {t.access[access]}
-        </p>
-        <p className={s.accessLine}>{accessExplained}</p>
-        <p className={s.accessQuiet}>{t.access.invitedOnly}</p>
-        <p className={s.accessQuiet}>
-          {fill(t.access.statusIsFile, {
-            status:
-              record.status === "INVITED"
-                ? t.clients.statusInvited
-                : record.status === "ACTIVE"
-                  ? t.clients.statusActive
-                  : t.clients.statusClosed,
-          })}
-        </p>
-        {lastInvite && !hasAccount && (
-          <p className={s.accessQuiet}>
-            {lastInvite.usedAt
-              ? fill(t.clientDetail.lastLinkUsed, { date: show(lastInvite.createdAt) })
-              : fill(t.clientDetail.lastLinkValid, {
-                  date: show(lastInvite.createdAt),
-                  until: show(lastInvite.expiresAt),
-                })}
-          </p>
-        )}
-        {!hasAccount && (
-          <InviteButton
-            clientId={record.id}
-            clientName={record.name}
-            label={access === "NONE" ? undefined : t.access.newLink}
-          />
-        )}
-      </div>
+      <PortalAccessCard
+        clientId={record.id}
+        clientName={record.name}
+        contactId={account?.contactId ?? null}
+        status={access}
+        loginEmail={account?.loginEmail ?? ""}
+        fileEmail={record.email}
+        emailVerified={account?.emailVerified ?? false}
+        created={account ? show(account.createdAt) : ""}
+        lastLogin={account?.lastSignInAt ? show(account.lastSignInAt) : ""}
+        inviteLine={inviteLine}
+        loginUrl={loginLink()}
+        canManage={actor.role === "ADMIN"}
+      />
 
       <h2 className={s.sectionTitle}>{t.clientDetail.sectionDetails}</h2>
       <dl className={s.facts}>

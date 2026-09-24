@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { setClientsViewAction } from "@/app/admin/clients/client-actions";
-import type { ClientAccess } from "@/lib/access";
+import type { AccountStatus } from "@/lib/access";
 import { Avatar } from "@/components/ui/Avatar";
 import { useCopy } from "@/components/ui/LocaleProvider";
 import { fill } from "@/lib/i18n";
@@ -21,8 +21,8 @@ export type ClientRow = {
   place: string;
   status: "INVITED" | "ACTIVE" | "CLOSED";
   /** Whether they can sign in — see lib/access.ts. Not the same as status. */
-  access: ClientAccess;
-  /** When the outstanding invite runs out; empty unless access is PENDING. */
+  access: AccountStatus;
+  /** When the outstanding invite runs out; empty unless they are INVITED. */
   inviteUntil: string;
   avatarUrl: string | null;
   created: string;
@@ -31,7 +31,7 @@ export type ClientRow = {
 };
 
 const FILTERS = ["ALL", "INVITED", "ACTIVE", "CLOSED"] as const;
-const ACCESS = ["ANY", "ACTIVE", "PENDING", "EXPIRED", "NONE"] as const;
+const ACCESS = ["ANY", "ACTIVE", "INVITED", "EXPIRED", "NO_ACCOUNT", "DISABLED"] as const;
 const SORTS = ["NAME_AZ", "NAME_ZA", "NEWEST", "OLDEST"] as const;
 
 /** How many fit on a screen before scrolling stops being browsing. */
@@ -75,9 +75,11 @@ export function ClientsBrowser({
   const accessLabel: Record<string, string> = {
     ANY: t.access.filterAll,
     ACTIVE: t.access.ACTIVE,
-    PENDING: t.access.PENDING,
+    UNVERIFIED: t.access.UNVERIFIED,
+    INVITED: t.access.INVITED,
     EXPIRED: t.access.EXPIRED,
-    NONE: t.access.NONE,
+    NO_ACCOUNT: t.access.NO_ACCOUNT,
+    DISABLED: t.access.DISABLED,
   };
 
   function choose(next: "GRID" | "LIST") {
@@ -119,7 +121,7 @@ export function ClientsBrowser({
     return (
       <span
         className={s.access}
-        title={row.access === "PENDING" && row.inviteUntil
+        title={row.access === "INVITED" && row.inviteUntil
           ? `${accessLabel[row.access]} — ${row.inviteUntil}`
           : accessLabel[row.access]}
       >
@@ -323,7 +325,7 @@ export function ClientsBrowser({
                   </td>
                   <td>
                     {accessMark(row)}
-                    {row.access === "PENDING" && row.inviteUntil && (
+                    {row.access === "INVITED" && row.inviteUntil && (
                       <span className={s.rowSub}>{row.inviteUntil}</span>
                     )}
                   </td>

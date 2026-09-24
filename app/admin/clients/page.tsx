@@ -1,5 +1,5 @@
 import { ClientsBrowser } from "@/components/staff/ClientsBrowser";
-import { clientAccess } from "@/lib/access";
+import { accountStatus } from "@/lib/access";
 import { staffOrRedirect } from "@/lib/auth/session";
 import { brand } from "@/lib/brand";
 import { copy, formatDateFor } from "@/lib/i18n";
@@ -43,8 +43,10 @@ export default async function ClientsPage() {
       place: [row.city, row.country].filter(Boolean).join(", "),
       status: row.status,
       // Two different questions, answered separately: the status above is about the
-      // file, this is about whether they can get in at all.
-      access: clientAccess(row),
+      // file, this is about whether they can get in at all. The e-mail confirmation
+      // is deliberately not fetched here — that is one Supabase call per screen and
+      // this directory is read far more often than an unconfirmed account occurs.
+      access: accountStatus(row),
       inviteUntil: row.inviteExpiresAt
         ? formatDateFor(new Date(row.inviteExpiresAt), locale, dates)
         : "",

@@ -345,6 +345,9 @@ export const client = app.table(
     internalNotes: text("internal_notes"),
     createdBy: uuid("created_by").references(() => staffUser.id, { onDelete: "set null" }),
 
+    /** They signed up themselves rather than being created by the office. */
+    selfRegistered: boolean("self_registered").notNull().default(false),
+
     /** Set when the client first completes their details. */
     detailsCompletedAt: timestamp("details_completed_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
@@ -367,6 +370,10 @@ export const clientContact = app.table(
     /** Null until they first sign in; the magic link creates the auth user. */
     authUserId: uuid("auth_user_id").unique(),
     email: text("email").notNull(),
+    /* Switched off by an admin. app.resolve_actor() refuses a disabled contact, so
+       this is the lock itself and not a hidden button. */
+    disabledAt: timestamp("disabled_at", { withTimezone: true }),
+    disabledBy: uuid("disabled_by").references(() => staffUser.id, { onDelete: "set null" }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [

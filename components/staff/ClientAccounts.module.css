@@ -1,0 +1,278 @@
+/* Client Accounts: the same table, pills and cards as Team & Permissions, because
+   these two screens are read one after the other and should not feel like two
+   different products. */
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 20px 0 14px;
+}
+
+.search {
+  flex: 1;
+  min-width: 220px;
+  height: var(--control-h);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--panel);
+  padding: 0 14px;
+  font-size: 14.5px;
+  color: inherit;
+}
+
+.search:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent) 16%, transparent);
+}
+
+.filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--ink-2);
+  border-radius: var(--radius-pill);
+  height: 32px;
+  padding: 0 14px;
+  font-size: 13px;
+  font-weight: 550;
+  white-space: nowrap;
+}
+
+.chip:hover {
+  border-color: var(--ink-3);
+}
+
+.chipOn {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.count {
+  margin: 14px 0 0;
+  font-size: 13px;
+  color: var(--ink-3);
+}
+
+.empty {
+  margin: 24px 0;
+  color: var(--ink-3);
+  font-size: 14.5px;
+}
+
+.tableWrap {
+  margin-top: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--panel);
+  box-shadow: var(--shadow-soft);
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 860px;
+}
+
+.table th {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--line-soft);
+  font-size: 14px;
+  vertical-align: top;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.dim td {
+  opacity: 0.62;
+}
+
+.right {
+  text-align: right;
+}
+
+.muted {
+  color: var(--ink-2);
+}
+
+.person {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.name {
+  display: block;
+  font-weight: 600;
+}
+
+.login {
+  display: block;
+  font-size: 14px;
+}
+
+.activity {
+  display: block;
+  font-size: 13.5px;
+}
+
+.sub {
+  display: block;
+  font-size: 12.5px;
+  color: var(--ink-3);
+  margin-top: 2px;
+}
+
+/* ------------------------------------------------------------------- pills */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-pill);
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--panel-2);
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.pillACTIVE {
+  background: color-mix(in oklch, var(--ok) 14%, transparent);
+  color: var(--ok);
+}
+
+.pillINVITED {
+  background: color-mix(in oklch, var(--info) 13%, transparent);
+  color: var(--info);
+}
+
+.pillUNVERIFIED,
+.pillEXPIRED {
+  background: color-mix(in oklch, var(--warn) 16%, transparent);
+  color: var(--warn);
+}
+
+.pillDISABLED {
+  background: color-mix(in oklch, var(--danger) 13%, transparent);
+  color: var(--danger);
+}
+
+/* ---------------------------------------------------------------- row menu */
+
+.menuWrap {
+  position: relative;
+  display: inline-block;
+}
+
+.menuButton {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--ink-2);
+  border-radius: var(--radius-control);
+  height: var(--control-h-sm);
+  padding: 0 12px;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+}
+
+.menuButton:hover {
+  border-color: var(--ink-3);
+}
+
+.menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 30;
+  min-width: 232px;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--panel);
+  box-shadow: var(--shadow-pop, 0 14px 40px rgb(0 0 0 / 0.16));
+}
+
+.menuItem {
+  border: none;
+  background: none;
+  color: inherit;
+  text-align: left;
+  text-decoration: none;
+  font-size: 14px;
+  padding: 9px 10px;
+  border-radius: var(--radius-control);
+  white-space: nowrap;
+}
+
+.menuItem:hover {
+  background: var(--panel-2);
+}
+
+.menuDanger {
+  color: var(--danger);
+}
+
+/* -------------------------------------------------------- the one-time modal */
+
+.warning {
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  border-radius: var(--radius-control);
+  background: color-mix(in oklch, var(--warn) 12%, transparent);
+  color: var(--ink-1);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.secretField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.secretValue {
+  display: block;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--panel-2);
+  padding: 12px 14px;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  word-break: break-all;
+  user-select: all;
+}
+
+.secretPassword {
+  font-size: 19px;
+  letter-spacing: 0.02em;
+  font-weight: 600;
+}
