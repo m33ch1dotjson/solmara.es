@@ -6,6 +6,7 @@ import { DocumentReview } from "@/components/staff/DocumentReview";
 import { InviteButton } from "@/components/staff/InviteButton";
 import { Avatar } from "@/components/ui/Avatar";
 import { Mono, StatusPill } from "@/components/ui";
+import { clientAccess } from "@/lib/access";
 import { staffOrRedirect } from "@/lib/auth/session";
 import { copy, fill, formatDateFor } from "@/lib/i18n";
 import { currentDatePrefs, currentLocale } from "@/lib/locale";
@@ -42,7 +43,7 @@ export default async function AdminClientPage({
   if (!found) notFound();
 
   const t = copy(locale);
-  const { record, documents, invites, hasAccount } = found;
+  const { record, documents, invites, contacts, hasAccount } = found;
   const invoices = await listClientInvoices(actor, id);
 
   function show(value: string | Date | null): string {
@@ -71,6 +72,35 @@ export default async function AdminClientPage({
 
   const docTitle = { PASSPORT: t.documents.passportTitle, PHOTO: t.documents.photoTitle };
   const lastInvite = invites[0];
+
+  /*
+   * Can this person get in?
+   *
+   * Nothing on this page answered that before: the pill next to the name is the
+   * status of the file, which turns ACTIVE when the client fills in their details
+   * and says nothing about a login. A login is a client_contact with an auth user
+   * behind it, and one of those only appears when somebody redeems an invite —
+   * there is no sign-up screen anywhere in this portal.
+   */
+  const access = clientAccess({
+    hasAccount,
+    inviteExpiresAt: lastInvite?.expiresAt ?? null,
+    inviteUsedAt: lastInvite?.usedAt ?? null,
+  });
+
+  // The moment the invite was redeemed, which is the moment the account began.
+  const accountSince = contacts.find((c) => c.authUserId !== null)?.createdAt ?? null;
+
+  const accessExplained =
+    access === "ACTIVE"
+      ? accountSince
+        ? fill(t.access.activeSince, { date: show(accountSince) })
+        : t.access.activePlain
+      : access === "PENDING"
+        ? fill(t.access.pendingUntil, { until: show(lastInvite?.expiresAt ?? null) })
+        : access === "EXPIRED"
+          ? t.access.expiredExplain
+          : t.access.noneExplain;
 
   return (
     <div className={shell.screen}>
@@ -119,6 +149,44 @@ export default async function AdminClientPage({
           <span className={s.quiet}>{t.clients.hasAccount}</span>
         ) : (
           <InviteButton clientId={record.id} clientName={record.name} />
+        )}
+      </div>
+
+      {/* ------------------------------------------------------------ access */}
+      <h2 className={s.sectionTitle}>{t.access.title}</h2>
+      <div className={s.access}>
+        <p className={s.accessState}>
+          <span className={`${s.dot} ${s[`dot${access}`] ?? ""}`} aria-hidden="true" />
+          {t.access[access]}
+        </p>
+        <p className={s.accessLine}>{accessExplained}</p>
+        <p className={s.accessQuiet}>{t.access.invitedOnly}</p>
+        <p className={s.accessQuiet}>
+          {fill(t.access.statusIsFile, {
+            status:
+              record.status === "INVITED"
+                ? t.clients.statusInvited
+                : record.status === "ACTIVE"
+                  ? t.clients.statusActive
+                  : t.clients.statusClosed,
+          })}
+        </p>
+        {lastInvite && !hasAccount && (
+          <p className={s.accessQuiet}>
+            {lastInvite.usedAt
+              ? fill(t.clientDetail.lastLinkUsed, { date: show(lastInvite.createdAt) })
+              : fill(t.clientDetail.lastLinkValid, {
+                  date: show(lastInvite.createdAt),
+                  until: show(lastInvite.expiresAt),
+                })}
+          </p>
+        )}
+        {!hasAccount && (
+          <InviteButton
+            clientId={record.id}
+            clientName={record.name}
+            label={access === "NONE" ? undefined : t.access.newLink}
+          />
         )}
       </div>
 
@@ -183,16 +251,6 @@ export default async function AdminClientPage({
         }))}
       />
 
-      {lastInvite && !hasAccount && (
-        <p className={s.inviteMeta}>
-          {lastInvite.usedAt
-            ? fill(t.clientDetail.lastLinkUsed, { date: show(lastInvite.createdAt) })
-            : fill(t.clientDetail.lastLinkValid, {
-                date: show(lastInvite.createdAt),
-                until: show(lastInvite.expiresAt),
-              })}
-        </p>
-      )}
     </div>
   );
 }

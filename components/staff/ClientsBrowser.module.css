@@ -378,6 +378,53 @@
   color: var(--ink-3);
 }
 
+/* -------------------------------------------------------------- access mark
+
+   Deliberately not a pill: a pill next to a pill reads as one more status, and
+   access is a different question. A dot and a word sit quietly beside it. */
+
+.access {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 550;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--line);
+  /* So "no access" is still visible on a panel of nearly the same colour. */
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--ink-3) 35%, transparent);
+}
+
+.dotACTIVE {
+  background: var(--ok);
+  box-shadow: none;
+}
+
+.dotPENDING {
+  background: var(--info);
+  box-shadow: none;
+}
+
+.dotEXPIRED {
+  background: var(--warn);
+  box-shadow: none;
+}
+
+.compactPills {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
 /* ---------------------------------------------------------------- paging */
 
 .pager {

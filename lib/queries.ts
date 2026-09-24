@@ -52,6 +52,18 @@ export async function listClients(actor: Actor) {
           select 1 from app.client_contact cc
           where cc.client_id = ${client.id} and cc.auth_user_id is not null
         )`,
+        /* The most recent invite, so the list can say whether a link is still out
+           there, has run out, or was never made. See lib/access.ts. */
+        inviteExpiresAt: sql<Date | null>`(
+          select i.expires_at from app.client_invite i
+          where i.client_id = ${client.id}
+          order by i.created_at desc limit 1
+        )`,
+        inviteUsedAt: sql<Date | null>`(
+          select i.used_at from app.client_invite i
+          where i.client_id = ${client.id}
+          order by i.created_at desc limit 1
+        )`,
       })
       .from(client)
       .orderBy(desc(client.createdAt)),

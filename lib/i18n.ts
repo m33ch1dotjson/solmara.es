@@ -411,6 +411,62 @@ export const DICT = {
     ),
   },
 
+  /* ------------------------------------------------------------------- access */
+
+  /*
+   * Whether a client can actually sign in — a different question from the status
+   * of their file, which is what the pill next to their name answers. Shared by the
+   * directory and the client page, so both call the same state by the same name.
+   */
+  access: {
+    title: T("Access to the portal", "Toegang tot het portaal", "Acceso al portal"),
+    label: T("Access", "Toegang", "Acceso"),
+    filterLabel: T("Filter by access", "Filter op toegang", "Filtrar por acceso"),
+    filterAll: T("Any access", "Elke toegang", "Cualquier acceso"),
+
+    ACTIVE: T("Can sign in", "Kan inloggen", "Puede entrar"),
+    PENDING: T("Invited", "Uitgenodigd", "Invitado"),
+    EXPIRED: T("Link expired", "Link verlopen", "Enlace caducado"),
+    NONE: T("No access", "Geen toegang", "Sin acceso"),
+
+    activeSince: T(
+      "Signed in for the first time on {date}, and can sign in whenever they like.",
+      "Voor het eerst ingelogd op {date} en kan sindsdien inloggen wanneer hij wil.",
+      "Entró por primera vez el {date} y desde entonces puede entrar cuando quiera.",
+    ),
+    activePlain: T(
+      "There is a login for this client.",
+      "Er is een login voor deze klant.",
+      "Existe un acceso para este cliente.",
+    ),
+    pendingUntil: T(
+      "A link was sent and is still valid until {until}. Nobody has used it yet, so there is no login.",
+      "Er is een link verstuurd die nog geldig is tot {until}. Niemand heeft hem gebruikt, dus er is nog geen login.",
+      "Se envió un enlace válido hasta el {until}. Nadie lo ha usado todavía, así que aún no hay acceso.",
+    ),
+    expiredExplain: T(
+      "The last link was never used and has run out. Generate a new one to give them access.",
+      "De laatste link is nooit gebruikt en is verlopen. Maak een nieuwe aan om toegang te geven.",
+      "El último enlace nunca se usó y ha caducado. Genera uno nuevo para darle acceso.",
+    ),
+    noneExplain: T(
+      "This client only exists in our own records. No link has been sent, so they cannot reach the portal.",
+      "Deze klant staat alleen in onze eigen administratie. Er is geen link verstuurd, dus hij kan niet bij het portaal.",
+      "Este cliente solo existe en nuestra administración. No se ha enviado ningún enlace, así que no puede acceder al portal.",
+    ),
+    invitedOnly: T(
+      "Clients cannot sign up themselves. A login only exists once somebody here has sent a link and the client has used it.",
+      "Klanten kunnen zich niet zelf aanmelden. Een login bestaat pas als iemand hier een link heeft gestuurd en de klant die heeft gebruikt.",
+      "Los clientes no pueden registrarse por su cuenta. Solo existe un acceso cuando alguien de aquí envía un enlace y el cliente lo usa.",
+    ),
+    newLink: T("New link", "Nieuwe link", "Nuevo enlace"),
+    statusIsFile: T(
+      "“{status}” above is about their file, not about signing in.",
+      "“{status}” hierboven gaat over hun dossier, niet over inloggen.",
+      "«{status}» arriba se refiere a su expediente, no a entrar.",
+    ),
+  },
+
   /* ------------------------------------------------------ the client's own fields */
 
   fields: {

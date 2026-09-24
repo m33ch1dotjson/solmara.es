@@ -1,4 +1,5 @@
 import { ClientsBrowser } from "@/components/staff/ClientsBrowser";
+import { clientAccess } from "@/lib/access";
 import { staffOrRedirect } from "@/lib/auth/session";
 import { brand } from "@/lib/brand";
 import { copy, formatDateFor } from "@/lib/i18n";
@@ -41,7 +42,12 @@ export default async function ClientsPage() {
       companyName: row.companyName ?? "",
       place: [row.city, row.country].filter(Boolean).join(", "),
       status: row.status,
-      hasAccount: row.hasAccount,
+      // Two different questions, answered separately: the status above is about the
+      // file, this is about whether they can get in at all.
+      access: clientAccess(row),
+      inviteUntil: row.inviteExpiresAt
+        ? formatDateFor(new Date(row.inviteExpiresAt), locale, dates)
+        : "",
       // Signed per render like every other private file; ten minutes is plenty for
       // a list somebody is looking at now.
       avatarUrl: row.avatarKey ? await signedUrl(BUCKET_CLIENT_DOCUMENTS, row.avatarKey) : null,

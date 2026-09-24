@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { setClientsViewAction } from "@/app/admin/clients/client-actions";
+import type { ClientAccess } from "@/lib/access";
 import { Avatar } from "@/components/ui/Avatar";
 import { useCopy } from "@/components/ui/LocaleProvider";
 import { fill } from "@/lib/i18n";
@@ -19,7 +20,10 @@ export type ClientRow = {
   companyName: string;
   place: string;
   status: "INVITED" | "ACTIVE" | "CLOSED";
-  hasAccount: boolean;
+  /** Whether they can sign in — see lib/access.ts. Not the same as status. */
+  access: ClientAccess;
+  /** When the outstanding invite runs out; empty unless access is PENDING. */
+  inviteUntil: string;
   avatarUrl: string | null;
   created: string;
   /** Raw, for sorting. */
@@ -27,6 +31,7 @@ export type ClientRow = {
 };
 
 const FILTERS = ["ALL", "INVITED", "ACTIVE", "CLOSED"] as const;
+const ACCESS = ["ANY", "ACTIVE", "PENDING", "EXPIRED", "NONE"] as const;
 const SORTS = ["NAME_AZ", "NAME_ZA", "NEWEST", "OLDEST"] as const;
 
 /** How many fit on a screen before scrolling stops being browsing. */
@@ -57,6 +62,7 @@ export function ClientsBrowser({
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>("ALL");
   const [sort, setSort] = useState<(typeof SORTS)[number]>("NAME_AZ");
+  const [access, setAccess] = useState<(typeof ACCESS)[number]>("ANY");
   const [page, setPage] = useState(0);
 
   const statusLabel: Record<string, string> = {
@@ -66,6 +72,13 @@ export function ClientsBrowser({
   };
   const filterLabel: Record<string, string> = { ALL: t.clients.filterAll, ...statusLabel };
   const sortLabel = t.clients.sort as Record<string, string>;
+  const accessLabel: Record<string, string> = {
+    ANY: t.access.filterAll,
+    ACTIVE: t.access.ACTIVE,
+    PENDING: t.access.PENDING,
+    EXPIRED: t.access.EXPIRED,
+    NONE: t.access.NONE,
+  };
 
   function choose(next: "GRID" | "LIST") {
     setView(next);
@@ -78,6 +91,7 @@ export function ClientsBrowser({
 
     const matched = rows.filter((row) => {
       if (filter !== "ALL" && row.status !== filter) return false;
+      if (access !== "ANY" && row.access !== access) return false;
       if (needle === "") return true;
       return [row.name, row.email, row.phone, row.companyName, row.code].some((field) =>
         field.toLowerCase().includes(needle),
@@ -90,11 +104,30 @@ export function ClientsBrowser({
     if (sort === "NEWEST") sorted.sort((a, b) => b.createdRaw.localeCompare(a.createdRaw));
     if (sort === "OLDEST") sorted.sort((a, b) => a.createdRaw.localeCompare(b.createdRaw));
     return sorted;
-  }, [rows, query, filter, sort]);
+  }, [rows, query, filter, access, sort]);
 
   const pages = Math.max(1, Math.ceil(shown.length / PER_PAGE));
   const current = Math.min(page, pages - 1);
   const slice = shown.slice(current * PER_PAGE, current * PER_PAGE + PER_PAGE);
+
+  /*
+   * A dot and a word, next to the status pill rather than instead of it: the pill
+   * says how far the file has come, this says whether the person on the other side
+   * can actually open it. Conflating the two is what made this unreadable before.
+   */
+  function accessMark(row: ClientRow) {
+    return (
+      <span
+        className={s.access}
+        title={row.access === "PENDING" && row.inviteUntil
+          ? `${accessLabel[row.access]} — ${row.inviteUntil}`
+          : accessLabel[row.access]}
+      >
+        <span className={`${s.dot} ${s[`dot${row.access}`] ?? ""}`} aria-hidden="true" />
+        {accessLabel[row.access]}
+      </span>
+    );
+  }
 
   function reset<T>(setter: (value: T) => void) {
     return (value: T) => {
@@ -148,6 +181,23 @@ export function ClientsBrowser({
           placeholder={t.clients.searchPlaceholder}
           aria-label={t.clients.searchPlaceholder}
         />
+        <label className={s.sortField}>
+          <span className={s.sortLabel}>{t.access.label}</span>
+          <select
+            className={s.select}
+            value={access}
+            aria-label={t.access.filterLabel}
+            onChange={(event) =>
+              reset(setAccess)(event.target.value as (typeof ACCESS)[number])
+            }
+          >
+            {ACCESS.map((option) => (
+              <option key={option} value={option}>
+                {accessLabel[option]}
+              </option>
+            ))}
+          </select>
+        </label>
         <label className={s.sortField}>
           <span className={s.sortLabel}>{t.clients.sortBy}</span>
           <select
@@ -230,6 +280,7 @@ export function ClientsBrowser({
                 <span className={`${s.pill} ${s[`pill${row.status}`] ?? ""}`}>
                   {statusLabel[row.status]}
                 </span>
+                {accessMark(row)}
                 <span className={s.code}>{row.code}</span>
                 <span className={s.details}>{t.clients.viewDetails}</span>
               </span>
@@ -246,6 +297,7 @@ export function ClientsBrowser({
                 <th>{t.fields.phone}</th>
                 <th>{t.clients.columnPlace}</th>
                 <th>{t.clients.columnStatus}</th>
+                <th>{t.access.label}</th>
                 <th>{t.clients.columnCreated}</th>
               </tr>
             </thead>
@@ -269,6 +321,12 @@ export function ClientsBrowser({
                       {statusLabel[row.status]}
                     </span>
                   </td>
+                  <td>
+                    {accessMark(row)}
+                    {row.access === "PENDING" && row.inviteUntil && (
+                      <span className={s.rowSub}>{row.inviteUntil}</span>
+                    )}
+                  </td>
                   <td className={s.muted}>{row.created}</td>
                 </tr>
               ))}
@@ -284,8 +342,11 @@ export function ClientsBrowser({
                   <span className={s.rowName}>{row.name}</span>
                   <span className={s.rowSub}>{row.email}</span>
                 </span>
-                <span className={`${s.pill} ${s[`pill${row.status}`] ?? ""}`}>
-                  {statusLabel[row.status]}
+                <span className={s.compactPills}>
+                  <span className={`${s.pill} ${s[`pill${row.status}`] ?? ""}`}>
+                    {statusLabel[row.status]}
+                  </span>
+                  {accessMark(row)}
                 </span>
               </Link>
             ))}

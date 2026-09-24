@@ -11,7 +11,16 @@ import s from "./forms.module.css";
  * button says so. Someone who clicks it twice should not be left wondering which of
  * two links in their sent mail still works.
  */
-export function InviteButton({ clientId, clientName }: { clientId: string; clientName: string }) {
+export function InviteButton({
+  clientId,
+  clientName,
+  /** "New link" rather than "Generate link" where one has already been sent. */
+  label,
+}: {
+  clientId: string;
+  clientName: string;
+  label?: string;
+}) {
   const { t } = useCopy();
   const [pending, start] = useTransition();
   const [url, setUrl] = useState<string | null>(null);
@@ -60,7 +69,7 @@ export function InviteButton({ clientId, clientName }: { clientId: string; clien
   return (
     <div className={s.inviteResult}>
       <button type="button" className={s.secondary} onClick={generate} disabled={pending}>
-        {pending ? t.common.busy : t.clients.generateLink}
+        {pending ? t.common.busy : (label ?? t.clients.generateLink)}
       </button>
       {error && <span className={s.error}>{error}</span>}
     </div>
