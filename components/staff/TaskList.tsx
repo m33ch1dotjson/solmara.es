@@ -31,7 +31,7 @@ export type TaskRow = {
   doneOn: string;
 };
 
-const FILTERS = ["OPEN", "DONE", "ALL"] as const;
+const FILTERS = ["ALL", "OPEN", "DONE"] as const;
 
 /*
  * The to-do list.
@@ -56,8 +56,14 @@ export function TaskList({
   const { t } = useCopy();
   const router = useRouter();
 
-  const [title, setTitle] = useState("");
-  const [filter, setFilter] = useState<(typeof FILTERS)[number]>("OPEN");
+  /*
+   * Everything, by default.
+   *
+   * Starting on "Open" meant a task vanished the moment you ticked it — which is
+   * exactly the thing that was asked not to happen. Open is a filter you choose,
+   * not the state you land in.
+   */
+  const [filter, setFilter] = useState<(typeof FILTERS)[number]>("ALL");
   const [openId, setOpenId] = useState<string | null>(null);
   const [draft, setDraft] = useState<TaskRow | null>(null);
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
@@ -75,32 +81,6 @@ export function TaskList({
   }, [rows, filter, ticking]);
 
   const openCount = rows.filter((row) => !(ticking[row.id] ?? row.done)).length;
-
-  function add() {
-    const value = title.trim();
-    if (value === "") return;
-    setMessage(null);
-    start(async () => {
-      const form = new FormData();
-      form.set("title", value);
-      const result = await addTaskAction(form);
-      if (result.ok) {
-        setTitle("");
-        router.refresh();
-      } else {
-        setMessage({ ok: false, text: result.error });
-      }
-    });
-  }
-
-  function toggle(row: TaskRow) {
-    const next = !(ticking[row.id] ?? row.done);
-    setTicking((current) => ({ ...current, [row.id]: next }));
-    start(async () => {
-      await toggleTaskAction(row.id, next);
-      router.refresh();
-    });
-  }
 
   function open(row: TaskRow) {
     if (openId === row.id) {
@@ -150,29 +130,26 @@ export function TaskList({
   return (
     <div className={s.wrap}>
       {/* ---------------------------------------------------------- adding */}
-      <div className={s.adder}>
+      {/*
+        * The action itself is handed to `action`, not a function wrapping it: that
+        * is what makes React put the action's id in the form as a hidden field, so
+        * the button submits and works on the first paint, before any JavaScript has
+        * hydrated — and still works if it never arrives. The field is uncontrolled
+        * for the same reason; React clears it once the action has run.
+        */}
+      <form action={addTaskAction} className={s.adder}>
         <input
+          name="title"
           className={s.addInput}
-          value={title}
-          onChange={(event) => setTitle(event.target.value)}
-          onKeyDown={(event) => {
-            if (event.key === "Enter") {
-              event.preventDefault();
-              add();
-            }
-          }}
           placeholder={t.tasksPage.addPlaceholder}
           aria-label={t.tasksPage.addPlaceholder}
+          required
+          maxLength={300}
         />
-        <button
-          type="button"
-          className={a.primary}
-          onClick={add}
-          disabled={pending || title.trim() === ""}
-        >
+        <button type="submit" className={a.primary}>
           <span aria-hidden="true">+</span> {t.tasksPage.add}
         </button>
-      </div>
+      </form>
 
       <div className={s.head}>
         <div className={s.filters} role="group" aria-label={t.tasksPage.filterLabel}>
@@ -211,20 +188,31 @@ export function TaskList({
             return (
               <li key={row.id} className={done ? `${s.item} ${s.itemDone}` : s.item}>
                 <div className={s.row}>
-                  <button
-                    type="button"
-                    role="checkbox"
-                    aria-checked={done}
-                    aria-label={row.title}
-                    className={done ? `${s.box} ${s.boxOn}` : s.box}
-                    onClick={() => toggle(row)}
+                  {/* A one-field form, so the tick is a submit and not an onClick.
+                      The local state below only makes it look instant; the server
+                      is what decides, and a reload agrees with it. */}
+                  <form
+                    action={toggleTaskAction}
+                    onSubmit={() =>
+                      setTicking((current) => ({ ...current, [row.id]: !done }))
+                    }
                   >
-                    {done && (
-                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <path d="M5 12.5l4.5 4.5L19 7" />
-                      </svg>
-                    )}
-                  </button>
+                    <input type="hidden" name="id" value={row.id} />
+                    <input type="hidden" name="done" value={done ? "0" : "1"} />
+                    <button
+                      type="submit"
+                      role="checkbox"
+                      aria-checked={done}
+                      aria-label={row.title}
+                      className={done ? `${s.box} ${s.boxOn}` : s.box}
+                    >
+                      {done && (
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <path d="M5 12.5l4.5 4.5L19 7" />
+                        </svg>
+                      )}
+                    </button>
+                  </form>
 
                   <button type="button" className={s.titleButton} onClick={() => open(row)}>
                     <span className={s.title}>{row.title}</span>
