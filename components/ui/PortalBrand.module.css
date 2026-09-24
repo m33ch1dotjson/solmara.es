@@ -1,0 +1,38 @@
+/* The clickable brand on the client-facing screens. It has to look like a link
+   without looking like a button: the underline stays away, the mark lifts slightly
+   on hover, and the whole thing is one target big enough for a thumb. */
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  align-self: flex-start;
+  margin-bottom: 4px;
+  padding: 4px;
+  margin-left: -4px;
+  border-radius: var(--radius-control);
+  color: inherit;
+  text-decoration: none;
+}
+
+.brand:hover {
+  text-decoration: none;
+  background: var(--panel-2);
+}
+
+.brand:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* The mark keeps its own orange whatever the text around it does. */
+.logo {
+  color: var(--brand-mark);
+  flex: none;
+}
+
+.name {
+  font-size: 19px;
+  font-weight: 650;
+  letter-spacing: -0.015em;
+}

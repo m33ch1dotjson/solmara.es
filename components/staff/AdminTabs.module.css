@@ -33,11 +33,29 @@
   box-shadow: var(--shadow);
 }
 
+/* The whole brand is the link back to the overview; it should feel like one without
+   turning into a button. */
 .brand {
   display: flex;
   align-items: center;
   gap: 11px;
   padding: 4px 10px 20px;
+  color: inherit;
+  text-decoration: none;
+  border-radius: var(--radius-control);
+}
+
+.brand:hover {
+  text-decoration: none;
+}
+
+.brand:hover .brandName {
+  color: var(--accent);
+}
+
+.brand:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .logo {

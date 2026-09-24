@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useCopy } from "@/components/ui/LocaleProvider";
-import { Logo } from "@/components/ui/Logo";
+import { PortalBrand } from "@/components/ui/PortalBrand";
 import { browserClient } from "@/lib/auth/supabase-browser";
 import { brand } from "@/lib/brand";
 import { fill } from "@/lib/i18n";
@@ -66,12 +66,7 @@ export default function ResetPasswordPage() {
   }
 
   const header = (
-    <div className={s.brand}>
-      <Logo size={38} className={s.brandLogo} />
-      <span className={s.brandName}>
-        {fill(t.signin.portalTitle, { brand: brand.clientName })}
-      </span>
-    </div>
+    <PortalBrand href="/signin" label={fill(t.signin.portalTitle, { brand: brand.clientName })} />
   );
 
   if (done) {
@@ -102,6 +97,10 @@ export default function ResetPasswordPage() {
   return (
     <form className={s.block} onSubmit={submit}>
       {header}
+      <Link href="/signin" className={s.back}>
+        {t.common.back}
+      </Link>
+
       <h1 className={shell.h1}>{t.reset.title}</h1>
       <p className={shell.body}>{t.reset.lead}</p>
 

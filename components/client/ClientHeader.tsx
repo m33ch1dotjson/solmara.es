@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { brand, type Locale } from "@/lib/brand";
@@ -17,10 +18,11 @@ export function ClientHeader({ name, locale }: { name: string; locale: Locale })
 
   return (
     <header className={s.bar}>
-      <div className={s.brand}>
+      {/* Home, the same as the logo on every other screen. */}
+      <Link href="/" className={s.brand} aria-label={brand.clientName}>
         <Logo size={30} className={s.logo} />
         <span className={s.wordmark}>{brand.clientName}</span>
-      </div>
+      </Link>
 
       <div className={s.right}>
         <span className={s.name}>{name}</span>

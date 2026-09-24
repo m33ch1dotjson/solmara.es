@@ -142,6 +142,8 @@ export const DICT = {
     language: T("Language", "Taal", "Idioma"),
     changeLanguage: T("Change language", "Taal wijzigen", "Cambiar de idioma"),
     close: T("Close", "Sluiten", "Cerrar"),
+    /* The arrow is part of the string: every back link in the portal wears it. */
+    back: T("\u2039 Back to signing in", "\u2039 Terug naar inloggen", "\u2039 Volver a iniciar sesión"),
     showMore: T("Show more", "Meer tonen", "Ver más"),
     showLess: T("Show less", "Minder tonen", "Ver menos"),
     /* The theme button says which theme you are in; the tooltip says what it does. */

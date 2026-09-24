@@ -65,10 +65,12 @@ export function AdminTabs({
       aria-label={t.nav.portal}
       aria-hidden={undefined}
     >
-      <div className={s.brand}>
+      {/* The brand is the way back to the overview, on both sides of the portal:
+          clicking a logo in the corner means "take me to the start". */}
+      <Link href="/admin" className={s.brand} aria-label={t.nav.overview}>
         <Logo size={36} className={s.logo} />
         <span className={s.brandName}>{brandName}</span>
-      </div>
+      </Link>
 
       <div className={s.tabs}>
         <span className={s.group}>{t.nav.portal}</span>

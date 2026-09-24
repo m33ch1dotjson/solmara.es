@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { completeRegistrationAction } from "./actions";
 import { useCopy } from "@/components/ui/LocaleProvider";
-import { Logo } from "@/components/ui/Logo";
+import { PortalBrand } from "@/components/ui/PortalBrand";
 import { browserClient } from "@/lib/auth/supabase-browser";
 import { brand } from "@/lib/brand";
 import { fill } from "@/lib/i18n";
@@ -101,12 +101,7 @@ export default function RegisterPage() {
   if (checkMail) {
     return (
       <div className={s.block}>
-        <div className={s.brand}>
-          <Logo size={38} className={s.brandLogo} />
-          <span className={s.brandName}>
-            {fill(t.signin.portalTitle, { brand: brand.clientName })}
-          </span>
-        </div>
+        <PortalBrand href="/signin" label={fill(t.signin.portalTitle, { brand: brand.clientName })} />
         <div className={s.tile} aria-hidden="true">
           ✉
         </div>
@@ -121,12 +116,13 @@ export default function RegisterPage() {
 
   return (
     <form className={s.block} onSubmit={submit}>
-      <div className={s.brand}>
-        <Logo size={38} className={s.brandLogo} />
-        <span className={s.brandName}>
-          {fill(t.signin.portalTitle, { brand: brand.clientName })}
-        </span>
-      </div>
+      <PortalBrand href="/signin" label={fill(t.signin.portalTitle, { brand: brand.clientName })} />
+
+      {/* An arrow as well as the logo: somebody halfway through a form looks for a
+          way back, not for a brand to click. */}
+      <Link href="/signin" className={s.back}>
+        {t.common.back}
+      </Link>
 
       <h1 className={shell.h1}>{t.register.title}</h1>
       <p className={shell.body}>{t.register.lead}</p>

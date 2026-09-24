@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useCopy } from "@/components/ui/LocaleProvider";
-import { Logo } from "@/components/ui/Logo";
+import { PortalBrand } from "@/components/ui/PortalBrand";
 import { browserClient } from "@/lib/auth/supabase-browser";
 import { brand } from "@/lib/brand";
 import { fill } from "@/lib/i18n";
@@ -109,12 +109,9 @@ export default function SignInPage() {
     setResetSent(true);
   }
 
-  const header = (
-    <div className={s.brand}>
-      <Logo size={38} className={s.brandLogo} />
-      <span className={s.brandName}>{fill(t.signin.portalTitle, { brand: brandName })}</span>
-    </div>
-  );
+  /* The mark goes home: for somebody who is not signed in that is this screen, and
+     from the "check your email" and "forgotten" states it is the way back. */
+  const header = <PortalBrand href="/" label={fill(t.signin.portalTitle, { brand: brandName })} />;
 
   if (linkSent || resetSent) {
     return (

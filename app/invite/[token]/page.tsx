@@ -1,6 +1,6 @@
 import { InviteSignup } from "@/components/client/InviteSignup";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
-import { Logo } from "@/components/ui/Logo";
+import { PortalBrand } from "@/components/ui/PortalBrand";
 import { brand } from "@/lib/brand";
 import { copy, fill } from "@/lib/i18n";
 import { currentLocale } from "@/lib/locale";
@@ -40,7 +40,7 @@ export default async function InvitePage({
           <div className={s.topRow}>
             <LanguageSwitcher locale={locale} size="tall" />
           </div>
-          <Logo size={34} className={s.logo} />
+          <PortalBrand href="/signin" size={34} label={brand.clientName} />
           <h1 className={s.h1}>{t.invite.deadTitle}</h1>
           <p className={s.body}>{fill(t.invite.deadBody, { brand: brand.clientName })}</p>
         </div>
@@ -54,7 +54,7 @@ export default async function InvitePage({
         <div className={s.topRow}>
           <LanguageSwitcher locale={locale} size="tall" />
         </div>
-        <Logo size={34} className={s.logo} />
+        <PortalBrand href="/signin" size={34} label={brand.clientName} />
         <h1 className={s.h1}>
           {fill(t.invite.welcome, {
             name: invite.client_name.split(" ")[0] ?? invite.client_name,
